@@ -33,7 +33,7 @@ const Footer = () => {
               to="/terms"
               className="text-gray-400 hover:text-white transition-colors duration-200"
             >
-              Terms of Service
+              Terms and Conditions
             </Link>
             <a
               href="mailto:hello@Project Play App.com"

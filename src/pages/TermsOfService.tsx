@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
@@ -16,177 +15,179 @@ const TermsOfService = () => {
           </Link>
 
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Terms of Service
+            Terms and Conditions
           </h1>
-          <p className="text-gray-600">Last updated: January 2025</p>
         </div>
 
         <div className="prose prose-lg max-w-none">
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Agreement to Terms
+              1. Liability for Damages
             </h2>
-            <p className="text-gray-700 leading-relaxed">
-              By accessing and using Project Play App, you accept and agree to
-              be bound by the terms and provision of this agreement. If you do
-              not agree to abide by the above, please do not use this service.
-            </p>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Service Description
-            </h2>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Project Play App is a mobile application that connects players for
-              paddle and pickleball matches. Our service includes:
-            </p>
             <ul className="list-disc pl-6 text-gray-700 space-y-2">
-              <li>Court booking and reservation system</li>
-              <li>Player matching and communication features</li>
-              <li>Payment processing for court fees</li>
-              <li>Match scheduling and reminder services</li>
+              <li>The customer agrees to be liable for any damage caused to the equipment, court, or surrounding areas during the rental period.</li>
+              <li>Any damage incurred shall be the responsibility of the customer, and they will be liable for the cost of repair or replacement.</li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              User Responsibilities
+              2. Injury Disclaimer
             </h2>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              As a user of Project Play App, you agree to:
-            </p>
             <ul className="list-disc pl-6 text-gray-700 space-y-2">
-              <li>Provide accurate and complete information</li>
-              <li>Maintain the security of your account credentials</li>
-              <li>Use the service in compliance with all applicable laws</li>
-              <li>Respect other players and maintain good sportsmanship</li>
-              <li>
-                Honor your booking commitments or cancel with appropriate notice
-              </li>
-              <li>Pay all fees associated with your bookings</li>
+              <li>We accept no responsibility for any injury sustained by the customer or any participant during the course of the activity.</li>
+              <li>Customers engage in the activity at their own risk and should take appropriate precautions to ensure their safety.</li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Booking and Cancellation Policy
+              3. Cancellation & Refund Policy
             </h2>
-
-            <h3 className="text-xl font-medium text-gray-900 mb-3">Bookings</h3>
             <ul className="list-disc pl-6 text-gray-700 mb-4 space-y-2">
-              <li>All bookings are subject to court availability</li>
-              <li>Payment is required at the time of booking</li>
+              <li>Cancellations made within 12 hours of the scheduled booking may incur a cancellation fee.</li>
+              <li>The specific cancellation fee and the timeframe for cancellations will be communicated at the time of booking.</li>
               <li>
-                Booking confirmations will be sent via email and app
-                notification
+                In case of cancellation of the slot due to factors outside the control of the Company such as Power Failures and Inclement Weather, the Company shall provide the customer with a credit note of the amount paid at the time of booking, to be used within 2 weeks (14 days) from the date of issuance of the Credit Note. The Credit Note shall be non-transferable and in no circumstances can be redeemed for cash.
               </li>
             </ul>
-
-            <h3 className="text-xl font-medium text-gray-900 mb-3">
-              Cancellations
-            </h3>
-            <ul className="list-disc pl-6 text-gray-700 space-y-2">
-              <li>Cancellations made 24+ hours in advance: Full refund</li>
-              <li>Cancellations made 2-24 hours in advance: 50% refund</li>
-              <li>
-                Cancellations made less than 2 hours in advance: No refund
-              </li>
-              <li>
-                Weather-related cancellations may be eligible for full refund
-              </li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Payment Terms
-            </h2>
-            <ul className="list-disc pl-6 text-gray-700 space-y-2">
-              <li>
-                All payments are processed securely through third-party
-                providers
-              </li>
-              <li>Court fees are set by individual court partners</li>
-              <li>Project Play App may charge a service fee for bookings</li>
-              <li>Refunds will be processed to the original payment method</li>
-              <li>You are responsible for any applicable taxes</li>
-            </ul>
-          </section>
-
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Prohibited Activities
-            </h2>
+            {/* <h3 className="text-xl font-medium text-gray-900 mb-3">Partial Play Refund Policy</h3> */}
             <p className="text-gray-700 leading-relaxed mb-4">
-              You may not use Project Play App to:
+              In case of reduction of the slot time due to factors outside the control of the Company such as Power Failures and Inclement Weather, the rate applicable will be as follows:
             </p>
+            <table className="table-auto w-full text-gray-700 mb-4">
+              <thead>
+                <tr className="border-b border-gray-300">
+                  <th className="text-left py-2">Time Played (in Mins)</th>
+                  <th className="text-left py-2">Amount Payable (in %)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr className="border-b border-gray-200">
+                  <td className="py-2">0-10</td>
+                  <td className="py-2">Nil</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="py-2">11-20</td>
+                  <td className="py-2">20% of Total Cost</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="py-2">21-30</td>
+                  <td className="py-2">30% of Total Cost</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="py-2">31-40</td>
+                  <td className="py-2">50% of Total Cost</td>
+                </tr>
+                <tr className="border-b border-gray-200">
+                  <td className="py-2">41-50</td>
+                  <td className="py-2">70% of Total Cost</td>
+                </tr>
+                <tr>
+                  <td className="py-2">51-59</td>
+                  <td className="py-2">90% of Total Cost</td>
+                </tr>
+              </tbody>
+            </table>
             <ul className="list-disc pl-6 text-gray-700 space-y-2">
-              <li>Violate any laws or regulations</li>
-              <li>Harass, abuse, or harm other users</li>
-              <li>Share false or misleading information</li>
-              <li>Attempt to gain unauthorized access to our systems</li>
-              <li>
-                Use the service for commercial purposes without permission
-              </li>
-              <li>Create multiple accounts to circumvent restrictions</li>
+              <li>Refunds for cancellations will be subject to the terms outlined in the cancellation policy.</li>
             </ul>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Limitation of Liability
+              4. Booking Terms
+            </h2>
+            <ul className="list-disc pl-6 text-gray-700 space-y-2">
+              <li>All bookings are subject to availability and must be made in advance.</li>
+              <li>Customers are required to strictly adhere to the agreed booking times and durations and the same may not be extended by the Company for any delays caused by the customer.</li>
+              <li>
+                The Company reserves the right to utilise up to 5 (five) minutes from every slot for turn-over, sanitisation and maintenance of the playing area and the same shall be utilised from the slot of the customer. The company undertakes to keep the said time to a minimum to enable maximum utilisation of the slot by the customer.
+              </li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              5. Code of Conduct
+            </h2>
+            <ul className="list-disc pl-6 text-gray-700 space-y-2">
+              <li>Customers are expected to conduct themselves in a respectful manner at all times.</li>
+              <li>Any behaviour deemed inappropriate or disruptive may result in the termination of the booking without refund.</li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              6. Use of Equipment
+            </h2>
+            <ul className="list-disc pl-6 text-gray-700 space-y-2">
+              <li>Customers are responsible for using the equipment provided in a safe and appropriate manner.</li>
+              <li>Any misuse of equipment may result in additional charges or the termination of the booking.</li>
+              <li>
+                Players are advised to wear appropriate footwear at all times while on the Playing Surface. Spikes, Heels or any other footwear deemed to be detrimental to the Playing Surface by the Management will not be allowed and the Management shall have the right to deny entry to the playing surface to any person deemed not to be in appropriate attire.
+              </li>
+            </ul>
+          </section>
+
+          <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              7. Rights of Admission
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              Project Play App provides the platform to connect players and book
-              courts. We are not responsible for the condition of courts, player
-              conduct during matches, injuries that may occur, or disputes
-              between players. Use of our service is at your own risk.
+              The management reserves the right to deny admission to any person it may deem fit for any reason whatsoever.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Account Termination
+              8. Indemnity
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              We reserve the right to suspend or terminate accounts that violate
-              these terms. You may also delete your account at any time through
-              the app settings.
+              By using our facilities, customers agree to indemnify and hold harmless TuckBox Ventures LLP from any claims, damages, or liabilities arising from their use of the courts.
             </p>
           </section>
 
           <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-              Changes to Terms
+              9. Jurisdiction
             </h2>
-            <p className="text-gray-700 leading-relaxed">
-              We may update these terms from time to time. Continued use of the
-              service after changes constitutes acceptance of the new terms.
-            </p>
+            <li className="text-gray-700 leading-relaxed">
+              These terms and conditions shall be governed by and construed in accordance with the laws of India, and any disputes shall be subject to the exclusive jurisdiction of the courts in Chandigarh. All disputes shall be resolved by way of Arbitration under the rules of the Arbitration and Conciliation Act, 1996. The proceedings shall be conducted in the English Language and the seat of Arbitration shall be at Chandigarh.
+            </li>
+            <li className="text-gray-700 leading-relaxed">
+              By booking our courts, you acknowledge that you have read, understood, and agree to abide by these terms and conditions.
+            </li>
           </section>
 
-          <section className="mb-8">
+          {/* <section className="mb-8">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+              Agreement
+            </h2> */}
+            
+          {/* </section> */}
+
+          {/* <section className="mb-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-4">
               Contact Information
             </h2>
             <p className="text-gray-700 leading-relaxed">
-              For questions about these Terms of Service, please contact us at:
-            </p>
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              For questions about these Terms and Conditions, please contact us at:
+            </p> */}
+            {/* <div className="mt-4 p-4 bg-gray-50 rounded-lg">
               <p className="text-gray-700">
                 Email:{" "}
                 <a
-                  href="mailto:legal@Project Play App.com"
+                  href="mailto:support@tuckboxventures.com"
                   className="text-blue-600 hover:text-blue-700"
                 >
-                  legal@Project Play App.com
+                  support@tuckboxventures.com
                 </a>
                 <br />
-                Address: 123 Sports Ave, San Francisco, CA 94102
+                Address: TuckBox Ventures LLP, Chandigarh, India
               </p>
-            </div>
-          </section>
+            </div> */}
+          {/* </section> */}
         </div>
       </div>
     </div>
