@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import { Menu, X, Download } from 'lucide-react';
+import image from '../Group 1261153199.svg'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,9 +19,9 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
+              <img src={image} alt="Logo" className="w-20 h-20" />
             </div>
-            <span className="text-xl font-bold text-gray-900">MatchAce</span>
+            <span className="text-xl font-bold text-gray-900">Project Play App</span>
           </div>
 
           {/* Desktop Navigation */}

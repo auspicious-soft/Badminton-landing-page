@@ -1,12 +1,12 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { Facebook, Twitter, Instagram } from "lucide-react";
+import image from "../Group 1261153199.svg"; // Adjust the path as necessary
 
 const Footer = () => {
   const socialLinks = [
     { icon: Facebook, href: "#", label: "Facebook" },
     { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Instagram, href: "#", label: "Instagram" }
+    { icon: Instagram, href: "#", label: "Instagram" },
   ];
 
   return (
@@ -16,24 +16,33 @@ const Footer = () => {
           {/* Brand */}
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
+              <img src={image} alt="Logo" className="w-20 h-20" />
             </div>
-            <span className="text-xl font-bold">MatchAce</span>
+            <span className="text-xl font-bold">Project Play App</span>
           </div>
-          
+
           {/* Links */}
           <div className="flex flex-wrap justify-center gap-6 text-sm">
-            <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors duration-200">
+            <Link
+              to="/privacy"
+              className="text-gray-400 hover:text-white transition-colors duration-200"
+            >
               Privacy Policy
             </Link>
-            <Link to="/terms" className="text-gray-400 hover:text-white transition-colors duration-200">
+            <Link
+              to="/terms"
+              className="text-gray-400 hover:text-white transition-colors duration-200"
+            >
               Terms of Service
             </Link>
-            <a href="mailto:hello@matchace.com" className="text-gray-400 hover:text-white transition-colors duration-200">
+            <a
+              href="mailto:hello@Project Play App.com"
+              className="text-gray-400 hover:text-white transition-colors duration-200"
+            >
               Contact
             </a>
           </div>
-          
+
           {/* Social Links */}
           <div className="flex items-center gap-3">
             {socialLinks.map((social, index) => (
@@ -48,10 +57,10 @@ const Footer = () => {
             ))}
           </div>
         </div>
-        
+
         <div className="text-center mt-8 pt-6 border-t border-gray-800">
           <p className="text-gray-400 text-sm">
-            © 2025 MatchAce. All rights reserved.
+            © 2025 Project Play App. All rights reserved.
           </p>
         </div>
       </div>

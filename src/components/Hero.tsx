@@ -1,5 +1,5 @@
-import React from 'react';
-import { Download, Calendar, ChevronRight } from 'lucide-react';
+import React from "react";
+import { Download, Calendar, ChevronRight } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -9,28 +9,28 @@ const Hero = () => {
           {/* Content */}
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-              Book Paddle & Pickleball Matches 
+              Book Paddle & Pickleball Matches
               <span className="text-blue-600"> Instantly</span>
             </h1>
-            
+
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Discover courts, schedule games, and play your favorite sports — all in one app. 
-              Connect with players and never miss a match again.
+              Discover courts, schedule games, and play your favorite sports —
+              all in one app. Connect with players and never miss a match again.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
               <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                 <Download className="w-5 h-5" />
                 Download App
               </button>
-              
+
               <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
                 <Calendar className="w-5 h-5" />
                 Book Now
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
-            
+
             <div className="flex items-center justify-center lg:justify-start gap-6 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -42,19 +42,19 @@ const Hero = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Hero Image */}
           <div className="relative">
             <div className="relative z-10 max-w-sm mx-auto">
               <div className="bg-white rounded-3xl shadow-2xl p-1">
-                <img 
-                  src="https://images.pexels.com/photos/4792282/pexels-photo-4792282.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop" 
-                  alt="MatchAce mobile app booking screen"
+                <img
+                  src="https://images.pexels.com/photos/4792282/pexels-photo-4792282.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop"
+                  alt="Project Play App mobile app booking screen"
                   className="w-full h-auto rounded-3xl"
                 />
               </div>
             </div>
-            
+
             {/* Floating elements */}
             <div className="absolute top-12 -left-6 bg-white rounded-xl shadow-lg p-4 animate-pulse">
               <div className="flex items-center gap-3">
@@ -67,8 +67,11 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-            
-            <div className="absolute bottom-24 -right-6 bg-white rounded-xl shadow-lg p-4 animate-pulse" style={{ animationDelay: '1s' }}>
+
+            <div
+              className="absolute bottom-24 -right-6 bg-white rounded-xl shadow-lg p-4 animate-pulse"
+              style={{ animationDelay: "1s" }}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
                   <span className="text-white text-xs font-bold">4</span>
