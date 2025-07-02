@@ -3,7 +3,10 @@ import { Download, Calendar, ChevronRight } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative bg-gradient-to-br from-blue-50 to-white min-h-screen flex items-center pt-16">
+    <section
+      id="features"
+      className="relative bg-gradient-to-br from-blue-50 to-white min-h-screen flex items-center pt-16"
+    >
       <div className="container mx-auto px-4 py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
