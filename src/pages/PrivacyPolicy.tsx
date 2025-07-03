@@ -1,8 +1,12 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { useEffect } from "react";
 
 const PrivacyPolicy = () => {
+
+   useEffect(()=>{
+      window.scrollTo(0, 0);
+    },[]);
   return (
     <div className="min-h-screen bg-white pt-20">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
