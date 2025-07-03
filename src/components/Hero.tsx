@@ -12,7 +12,7 @@ const Hero = () => {
           {/* Content */}
           <div className="text-center lg:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-              Book Paddle & Pickleball Matches
+              Book Padle & Pickleball Matches
               <span className="text-blue-600"> Instantly</span>
             </h1>
 

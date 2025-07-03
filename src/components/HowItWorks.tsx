@@ -7,7 +7,7 @@ const HowItWorks = () => {
       icon: Search,
       title: "Choose Your Game",
       description:
-        "Select from paddle or pickleball matches in your area. Filter by skill level and court type.",
+        "Select from Padle or pickleball matches in your area. Filter by skill level and court type.",
     },
     {
       icon: MapPin,

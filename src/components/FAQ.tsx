@@ -33,7 +33,7 @@ const FAQ = () => {
     {
       question: "What sports are available?",
       answer:
-        "Currently, Project Play App supports paddle tennis and pickleball. We're constantly expanding to include more racquet sports based on user demand in different regions.",
+        "Currently, Project Play App supports Padle tennis and pickleball. We're constantly expanding to include more racquet sports based on user demand in different regions.",
     },
   ];
 
