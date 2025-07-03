@@ -49,7 +49,7 @@ const Features = () => {
             Why Choose Project Play App?
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Everything you need to discover, book, and enjoy Padle and
+            Everything you need to discover, book, and enjoy Padel and
             pickleball matches with fellow enthusiasts.
           </p>
         </div>

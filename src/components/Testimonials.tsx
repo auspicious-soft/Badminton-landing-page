@@ -14,7 +14,7 @@ const Testimonials = () => {
     },
     {
       name: "Mike Chen",
-      role: "Padle Player",
+      role: "Padel Player",
       content:
         "The real-time availability feature is a game-changer. I can book courts on my lunch break and play immediately after work.",
       rating: 5,
