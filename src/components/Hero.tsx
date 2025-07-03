@@ -59,7 +59,7 @@ const Hero = () => {
             </div>
 
             {/* Floating elements */}
-            <div className="absolute top-12 -left-6 bg-white rounded-xl shadow-lg p-4 animate-pulse">
+            {/* <div className="absolute top-12 -left-6 bg-white rounded-xl shadow-lg p-4 animate-pulse">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                   <Calendar className="w-4 h-4 text-white" />
@@ -69,9 +69,9 @@ const Hero = () => {
                   <p className="text-xs text-gray-500">3:00 PM Today</p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div
+            {/* <div
               className="absolute bottom-24 -right-6 bg-white rounded-xl shadow-lg p-4 animate-pulse"
               style={{ animationDelay: "1s" }}
             >
@@ -84,7 +84,7 @@ const Hero = () => {
                   <p className="text-xs text-gray-500">Pickleball Match</p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
