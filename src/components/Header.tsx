@@ -15,7 +15,7 @@ const Header = () => {
   ];
 
   // Helper for nav link click
-  const handleNavClick = (e, href) => {
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (location.pathname !== "/") {
       e.preventDefault();
       navigate("/" + href);
