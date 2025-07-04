@@ -1,20 +1,19 @@
-
+import firstImage from "../../public/pexels-roger-aribau-gisbert-19420784-8485104.jpg";
+import secondImage from "../../public/high-angle-palettes-balls.jpg";
+import thirdImage from "../../public/sporty-women-playing-paddle-tennis.jpg"
 const AppShowcase = () => {
   const screenshots = [
     {
       title: "Browse Courts",
-      image:
-        "/public/pexels-roger-aribau-gisbert-19420784-8485104.jpg",
+      image: firstImage,
     },
     {
       title: "Book Matches",
-      image:
-        "/public/high-angle-palettes-balls.jpg",
+      image: secondImage,
     },
     {
       title: "Track Games",
-      image:
-        "/public/sporty-women-playing-paddle-tennis.jpg",
+      image: thirdImage,
     },
   ];
  
