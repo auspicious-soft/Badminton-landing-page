@@ -1,5 +1,5 @@
-import React from "react";
 import { Download, Calendar, ChevronRight } from "lucide-react";
+import mainImage from "../../src/pexels-atousa7495-32234837.jpg"
 
 const Hero = () => {
   return (
@@ -51,7 +51,9 @@ const Hero = () => {
             <div className="relative z-10 max-w-sm mx-auto">
               <div className="bg-white rounded-3xl shadow-2xl p-1">
                 <img
-                  src="https://images.pexels.com/photos/4792282/pexels-photo-4792282.jpeg?auto=compress&cs=tinysrgb&w=400&h=800&fit=crop"
+                  src={mainImage}
+                  width="100%"
+                  height="auto"
                   alt="Project Play App mobile app booking screen"
                   className="w-full h-auto rounded-3xl"
                 />

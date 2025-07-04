@@ -1,21 +1,20 @@
-import React from "react";
 
 const AppShowcase = () => {
   const screenshots = [
     {
       title: "Browse Courts",
       image:
-        "https://images.pexels.com/photos/4792282/pexels-photo-4792282.jpeg?auto=compress&cs=tinysrgb&w=300&h=600&fit=crop",
+        "../../src/pexels-roger-aribau-gisbert-19420784-8485104.jpg",
     },
     {
       title: "Book Matches",
       image:
-        "https://images.pexels.com/photos/8088495/pexels-photo-8088495.jpeg?auto=compress&cs=tinysrgb&w=300&h=600&fit=crop",
+        "../../src/high-angle-palettes-balls.jpg",
     },
     {
       title: "Track Games",
       image:
-        "https://images.pexels.com/photos/5615665/pexels-photo-5615665.jpeg?auto=compress&cs=tinysrgb&w=300&h=600&fit=crop",
+        "../../src/sporty-women-playing-paddle-tennis.jpg",
     },
   ];
 
