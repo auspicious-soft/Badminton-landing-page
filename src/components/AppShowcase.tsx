@@ -17,7 +17,7 @@ const AppShowcase = () => {
         "../../src/sporty-women-playing-paddle-tennis.jpg",
     },
   ];
-
+ 
   return (
     <section className="py-20 bg-white overflow-hidden">
       <div className="container mx-auto px-4">
