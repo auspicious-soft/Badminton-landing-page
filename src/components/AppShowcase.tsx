@@ -4,17 +4,17 @@ const AppShowcase = () => {
     {
       title: "Browse Courts",
       image:
-        "../../src/pexels-roger-aribau-gisbert-19420784-8485104.jpg",
+        "/public/pexels-roger-aribau-gisbert-19420784-8485104.jpg",
     },
     {
       title: "Book Matches",
       image:
-        "../../src/high-angle-palettes-balls.jpg",
+        "/public/high-angle-palettes-balls.jpg",
     },
     {
       title: "Track Games",
       image:
-        "../../src/sporty-women-playing-paddle-tennis.jpg",
+        "/public/sporty-women-playing-paddle-tennis.jpg",
     },
   ];
  
