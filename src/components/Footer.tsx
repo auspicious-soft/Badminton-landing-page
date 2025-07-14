@@ -85,6 +85,9 @@ const Footer = () => {
           <p className="text-gray-400 text-sm">
             © 2025 Project Play App. All rights reserved.
           </p>
+          <p className="text-gray-400 text-sm">
+            A unit of tuckbox venture
+          </p>
         </div>
       </div>
     </footer>
