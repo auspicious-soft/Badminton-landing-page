@@ -4,7 +4,7 @@ import coinImg from "../../assets/price.png";
 import atm from "../../assets/atm-card.png";
 import paddleImg from "../../assets/paddelimage.png";
 import clock from "../../assets/watch.jpg";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Plus, X } from "lucide-react";
 import { postApi } from "../../utils/api";
 import { loadRazorpayScript, URLS } from "../../utils/urls";
 import { Player } from "../../utils/types";
@@ -282,8 +282,13 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
 
   return (
     <>
-    {loading && <Loader fullScreen />}
-     <div className="p-4 sm:p-6 bg-white rounded-[20px] flex flex-col justify-start items-start gap-4 w-full max-w-[90vw] sm:max-w-[656px] max-h-[90vh] overflow-y-auto hide-scrollbar">
+   <div className="relative p-4 sm:p-6 bg-white rounded-[20px] flex flex-col justify-start items-start gap-4 w-full max-w-[90vw] sm:max-w-[656px] max-h-[90vh] overflow-y-auto hide-scrollbar">
+  <button
+    className="absolute top-2 right-2 text-red-600 rounded-full w-6 h-6 sm:w-8 sm:h-8 flex justify-center items-center z-10"
+    onClick={onClose}
+  >
+    <X />
+  </button>
   {/* Image Section */}
   <img
     className="w-full h-40 sm:h-60 rounded-[12px] object-cover"

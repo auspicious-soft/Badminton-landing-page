@@ -43,7 +43,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           animate={{ scale: 1, y: 0, opacity: 1 }}
           exit={{ scale: 0.8, y: 50, opacity: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide"
+          className="bg-white rounded-2xl shadow-2xl w-[90vw] max-w-md sm:max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide"
         >
           <style>
             {`
@@ -56,26 +56,26 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
               }
             `}
           </style>
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 flex justify-between items-center ">
-            <h3 className="text-white text-xl font-semibold font-['Raleway'] ">
+          <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 p-3 sm:p-4 flex justify-between items-center">
+            <h3 className="text-white text-lg sm:text-xl font-semibold font-['Raleway']">
               Transaction Details
             </h3>
             <button
               onClick={onClose}
-              className="text-white hover:text-gray-200 transition"
+              className="absolute top-1 right-1 sm:top-2 sm:right-2 text-white hover:text-gray-200 transition z-10 w-5 h-5 sm:w-6 sm:h-6 flex justify-center items-center"
             >
-              <X className="w-6 h-6" />
+              <X className="w-4 h-4 sm:w-6 sm:h-6" />
             </button>
           </div>
-          <div className="p-6 bg-zinc-100">
-            <div className="grid grid-cols-1 gap-4 text-gray-800 font-['Raleway']">
-              <div className="flex justify-between border-b pb-2">
+          <div className="p-4 sm:p-6 bg-zinc-100">
+            <div className="grid grid-cols-1 gap-3 sm:gap-4 text-gray-800 font-['Raleway'] text-sm sm:text-base">
+              <div className="flex flex-col sm:flex-row justify-between border-b pb-2">
                 <span className="font-medium">Transaction ID:</span>
-                <span>{transaction._id}</span>
+                <span className="break-all">{transaction._id}</span>
               </div>
-              <div className="flex justify-between border-b pb-2">
+              <div className="flex flex-col sm:flex-row justify-between border-b pb-2">
                 <span className="font-medium">Description:</span>
-                <span>{transaction.text}</span>
+                <span className="break-all">{transaction.text}</span>
               </div>
               <div className="flex justify-between border-b pb-2">
                 <span className="font-medium">Amount:</span>
@@ -89,9 +89,9 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
                 <span className="font-medium">Payment Method:</span>
                 <span className="capitalize">{transaction.paymentMethod}</span>
               </div>
-              <div className="flex justify-between border-b pb-2">
+              <div className="flex flex-col sm:flex-row justify-between border-b pb-2">
                 <span className="font-medium">Time Slots:</span>
-                <span>
+                <span className="break-all">
                   {Array.isArray(transaction.notes) &&
                   transaction.notes.length > 0
                     ? transaction.notes.join(", ")
@@ -104,31 +104,25 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
               </div>
               <div className="flex justify-between border-b pb-2">
                 <span className="font-medium">Date:</span>
-                <span>{new Date(transaction.createdAt).toLocaleString()}</span>
+                <span className="break-all">{new Date(transaction.createdAt).toLocaleString()}</span>
               </div>
               <div className="flex justify-between border-b pb-2">
                 <span className="font-medium">Transaction Type:</span>
-                <span className="capitalize">
-                  {transaction.transactionType}
-                </span>
+                <span className="capitalize">{transaction.transactionType}</span>
               </div>
               <div className="mt-2">
                 <span className="font-medium">Payment Breakdown:</span>
-                <ul className="mt-2 ml-4 list-disc text-sm">
-                  <li>
-                    Total Amount: ${transaction.paymentBreakdown.totalAmount}
-                  </li>
+                <ul className="mt-2 ml-4 list-disc text-xs sm:text-sm">
+                  <li>Total Amount: ${transaction.paymentBreakdown.totalAmount}</li>
                   <li>Money Paid: ${transaction.paymentBreakdown.moneyPaid}</li>
-                  <li>
-                    Playcoins Used: {transaction.paymentBreakdown.playcoinsUsed}
-                  </li>
+                  <li>Playcoins Used: {transaction.paymentBreakdown.playcoinsUsed}</li>
                 </ul>
               </div>
             </div>
-            <div className="mt-6 flex justify-end">
+            <div className="mt-4 sm:mt-6 flex justify-end">
               <button
                 onClick={onClose}
-                className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition font-['Raleway'] font-medium"
+                className="bg-blue-500 text-white px-4 sm:px-6 py-2 rounded-lg hover:bg-blue-600 transition font-['Raleway'] font-medium text-sm sm:text-base"
               >
                 Close
               </button>

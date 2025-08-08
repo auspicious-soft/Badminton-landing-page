@@ -417,7 +417,7 @@ function SingleVenue() {
   }, [selectedDateForBooking]);
 
   const handleBookAndPay = async () => {
-    if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
+    if(!selectedDateForBooking || !selectedCourtId ||  !selectedTimes || selectedTimes.length === 0){
   errorToast("Select Date, Court and available Time slots to Book a match")
   return
 }
@@ -1006,12 +1006,12 @@ function SingleVenue() {
                   }}
                   VenueId={VenueId}
                 />
-                <button
-                  className="absolute top-1 right-1 text-red-600 rounded-full w-8 h-8 flex justify-center items-center"
-                  onClick={() => setShowPaymentModal(false)}
-                >
-                  <X />
-                </button>
+               {/* <button
+          className="absolute top-2 right-2 text-red-600 rounded-full w-6 h-6 sm:w-8 sm:h-8 flex justify-center items-center z-10"
+          onClick={() => setShowPaymentModal(false)}
+        >
+          <X />
+        </button> */}
               </motion.div>
             </motion.div>
           )}
