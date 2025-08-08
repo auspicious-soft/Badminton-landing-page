@@ -21,7 +21,7 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 const SuccessToast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => {
   useEffect(() => {
     if (isVisible) {
-      const timer = setTimeout(onClose, 5000);
+      const timer = setTimeout(onClose, 3000);
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);
@@ -364,7 +364,7 @@ const SuccessToast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => 
                 className="toast-progress"
                 initial={{ width: "100%" }}
                 animate={{ width: "0%" }}
-                transition={{ duration: 5, ease: "linear" }}
+                transition={{ duration: 3, ease: "linear" }}
               />
             </motion.div>
           </div>
@@ -378,7 +378,7 @@ const SuccessToast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => 
 const ErrorToast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => {
   useEffect(() => {
     if (isVisible) {
-      const timer = setTimeout(onClose, 5000);
+      const timer = setTimeout(onClose, 3000);
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);
@@ -576,7 +576,7 @@ const ErrorToast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => {
                 className="toast-progress"
                 initial={{ width: "100%" }}
                 animate={{ width: "0%" }}
-                transition={{ duration: 5, ease: "linear" }}
+                transition={{ duration: 3, ease: "linear" }}
               />
             </motion.div>
           </div>

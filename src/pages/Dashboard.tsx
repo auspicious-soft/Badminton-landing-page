@@ -14,11 +14,12 @@ import Loader from "../components/common/Loader";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [loading, setLoading] = useState(false)
-  const {successToast, errorToast} = useToast();
+  const [loading, setLoading] = useState(false);
+  const { successToast, errorToast } = useToast();
+
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      setLoading(true)
+      setLoading(true);
       try {
         const res = await axios.get(
           "https://www.googleapis.com/oauth2/v3/userinfo",
@@ -28,6 +29,7 @@ const Dashboard = () => {
             },
           }
         );
+
         if (!navigator.geolocation) {
           errorToast("Geolocation is not supported by your browser");
           return;
@@ -37,8 +39,6 @@ const Dashboard = () => {
           async (position) => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-
-            console.log("User coordinates:", lat, lng);
 
             const payload = {
               authType: "Google",
@@ -58,66 +58,104 @@ const Dashboard = () => {
               successToast("Login Successfully.");
               navigate("/matches");
             } else {
-             successToast("Error While Login, Please try Again");
+              errorToast("Error While Login, Please try Again");
             }
           },
-          (error:any) => {
-            errorToast("Geolocation error");
+          () => {
             errorToast("Please allow location access to continue.");
           }
         );
-      } catch (err:any) {
-        errorToast(err?.response.data.message || "Google login error" );
-        errorToast("Something went wrong with Google login");
+      } catch (err: any) {
+        errorToast(err?.response?.data?.message || "Google login error");
+      } finally {
+        setLoading(false);
       }
-       finally{
-     setLoading(false) 
-    }
     },
-     
     onError: () => {
       errorToast("Login Failed");
     },
-  
   });
+
   return (
-   <>
-   {loading && <Loader fullScreen/>}
+    <>
+      {loading && <Loader fullScreen />}
     <div
-      className="w-screen h-screen bg-cover bg-center bg-no-repeat overflow-hidden relative "
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <div className="absolute inset-0  flex justify-end items-center pr-40 z-10">
-        <div className="w-96 p-14 bg-white rounded-[20px] flex flex-col justify-start items-center gap-5">
-          <div className="flex flex-col justify-start items-center gap-12 ">
-            <img
-              src={logoImage}
-              alt="Logo"
-              className="w-50 h-50 object-contain"
-            />
-            <div className="text-center text-black text-3xl font-semibold font-['Raleway']">
-              Welcome Back
-            </div>
-          </div>
-          <div className="w-full h-14 px-3.5 py-7 bg-white rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 flex justify-center items-center gap-2.5 overflow-hidden cursor-pointer"
-          onClick={() => loginWithGoogle()}
-          >
-            <div className="w-6 h-6 relative overflow-hidden">
+  className="w-screen bg-fix overflow-hidden relative bg-[#e9f5ff]"
+  style={{ backgroundImage: `url(${backgroundImage})` }}
+>
+        <div className="absolute inset-0 flex justify-end items-center pr-40 z-10 dashboard-container">
+          <div className="w-96 p-14 bg-white rounded-[20px] flex flex-col justify-start items-center gap-5 login-box">
+            <div className="flex flex-col justify-start items-center gap-12">
               <img
-                src={googleIcon}
-                alt="Google Icon"
-                className="w-6 h-6 object-contain"
+                src={logoImage}
+                alt="Logo"
+                className="w-50 h-50 object-contain object-top logo-img"
               />
+              <div className="text-center text-black text-3xl font-semibold font-['Raleway']">
+                Welcome Back
+              </div>
             </div>
-            <div 
-            className="text-black/60 text-base font-medium font-['Raleway']">
-              Continue with Google
+            <div
+              className="w-full h-14 px-3.5 py-7 bg-white rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 flex justify-center items-center gap-2.5 overflow-hidden cursor-pointer"
+              onClick={() => loginWithGoogle()}
+            >
+              <div className="w-6 h-6 relative overflow-hidden">
+                <img
+                  src={googleIcon}
+                  alt="Google Icon"
+                  className="w-6 h-6 object-contain"
+                />
+              </div>
+              <div className="text-black/60 text-base font-medium font-['Raleway']">
+                Continue with Google
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-   </>
+
+      {/* Responsive styles */}
+    <style>
+  {`
+    .bg-fix {
+      min-height: 100vh; 
+      background-size: cover; /* Always cover */
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-container {
+        justify-content: center !important;
+        padding-right: 0 !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .login-box {
+        padding: 1.5rem !important;
+        gap: 1.5rem !important;
+      }
+      .logo-img {
+        object-fit: contain !important;
+      }
+      .login-box div.text-3xl {
+        font-size: 1.5rem !important;
+      }
+    }
+
+    /* Below 350px — give breathing space on sides */
+    @media (max-width: 350px) {
+      .login-box {
+        margin: 0 10px !important;
+        width: auto !important;
+      }
+    }
+  `}
+</style>
+
+
+    </>
   );
 };
 
