@@ -29,7 +29,23 @@ function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        
+    
+
+        <Route element={<ProtectedRoute />}>
+        <Route
+            path="/matches"
+            element={
+              <>
+                <Navbar />
+                <div className="pt">
+                  <Matches />
+                </div>
+              </>
+            }
+          />
+        </Route>
+
+            
          <Route
             path="/venues"
             element={
@@ -65,20 +81,6 @@ function App() {
               </>
             }
           />
-
-        <Route element={<ProtectedRoute />}>
-        <Route
-            path="/matches"
-            element={
-              <>
-                <Navbar />
-                <div className="pt">
-                  <Matches />
-                </div>
-              </>
-            }
-          />
-        </Route>
       </Routes>
 
       {shouldShowLayout && <Footer />}
