@@ -9,7 +9,7 @@ import { ToastProvider } from './utils/ToastContext.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-     <GoogleOAuthProvider clientId="47689209652-r609mqgsp5a22pi32doct1l1udd5s2en.apps.googleusercontent.com">
+     <GoogleOAuthProvider clientId="48002840638-sg7si4r4chl68s3eg3r3uuh1lffm6oen.apps.googleusercontent.com">
     <BrowserRouter>
      <AuthProvider>
       <ToastProvider>
