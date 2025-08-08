@@ -43,10 +43,8 @@ function App() {
               </>
             }
           />
-        </Route>
 
-            
-         <Route
+               <Route 
             path="/venues"
             element={
               <>
@@ -81,6 +79,10 @@ function App() {
               </>
             }
           />
+        </Route>
+
+            
+    
       </Routes>
 
       {shouldShowLayout && <Footer />}

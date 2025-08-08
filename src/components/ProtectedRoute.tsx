@@ -1,8 +1,8 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 const ProtectedRoute = () => {
   const token = localStorage.getItem("token");
-
+  const navigate = useNavigate()
   if (!token) {
     return <Navigate to="/" replace />;
   }
