@@ -47,8 +47,8 @@ const Navbar = () => {
   const notificationButtonRef = useRef<HTMLDivElement>(null);
 
   const navItems = [
-    { name: "Open Matches", path: "/matches" },
     { name: "Venues", path: "/venues" },
+    { name: "Open Matches", path: "/matches" },
     { name: "Account", path: "/account" },
   ];
 

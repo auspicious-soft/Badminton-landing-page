@@ -8,7 +8,7 @@ const Hero = () => {
  const token = localStorage.getItem("token")
   const handleNavigation = () => {
     if(token){
-      navigate("/matches");
+      navigate("/venues");
     }
     else{
     navigate("/dashboard");

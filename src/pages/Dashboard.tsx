@@ -56,7 +56,7 @@ const Dashboard = () => {
               const responseData = response.data.data;
               login(responseData);
               successToast("Login Successfully.");
-              navigate("/matches");
+              navigate("/venues");
             } else {
               errorToast("Error While Login, Please try Again");
             }
