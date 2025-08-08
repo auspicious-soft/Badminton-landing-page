@@ -1,0 +1,500 @@
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import coinImg from "../../assets/price.png";
+import atm from "../../assets/atm-card.png";
+import paddleImg from "../../assets/paddelimage.png";
+import clock from "../../assets/watch.jpg";
+import { ChevronDown, Plus } from "lucide-react";
+import { postApi } from "../../utils/api";
+import { loadRazorpayScript, URLS } from "../../utils/urls";
+import { Player } from "../../utils/types";
+import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
+import { useToast } from "../../utils/ToastContext";
+
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY;
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+interface EquipmentItem {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface EquipmentCounts {
+  racket1: number;
+  ball: number;
+}
+
+interface PaymentOption {
+  id: string;
+  name: string;
+  img?: string;
+  img1?: string;
+  img2?: string;
+}
+
+interface PaymentCardProps {
+  gameType?: string;
+  address?: string;
+  imageUrl?: string;
+  playCoins?: number;
+  bookingAmount?: number;
+  equipmentCounts: EquipmentCounts;
+  setEquipmentCounts: React.Dispatch<React.SetStateAction<EquipmentCounts>>;
+  players: Player[];
+  userData: any; // Replace with proper type if available
+  selectedDateForBooking: Date | null;
+  selectedCourtId: string | null;
+  selectedTimes: string[];
+  selectedGameType: string;
+  selectedMatchType: string;
+  skillLevel: number;
+  onClose: () => void;
+  VenueId?: string;
+}
+
+const PaymentCard: React.FC<PaymentCardProps> = ({
+  gameType,
+  address,
+  imageUrl,
+  bookingAmount,
+  equipmentCounts,
+  setEquipmentCounts,
+  players,
+  userData,
+  selectedDateForBooking,
+  selectedCourtId,
+  selectedTimes,
+  selectedGameType,
+  selectedMatchType,
+  skillLevel,
+  onClose,
+  VenueId,
+}) => {
+  const [isEquipmentOpen, setIsEquipmentOpen] = useState<boolean>(false);
+  const [isCancellationOpen, setIsCancellationOpen] = useState<boolean>(false);
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
+  const [selectedEquipment, setSelectedEquipment] = useState<{
+    [key: string]: boolean;
+  }>({});
+  const [loading, setLoading] = useState(false);
+  const [finalAmount, setFinalAmount] = useState(bookingAmount);
+    const {successToast, errorToast} = useToast();
+  const navigate = useNavigate();
+
+
+  const handleToggleEquipment = () => setIsEquipmentOpen(!isEquipmentOpen);
+  const handleToggleCancellation = () =>
+    setIsCancellationOpen(!isCancellationOpen);
+
+  const handleCountChange = (item: string, delta: number) => {
+    setEquipmentCounts((prev) => {
+      const newCount = Math.max(0, prev[item as keyof EquipmentCounts] + delta);
+      return {
+        ...prev,
+        [item]: newCount,
+      };
+    });
+  };
+
+  const equipmentItems: EquipmentItem[] = [
+    { id: "racket1", name: "Racket", description: "Professional padel racket" },
+    { id: "ball", name: "Ball", description: "Padel ball set" },
+  ];
+
+  const paymentOptions: PaymentOption[] = [
+    { id: "upiCard", name: "UPI / Card", img: atm },
+  ];
+
+  const handleCheckboxChange = (id: string) => {
+    setSelectedEquipment((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+
+    if (selectedEquipment[id]) {
+      setEquipmentCounts((prev) => ({ ...prev, [id]: 0 }));
+    }
+  };
+
+
+  const createBooking = async () => {
+    setLoading(true);
+if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
+  return
+}
+    const team1 = players
+      .slice(0, 2)
+      .map((player, index) => {
+        const playerType = `player${index + 1}`;
+        if (index === 0) {
+          return {
+            playerId: userData?._id,
+            playerType,
+            rackets: equipmentCounts.racket1,
+            balls: equipmentCounts.ball,
+          };
+        } else if (player.type === "user" || player.type === "guest") {
+          return {
+            playerId: player.id,
+            playerType,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    const team2 = players
+      .slice(2, 4)
+      .map((player, index) => {
+        const playerType = `player${index + 3}`;
+        if (player.type === "user" || player.type === "guest") {
+          return {
+            playerId: player.id,
+            playerType,
+          };
+        }
+        return null;
+      })
+      .filter(Boolean);
+
+    try {
+      const response = await postApi(`${URLS.createBooking}`, {
+        bookingDate:
+          selectedDateForBooking &&
+          new Date(
+            Date.UTC(
+              selectedDateForBooking.getFullYear(),
+              selectedDateForBooking.getMonth(),
+              selectedDateForBooking.getDate()
+            )
+          ).toISOString(),
+        venueId: VenueId,
+        courtId: selectedCourtId,
+        bookingSlots: selectedTimes,
+        askToJoin: selectedGameType === "Public",
+        isCompetitive: selectedMatchType === "Friendly" ? false : true,
+        skillRequired: skillLevel,
+        team1,
+        team2,
+        bookingType: "Complete",
+      });
+
+      if (response.status === 200) {
+      }
+      return response; 
+    } catch (error) {
+      return null; // ✅ Return null so you can handle failure gracefully
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  
+
+  const handlePayNow = async () => {
+    setLoading(true);
+  try {
+    // Step 1: Create the booking
+    const bookingResponse = await createBooking();
+    if (
+      bookingResponse?.data?.data?.transaction?._id &&
+      bookingResponse?.data?.data?.transaction?.amount
+    ) {
+      const transactionId = bookingResponse?.data?.data?.transaction._id;
+      // Step 2: Create Razorpay Order
+      const paymentResponse = await postApi(`${URLS.bookingPayment}`, {
+        transactionId,
+        method: "razorpay",
+      });
+
+      console.log(paymentResponse, "response");
+
+      if (
+        paymentResponse.status === 200 &&
+        paymentResponse?.data?.data?.razorpayOrderId
+      ) {
+        const { razorpayOrderId, currency, receipt } =
+          paymentResponse?.data?.data;
+
+        // Step 3: Load Razorpay script
+        const loaded = await loadRazorpayScript();
+        if (!loaded) {
+          errorToast("Razorpay SDK failed to load. Are you online?");
+          return;
+        }
+
+        const options = {
+          key: RAZORPAY_KEY_ID,
+          amount: finalAmount, // Razorpay expects amount in paise
+          currency,
+          name: "Paddle Play",
+          description: "Court Booking Payment",
+          order_id: razorpayOrderId,
+          handler: async function (response: any) {
+            try {
+              // Verify payment or handle post-payment logic if needed
+              successToast("Payment successful. Your booking was created successfully!");
+              onClose?.();
+              setTimeout(() => {
+                navigate("/venues");
+              }, 1000);
+            } catch (error) {
+              errorToast("Payment verification failed. Please contact support.");
+            }
+          },
+          onerror: function (error: any) {
+            // Handle payment failure
+            errorToast("Payment failed. Please try again or contact support.");
+            console.error("Razorpay payment error:", error);
+          },
+          prefill: {
+            name: userData?.name || "",
+            email: userData?.email || "",
+            contact: userData?.phone || "",
+          },
+          theme: {
+            color: "#3399cc",
+          },
+        };
+
+        const razorpay = new window.Razorpay(options);
+        razorpay.open();
+      } else {
+        errorToast("Failed to create Razorpay order. Please try again.");
+      }
+    } else {
+      errorToast("Failed to create booking. Please try again.");
+    }
+  } catch (error) {
+    console.error("Payment initiation failed", error);
+    errorToast("An error occurred during payment initiation. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+  return (
+    <>
+    {loading && <Loader fullScreen />}
+     <div className="p-4 sm:p-6 bg-white rounded-[20px] flex flex-col justify-start items-start gap-4 w-full max-w-[90vw] sm:max-w-[656px] max-h-[90vh] overflow-y-auto hide-scrollbar">
+  {/* Image Section */}
+  <img
+    className="w-full h-40 sm:h-60 rounded-[12px] object-cover"
+    src={imageUrl}
+    alt="Game"
+  />
+
+  {/* Game Type and Address */}
+  <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="flex flex-col gap-3">
+      <div className="text-gray-900 text-xl sm:text-2xl font-semibold font-['Raleway']">
+        {gameType} Game
+      </div>
+      <div className="text-gray-900 text-base sm:text-lg font-semibold font-['Raleway'] leading-tight">
+        {address}
+      </div>
+    </div>
+    <img src={clock} className="w-10 h-10 sm:w-12 sm:h-12" alt="Clock" />
+  </div>
+
+  {/* Equipment Section */}
+  <div className="w-full p-4 sm:p-5 bg-zinc-100 rounded-lg flex flex-col justify-start items-start gap-4">
+    <div className="w-full flex justify-between items-start">
+      <div className="flex justify-start items-center gap-3">
+        <div className="text-gray-900 text-sm sm:text-base font-semibold font-['Raleway'] leading-none">
+          Add Equipment
+        </div>
+        <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway'] leading-none">
+          ⓘ
+        </div>
+      </div>
+      <motion.div
+        className="w-9 h-5 rounded-lg outline outline-1 outline-neutral-200 relative cursor-pointer bg-slate-50"
+        onClick={handleToggleEquipment}
+      >
+        <motion.div
+          className="w-5 h-5 bg-dark-blue rounded-lg"
+          animate={{ x: isEquipmentOpen ? 16 : 0 }}
+          transition={{ duration: 0.2 }}
+        />
+      </motion.div>
+    </div>
+    <div className="w-full h-0 outline outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
+    <AnimatePresence>
+      {isEquipmentOpen && (
+        <motion.div
+          className="w-full flex flex-col justify-start items-start gap-4 max-h-[300px] overflow-y-auto hide-scrollbar"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {equipmentItems.map((item) => {
+            const isSelected = selectedEquipment[item.id];
+            const count = equipmentCounts[item.id as keyof EquipmentCounts];
+
+            return (
+              <div
+                key={item.id}
+                className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+              >
+                <div className="flex justify-start items-start gap-3">
+                  <div
+                    className={`w-4 h-4 rounded-[3px] border border-gray-500 flex items-center justify-center cursor-pointer ${isSelected ? "bg-blue-600" : "bg-slate-200"}`}
+                    onClick={() => handleCheckboxChange(item.id)}
+                  >
+                    {isSelected && (
+                      <div className="w-2 h-2 bg-white rounded-sm" />
+                    )}
+                  </div>
+                  <div className="flex flex-col justify-center items-start gap-1.5">
+                    <div className="text-gray-600 text-sm sm:text-base font-medium font-['Raleway']">
+                      {item.name}
+                    </div>
+                    <div className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway']">
+                      {item.description}
+                    </div>
+                  </div>
+                </div>
+                {isSelected && (
+                  <div className="flex border-[0.5px] border-zinc-300">
+                    {count === 0 ? (
+                      <div
+                        className="w-7 h-7 bg-slate-200 flex justify-center items-center cursor-pointer"
+                        onClick={() => handleCountChange(item.id, 1)}
+                      >
+                        <span className="text-base">+</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div
+                          className="w-7 h-7 bg-slate-200 border-[0.5px] border-r-zinc-300 flex justify-center items-center cursor-pointer"
+                          onClick={() => handleCountChange(item.id, -1)}
+                        >
+                          <span className="text-base">-</span>
+                        </div>
+                        <div className="w-7 h-7 bg-slate-200 text-gray-500 text-sm font-medium font-['Raleway'] flex justify-center items-center">
+                          <span>{count}</span>
+                        </div>
+                        <div
+                          className="w-7 h-7 bg-slate-200 border-[0.5px] border-l-zinc-300 flex justify-center items-center cursor-pointer"
+                          onClick={() => handleCountChange(item.id, 1)}
+                        >
+                          <span className="text-base">+</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+
+  {/* Payment Methods Section */}
+  <div className="w-full p-4 sm:p-5 bg-zinc-100 rounded-lg flex flex-col justify-start items-start gap-4">
+    <div className="w-full flex justify-between items-center">
+      <div className="flex-1 flex justify-between items-center">
+        <div className="text-gray-900 text-sm sm:text-base font-semibold font-['Raleway'] leading-none">
+          Select Payment Methods
+        </div>
+        <div className="text-neutral-800/0 text-sm sm:text-base font-semibold font-['Raleway'] leading-none">
+          ⓘ
+        </div>
+      </div>
+    </div>
+    <div className="w-full h-0 outline outline-1 outline-offset-[-0.50px] outline-neutral-200"></div>
+    <div className="w-full flex flex-col justify-start items-start gap-5">
+      {paymentOptions.map((option) => (
+        <div
+          key={option.id}
+          className="w-full flex justify-between items-center gap-4"
+        >
+          <div className="flex justify-start items-center gap-5">
+            <motion.div
+              className="w-5 h-5 bg-zinc-300 rounded-full relative cursor-pointer flex justify-center items-center"
+              onClick={() => setSelectedPayment(option.id)}
+            >
+              {selectedPayment === option.id && (
+                <motion.div
+                  className="w-3 h-3 bg-blue-600 rounded-full absolute"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
+            </motion.div>
+            <div className="text-gray-600 text-sm sm:text-base font-medium font-['Raleway'] leading-none">
+              {option.name}
+            </div>
+          </div>
+          <img className="w-9 h-6" src={option.img} alt="Payment" />
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Cancellation Policy Section */}
+  <div className="w-full px-3 py-5 bg-zinc-100 rounded-lg flex flex-col justify-start items-start gap-4">
+    <div
+      className="w-full flex justify-between items-start cursor-pointer"
+      onClick={handleToggleCancellation}
+    >
+      <div className="flex-1 flex justify-between items-center">
+        <div className="text-gray-900 text-sm sm:text-base font-semibold font-['Raleway'] leading-none">
+          Cancellation Policy
+        </div>
+        <motion.div
+          className="w-5 h-5 relative overflow-hidden"
+          animate={{ rotate: isCancellationOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ChevronDown className="w-6 h-6 absolute outline-black" />
+        </motion.div>
+      </div>
+    </div>
+    <AnimatePresence>
+      {isCancellationOpen && (
+        <motion.div
+          className="w-full text-gray-600 text-sm sm:text-base font-medium font-['Raleway'] max-h-[200px] overflow-y-auto hide-scrollbar"
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          You may cancel your booking up to 24 hours before the scheduled
+          time for a full refund.
+        </motion.div>
+      )}
+    </AnimatePresence>
+  </div>
+
+  {/* Pay Button */}
+  <div className="w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-blue-600 rounded-lg flex justify-center items-center gap-3">
+    <button
+  className={`text-white text-sm sm:text-base font-medium font-['Raleway'] ${
+    !selectedPayment ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
+  }`}
+  onClick={handlePayNow}
+  disabled={loading || !selectedPayment}
+>
+      {loading ? "Processing..." : `Pay ₹${bookingAmount}`}
+    </button>
+  </div>
+</div>
+    </>
+
+  );
+};
+
+export default PaymentCard;

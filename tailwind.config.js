@@ -2,7 +2,19 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+   extend: {
+         colors: {
+           'dark-blue': '#10375c',
+           'secondary-blue':'#176DBF',
+           'Primary-Grey':'#F2F2F4',
+           'Secondary-Font':'#7F7F8A',
+           'Grey':'#6C7278',
+           'Row-color':'#e5e7eb',
+           'Table-Clr':'#f2f2f4'
+         },
+       },
   },
-  plugins: [],
+ plugins: [
+    require('tailwindcss-scrollbar'), // Add scrollbar plugin
+  ],
 };
