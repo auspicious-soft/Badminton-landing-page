@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -29,6 +29,20 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
   transaction,
   onClose,
 }) => {
+
+   useEffect(() => {
+    // Save original body overflow style
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+
+    // Prevent scrolling on mount
+    document.body.style.overflow = "hidden";
+
+    // Re-enable scrolling on unmount
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
   return (
     <AnimatePresence>
       <motion.div

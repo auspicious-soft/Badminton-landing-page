@@ -15,6 +15,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (responseData: UserData) => void;
   logout: () => void;
+   updateUserData: (updates: Partial<UserData>) => void;
 }
 
 // Create the Auth Context
@@ -44,6 +45,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('token', responseData.token);
   };
 
+const updateUserData = (updates: Partial<UserData>) => {
+  setUserData((prev) => {
+    if (!prev) return prev; // No user data to update
+    const updated = { ...prev, ...updates }; // ✅ Merge old + new
+    localStorage.setItem("userData", JSON.stringify(updated)); // ✅ Persist merged data
+    console.log(updated,"updated")
+    return updated;
+  });
+};
+
+
   // Function to handle logout
   const logout = () => {
     setUserData(null);
@@ -53,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ userData, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ userData, isAuthenticated, login, logout,updateUserData  }}>
       {children}
     </AuthContext.Provider>
   );

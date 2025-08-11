@@ -12,6 +12,9 @@ export default {
            'Row-color':'#e5e7eb',
            'Table-Clr':'#f2f2f4'
          },
+          screens: {
+        md720: '720px', // custom breakpoint at 700px
+      },
        },
   },
  plugins: [

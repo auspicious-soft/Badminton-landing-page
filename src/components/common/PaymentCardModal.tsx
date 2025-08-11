@@ -243,7 +243,7 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
               successToast("Payment successful. Your booking was created successfully!");
               onClose?.();
               setTimeout(() => {
-                navigate("/venues");
+                navigate("/my-bookings");
               }, 1000);
             } catch (error) {
               errorToast("Payment verification failed. Please contact support.");
@@ -423,12 +423,13 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
       {paymentOptions.map((option) => (
         <div
           key={option.id}
-          className="w-full flex justify-between items-center gap-4"
+          className="w-full flex justify-between items-center gap-4 cursor-pointer"
+            onClick={() => setSelectedPayment(option.id)}
         >
           <div className="flex justify-start items-center gap-5">
             <motion.div
               className="w-5 h-5 bg-zinc-300 rounded-full relative cursor-pointer flex justify-center items-center"
-              onClick={() => setSelectedPayment(option.id)}
+            
             >
               {selectedPayment === option.id && (
                 <motion.div
@@ -485,12 +486,14 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
   </div>
 
   {/* Pay Button */}
-  <div className="w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-blue-600 rounded-lg flex justify-center items-center gap-3">
+  <div 
+  className="w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-blue-600 rounded-lg flex justify-center items-center gap-3 cursor-pointer"
+    onClick={handlePayNow}>
     <button
   className={`text-white text-sm sm:text-base font-medium font-['Raleway'] ${
     !selectedPayment ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'
   }`}
-  onClick={handlePayNow}
+
   disabled={loading || !selectedPayment}
 >
       {loading ? "Processing..." : `Pay ₹${bookingAmount}`}

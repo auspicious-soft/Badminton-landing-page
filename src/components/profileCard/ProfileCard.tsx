@@ -27,6 +27,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     email,
   });
   const [imgError, setImgError] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
+
   const [uploadedImgUrl, setUploadedImgUrl] = useState<string>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const initialData = useRef({ name, phoneNumber, email, imageSrc });
@@ -74,6 +76,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
     }
     
     onSave(updates);
+    setHasChanges(false);
   };
 
   const handleImageError = () => {
@@ -113,6 +116,24 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       setUploadedImgUrl("");
     }
   };
+
+
+useEffect(() => {
+  const [formFirstName, ...formLastNameParts] = formData.name.trim().split(" ");
+  const formLastName = formLastNameParts.join(" ") || undefined;
+  const [initialFirstName, ...initialLastNameParts] = initialData.current.name.trim().split(" ");
+  const initialLastName = initialLastNameParts.join(" ") || undefined;
+
+  const changed = Boolean(
+    formFirstName !== initialFirstName ||
+    formLastName !== initialLastName ||
+    formData.phoneNumber !== initialData.current.phoneNumber ||
+    formData.email !== initialData.current.email ||
+    (uploadedImgUrl && uploadedImgUrl !== initialData.current.imageSrc)
+  );
+
+  setHasChanges(changed);
+}, [formData, uploadedImgUrl]);
 
 
 
@@ -171,7 +192,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         </div>
 
         {/* Phone Number Field */}
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <label className="self-stretch text-black text-xs font-medium font-['Raleway']">
             Phone Number
           </label>
@@ -184,7 +205,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
               className="w-full h-6 text-black text-xs font-medium font-['Raleway'] bg-transparent outline-none cursor cursor-not-allowed"
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Email Field */}
         <div className="flex flex-col gap-2">
@@ -204,14 +225,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
       </div>
 
       {/* Save Button */}
-      <div
-        className="self-stretch px-4 py-4 bg-blue-600 rounded-3xl inline-flex justify-center items-center gap-2.5 cursor-pointer"
-        onClick={handleSubmit}
-      >
-        <div className="text-white text-sm font-medium font-['Raleway']">
-          Save
-        </div>
-      </div>
+      {hasChanges && (
+  <div
+    className="self-stretch px-4 py-4 bg-blue-600 rounded-3xl inline-flex justify-center items-center gap-2.5 cursor-pointer"
+    onClick={handleSubmit}
+  >
+    <div className="text-white text-sm font-medium font-['Raleway']">
+      Save
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

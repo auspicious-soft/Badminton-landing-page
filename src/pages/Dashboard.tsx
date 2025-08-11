@@ -15,8 +15,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
-  const { successToast, errorToast } = useToast();
+  const { successToast, errorToast, warnToast } = useToast();
 
+  const token = localStorage.getItem("token")
+
+  if(token){
+    navigate("/venues")
+  }
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setLoading(true);
@@ -97,8 +102,14 @@ const Dashboard = () => {
             </div>
             <div
               className="w-full h-14 px-3.5 py-7 bg-white rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 flex justify-center items-center gap-2.5 overflow-hidden cursor-pointer"
-              onClick={() => loginWithGoogle()}
-            >
+             onClick={() => {
+    warnToast("Please enable location to login. Otherwise you won't be able to proceed.");
+
+    setTimeout(() => {
+      loginWithGoogle();
+    }, 3000);
+  }}
+>
               <div className="w-6 h-6 relative overflow-hidden">
                 <img
                   src={googleIcon}

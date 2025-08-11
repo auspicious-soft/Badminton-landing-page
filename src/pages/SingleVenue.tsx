@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from "react";
 import {
   Plus,
@@ -17,7 +18,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import PaymentCard from "../components/common/PaymentCardModal";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { useAuth } from "../utils/AuthContext";
 import { Player } from "../utils/types";
 import userImg from "../assets/dashboarduser.png";
@@ -75,6 +76,15 @@ interface VenueData {
   openingHours: { day: string; hours: string[] }[];
   timeslots: string[];
   image: string;
+  location:any;
+}
+
+// Navigation state interface
+interface NavigationState {
+  selectedCourtId?: string;
+  selectedGame?: string;
+  selectedDate?: number;
+  preselectedDate?: string;
 }
 
 const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
@@ -166,22 +176,74 @@ function SingleVenue() {
   });
   const datePickerRef = useRef<HTMLDivElement>(null);
   const { VenueId } = useParams<{ VenueId: string }>();
+  const location = useLocation();
   const { userData } = useAuth();
-  const {successToast, errorToast} = useToast()
+  const { successToast, errorToast } = useToast();
+  
   const selectedFriendIds = players
     .filter((p) => p.type === "user" && p.id !== null)
     .map((p) => p.id);
 
-  const handleGameSelect = (game: string) => {
-    setLoading(true);
-    try {
-      setSelectedGame(game);
-    } catch (error) {
-      setLoading(false);
-    } finally {
-      setLoading(false);
+  // Handle navigation state for pre-selected court and game
+  useEffect(() => {
+    if (location.state) {
+      const navigationState = location.state as NavigationState;
+      const { 
+        selectedCourtId: preselectedCourtId, 
+        selectedGame: preselectedGame, 
+        selectedDate: preselectedDate,
+        preselectedDate: preselectedDateString
+      } = navigationState;
+      
+      console.log("Navigation state received:", navigationState);
+      
+    if (preselectedGame) {
+  handleGameSelect(preselectedGame, true); // mark as from navigation
+}
+      
+      if (preselectedDate) {
+        setSelectedDate(preselectedDate);
+      }
+      
+      if (preselectedDateString) {
+        const date = new Date(preselectedDateString);
+        setSelectedDateForBooking(date);
+        setSelectedDate(date.getDate());
+      }
+      
+      // Set court selection after venue data is loaded
+      if (preselectedCourtId) {
+        setSelectedCourtId(preselectedCourtId);
+        setSelectedCourts(prev => ({
+          ...prev,
+          [preselectedCourtId]: "0"
+        }));
+      }
+    } else {
+      // Set default date to today if no navigation state
+      const today = new Date();
+      setSelectedDate(today.getDate());
+      setSelectedDateForBooking(today);
     }
-  };
+  }, [location.state]);
+
+// In handleGameSelect, remove resetting when game comes from location.state
+const handleGameSelect = (game: string, fromNavigation = false) => {
+  setLoading(true);
+  try {
+    setSelectedGame(game);
+    if (!fromNavigation) { // only reset if not from initial navigation
+      setSelectedCourtId(null);
+      setSelectedTimes([]);
+      setSelectedCourts({});
+    }
+  } catch (error) {
+    setLoading(false);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleDateSelect = (
     date: Date | null,
@@ -194,6 +256,9 @@ function SingleVenue() {
         setSelectedDate(date.getDate());
         setSelectedDateForBooking(date);
         setIsDatePickerOpen(false);
+        // Reset court and time selection when date changes
+        setSelectedTimes([]);
+        setTotalPrice(0);
       } else {
         setSelectedDate(null);
       }
@@ -255,6 +320,7 @@ function SingleVenue() {
   const handleCourtSelect = (courtId: string) => {
     setSelectedCourtId(courtId);
     setSelectedTimes([]);
+    setTotalPrice(0);
     setSelectedCourts((prev) => {
       const newCourts = { ...prev };
       Object.keys(newCourts).forEach((key) => {
@@ -312,48 +378,66 @@ function SingleVenue() {
     };
   });
 
-  useEffect(() => {
-    const fetchVenueData = async () => {
-      setLoading(true);
-      if (!selectedDateForBooking) return;
+useEffect(() => {
+  const fetchVenueData = async () => {
+    if (!selectedDateForBooking) return;
 
-      const year = selectedDateForBooking.getFullYear();
-      const month = String(selectedDateForBooking.getMonth() + 1).padStart(
-        2,
-        "0"
+    // 🚨 Skip fetching until game is set from navigation
+    if (location.state?.selectedGame && selectedGame !== location.state.selectedGame) {
+      return;
+    }
+
+    setLoading(true);
+    const year = selectedDateForBooking.getFullYear();
+    const month = String(selectedDateForBooking.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDateForBooking.getDate()).padStart(2, "0");
+    const localDate = `${year}-${month}-${day}`;
+
+    try {
+      const response = await getApi(
+        `${URLS.getCourts}?venueId=${VenueId}&date=${localDate}&game=${selectedGame}`
       );
-      const day = String(selectedDateForBooking.getDate()).padStart(2, "0");
-      const localDate = `${year}-${month}-${day}`;
+      if (response?.status === 200 && response?.data?.success) {
+        const data = response.data.data;
+        setVenueData({
+          ...data,
+          courts: data.courts.map((court: any) => ({
+            id: court._id,
+            name: court.name,
+            games: court.games,
+            hourlyRate: court.hourlyRate,
+            availableSlots: court.availableSlots,
+          })),
+        });
 
-      try {
-        const response = await getApi(
-          `${URLS.getCourts}?venueId=${VenueId}&date=${localDate}&game=${selectedGame}`
-        );
-        if (response?.status === 200 && response?.data?.success) {
-          const data = response.data.data;
-          setVenueData({
-            ...data,
-            courts: data.courts.map((court: any) => ({
-              id: court._id,
-              name: court.name,
-              games: court.games,
-              hourlyRate: court.hourlyRate,
-              availableSlots: court.availableSlots,
-            })),
-          });
-          const initialCourts: SelectedCourts = {};
-          data.courts.forEach((court: any) => {
-            initialCourts[court._id] = undefined;
-          });
-          setSelectedCourts(initialCourts);
+        const initialCourts: SelectedCourts = {};
+        data.courts.forEach((court: any) => {
+          initialCourts[court._id] = undefined;
+        });
+        setSelectedCourts(initialCourts);
+
+        if (location.state?.selectedCourtId) {
+          const exists = data.courts.some(
+            (court: any) => court._id === location.state.selectedCourtId
+          );
+          if (exists) {
+            setSelectedCourtId(location.state.selectedCourtId);
+            setSelectedCourts(prev => ({
+              ...prev,
+              [location.state.selectedCourtId]: "0"
+            }));
+          }
         }
-      } catch (error) {
-      } finally {
-        setLoading(false);
       }
-    };
-    fetchVenueData();
-  }, [VenueId, selectedDateForBooking, selectedGame]);
+    } catch (error) {
+      console.error("Error fetching venue data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchVenueData();
+}, [VenueId, selectedDateForBooking, selectedGame, location.state?.selectedCourtId]);
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -382,6 +466,7 @@ function SingleVenue() {
           ]);
         }
       } catch (error) {
+        console.error("Error fetching friends:", error);
       }
     };
     fetchFriends();
@@ -417,12 +502,22 @@ function SingleVenue() {
   }, [selectedDateForBooking]);
 
   const handleBookAndPay = async () => {
-    if(!selectedDateForBooking || !selectedCourtId ||  !selectedTimes || selectedTimes.length === 0){
-  errorToast("Select Date, Court and available Time slots to Book a match")
-  return
-}
+
+     const actualPlayersCount = players.filter(p => p.type !== "available").length;
+
+  if (actualPlayersCount < 2) {
+    errorToast("At least 2 players are required to book a match");
+    return;
+  }
+
+
+    if (!selectedDateForBooking || !selectedCourtId || !selectedTimes || selectedTimes.length === 0) {
+      errorToast("Select Date, Court and available Time slots to Book a match");
+      return;
+    }
     setShowPaymentModal(true);
   };
+
 
   return (
     <>
@@ -433,7 +528,7 @@ function SingleVenue() {
           <h2 className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway'] leading-tight">
             Select Game
           </h2>
-          <div className="w-full p-1  rounded-[10px] flex flex-wrap justify-start items-start gap-1.5">
+          <div className="w-full p-1 rounded-[10px] flex flex-wrap justify-start items-start gap-1.5">
             {venueData &&
               venueData?.gamesAvailable.map((game) => (
                 <div
@@ -453,78 +548,14 @@ function SingleVenue() {
                 </div>
               ))}
           </div>
+          
           <div className="w-full p-4 bg-Primary-Grey rounded-[10px] flex flex-col justify-start items-start gap-5">
-            {/* <style>
-        {`
-          .react-datepicker {
-            font-family: 'Raleway', sans-serif;
-            border: none;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            background-color: white;
-            width: 100%;
-            max-width: 320px;
-          }
-          .react-datepicker__header {
-            background-color: #1a202c;
-            color: white;
-            border-top-left-radius: 0.5rem;
-            border-top-right-radius: 0.5rem;
-            padding: 0.5rem;
-          }
-          .react-datepicker__current-month,
-          .react-datepicker__day-name {
-            color: white;
-            font-weight: 500;
-            font-size: 0.875rem;
-          }
-          .react-datepicker__day {
-            color: #1a202c;
-            border-radius: 0.375rem;
-            margin: 0.25rem;
-            padding: 0.5rem;
-            font-size: 0.875rem;
-          }
-          .react-datepicker__day:hover {
-            background-color: #f6ad55;
-            color: white;
-          }
-          .react-datepicker__day--selected,
-          .react-datepicker__day--keyboard-selected {
-            background-color: #ed8936;
-            color: white;
-            font-weight: 600;
-          }
-          .react-datepicker__day--outside-month {
-            color: #a0aec0;
-          }
-          .react-datepicker__navigation-icon::before {
-            border-color: white;
-          }
-          .react-datepicker__day--disabled {
-            color: #a0aec0;
-            cursor: not-allowed;
-            background-color: #f0f0f0;
-          }
-        `}
-      </style> */}
             <div className="w-full flex justify-between items-center">
               <div className="text-Primary-Font text-base sm:text-lg font-semibold font-['Raleway'] leading-snug">
                 Date
               </div>
-              {/* <div
-          className="text-right text-gray-500 text-sm font-normal font-['Raleway'] leading-none cursor-pointer"
-          onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-        >
-          {isDatePickerOpen ? (
-            <ChevronUp className="w-4 h-4 inline" />
-          ) : (
-            <ChevronDown className="w-4 h-4 inline" />
-          )}
-          <span className="ml-1">More</span>
-        </div> */}
             </div>
-            <div className="w-full overflow-x-auto flex justify-between items-center  gap-3">
+            <div className="w-full overflow-x-auto flex justify-between items-center gap-3">
               {dates.slice(0, 23).map(({ day, date }, index) => (
                 <div
                   key={index}
@@ -535,7 +566,7 @@ function SingleVenue() {
                   </div>
                   <div
                     className={`w-8 h-8 rounded-[3px] shadow-[0px_1px_5px_0px_rgba(228,229,231,0.24)] flex items-center justify-center cursor-pointer ${
-                      selectedDate === date ? "bg-green-500" : "bg-white"
+                      selectedDate === date ? "bg-dark-blue" : "bg-white"
                     }`}
                     onClick={() =>
                       handleDateSelect(
@@ -556,44 +587,8 @@ function SingleVenue() {
                 </div>
               ))}
             </div>
-            <AnimatePresence>
-              {isDatePickerOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute right-0 sm:right-[10px] bottom-[60px] bg-white rounded-lg shadow-lg z-10 w-full max-w-[320px]"
-                  ref={datePickerRef}
-                >
-                  <DatePicker
-                    selected={
-                      selectedDate
-                        ? new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            selectedDate
-                          )
-                        : null
-                    }
-                    onChange={handleDateSelect}
-                    inline
-                    popperPlacement="bottom-start"
-                    className="border-none w-full"
-                    calendarClassName="bg-white rounded-lg shadow-lg w-full"
-                    minDate={today}
-                    maxDate={
-                      new Date(
-                        today.getFullYear(),
-                        today.getMonth() + 1,
-                        today.getDate()
-                      )
-                    }
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
+          
           {selectedDate && venueData?.courts && (
             <div className="w-full p-4 bg-Primary-Grey rounded-[10px] flex flex-col justify-start items-start gap-2.5 overflow-hidden">
               <div className="text-Primary-Font text-base sm:text-lg font-semibold font-['Raleway'] leading-snug">
@@ -607,7 +602,7 @@ function SingleVenue() {
                       key={court.id}
                       className={`p-4 rounded-[10px] flex flex-col justify-start items-start gap-2.5 cursor-pointer ${
                         selectedCourtId === court.id
-                          ? "bg-green-500"
+                          ? "bg-dark-blue"
                           : "bg-white"
                       }`}
                       onClick={() => handleCourtSelect(court.id)}
@@ -623,7 +618,7 @@ function SingleVenue() {
                           {court.name}
                         </div>
                         {selectedCourtId === court.id && (
-                          <div className="py-3 rounded-[5px] flex justify-center items-center gap-2.5 w-full">
+                          <div className="rounded-[5px] flex justify-center items-center gap-2.5 w-full">
                             <div className="text-center text-xs font-medium font-['Raleway'] leading-none text-slate-100">
                               {selectedCourts[court.id] || "0"} Mins
                             </div>
@@ -635,6 +630,7 @@ function SingleVenue() {
               </div>
             </div>
           )}
+          
           {selectedCourtId && selectedDate && (
             <div className="w-full flex flex-col sm:flex-row gap-2.5 overflow-hidden">
               <TimeSlotSection
@@ -651,6 +647,7 @@ function SingleVenue() {
               />
             </div>
           )}
+          
           <div className="w-full p-4 bg-Primary-Grey rounded-[10px] flex flex-col justify-start items-start gap-2.5">
             <div className="text-Primary-Font text-base sm:text-lg font-semibold font-['Raleway'] leading-tight">
               Game Type
@@ -689,6 +686,7 @@ function SingleVenue() {
                 </div>
               </div>
             </div>
+            
             <div className="w-full flex flex-col sm:flex-row justify-start items-center gap-4 sm:gap-6">
               <div className="flex-1 flex justify-around items-center gap-4">
                 {teamA.map((player, index) => {
@@ -723,7 +721,7 @@ function SingleVenue() {
                                   "https://lh3.googleusercontent.com/"
                                 )
                                   ? player.image
-                                  : userImg
+                                  : `${baseImgUrl}/${player.image}`
                               }
                               alt={player.name}
                               className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"
@@ -782,7 +780,7 @@ function SingleVenue() {
                                   "https://lh3.googleusercontent.com/"
                                 )
                                   ? player.image
-                                  : userImg
+                                  : `${baseImgUrl}/${player.image}`
                               }
                               alt={player.name}
                               className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"
@@ -846,10 +844,13 @@ function SingleVenue() {
               </div>
             </div>
           </div>
-          <div className="w-full h-12 sm:h-14 px-6 sm:px-28 py-4 sm:py-5 bg-blue-950 rounded-[5px] flex justify-center items-center gap-2.5">
+          <div 
+          className="w-full h-12 sm:h-14 px-6 sm:px-28 py-4 sm:py-5 bg-dark-blue rounded-[5px] flex justify-center items-center gap-2.5 cursor-pointer"
+            onClick={handleBookAndPay}
+            >
             <button
               className="text-white text-sm sm:text-base font-semibold font-['Raleway'] leading-tight"
-              onClick={handleBookAndPay}
+            
             >
               Continue
             </button>
@@ -866,7 +867,7 @@ function SingleVenue() {
                     </div>
                     <div className="text-Primary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
                       {venueData &&
-                        `${venueData.address}, ${venueData.city}, ${venueData.state}`}
+                        `${venueData.address}, ${venueData.city}, ${venueData.state} `}
                     </div>
                   </div>
                 </div>
@@ -925,18 +926,33 @@ function SingleVenue() {
                       strokeWidth={1.5}
                     />
                   </div>
-                  <div className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-tight">
-                    Directions
-                  </div>
+                <a
+  href={`https://www.google.com/maps?q=${ venueData && venueData.location.coordinates[1]},${venueData && venueData.location.coordinates[0]}`}
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-tight"
+>
+  Directions
+</a>
+
                 </button>
-                <button className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3">
-                  <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
-                    <Phone className="w-4 h-4 text-white" />
-                  </div>
-                  <div className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-tight">
-                    Call Now
-                  </div>
-                </button>
+              <button
+  onClick={() => {
+    if (venueData?.contactInfo) {
+      navigator.clipboard.writeText(venueData.contactInfo);
+      successToast("Number copied to clipboard!");
+    }
+  }}
+  className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3"
+>
+  <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
+    <Phone className="w-4 h-4 text-white" />
+  </div>
+  <div className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-tight">
+    Call Now
+  </div>
+</button>
+
               </div>
             </div>
           </div>

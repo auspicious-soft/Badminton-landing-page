@@ -12,6 +12,8 @@ import Navbar from "./components/common/Navbar";
 import MainVenueComp from "./pages/Venues";
 import SingleVenue from "./pages/SingleVenue";
 import Account from "./pages/Account";
+import MyBookings from "./components/myBookings/MyBookings";
+import MyBookingsPage from "./pages/MyBookingsPage";
 
 function App() {
   const location = useLocation();
@@ -75,6 +77,18 @@ function App() {
                 <Navbar />
                 <div className="pt">
                   <Account />
+                </div>
+              </>
+            }
+          />
+
+            <Route
+            path="/my-bookings"
+            element={
+              <>
+                <Navbar />
+                <div className="pt">
+                  <MyBookingsPage />
                 </div>
               </>
             }

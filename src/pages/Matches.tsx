@@ -11,7 +11,6 @@ import { useAuth } from "../utils/AuthContext";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Loader from "../components/common/Loader";
-import ClubInfoModal from "../components/common/ClubInfoModal";
 import { useToast } from "../utils/ToastContext";
 
 const headers = [
@@ -51,7 +50,6 @@ const Matches: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  const [showClubInfoModal, setShowClubInfoModal] = useState(false);
 
   const limit = 10;
 
@@ -241,30 +239,10 @@ const Matches: React.FC = () => {
     fetchFriends();
   }, []);
 
-  const closeClubInfoModal = () => {
-    setShowClubInfoModal(false);
-  };
-
-  const handleSubmit = (field1: boolean, field2: string) => {
-    setShowClubInfoModal(false);
-  };
-
-  useEffect(() => {
-    if (userData && !userData.clubResponse) {
-      setShowClubInfoModal(true);
-    }
-  }, [userData]);
 
   return (
     <>
       {loading && <Loader fullScreen />}
-      <ClubInfoModal
-        isOpen={showClubInfoModal}
-        onClose={closeClubInfoModal}
-        onSubmit={handleSubmit}
-      />
-      {userData && userData.clubResponse ? (
-        <>
           <div className="flex flex-col md:flex-row gap-4 p-4 sm:p-6 bg-slate-50/60 min-h-screen w-full">
             <style>
               {`
@@ -327,90 +305,92 @@ const Matches: React.FC = () => {
               ref={tableRef}
             >
               {/* Header with Dropdowns */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 w-full gap-4">
-                <div className="text-dark-blue text-xl sm:text-2xl font-semibold font-['Raleway']">
-                  Open Matches
+          <div className="flex flex-col mb-6 w-full gap-4">
+  <div className="flex flex-row max-[640px]:flex-col justify-between items-start sm:items-center gap-4 w-full">
+    <div className="text-dark-blue text-xl sm:text-2xl font-semibold font-['Raleway']">
+      Open Matches
+    </div>
+    <div className="flex flex-row max-[270px]:flex-col items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+      {/* Game Dropdown */}
+      <div
+        className="relative w-full sm:w-36"
+        ref={gameDropdownRef}
+      >
+        <div
+          className="px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-900 rounded-3xl flex justify-between items-center gap-2 sm:gap-3 cursor-pointer"
+          onClick={() => setIsGameDropdownOpen(!isGameDropdownOpen)}
+        >
+          <div className="text-white text-xs sm:text-sm font-medium font-['Raleway'] capitalize truncate">
+            {game}
+          </div>
+          {isGameDropdownOpen ? (
+            <ChevronUp className="w-4 h-4 text-white flex-shrink-0" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-white flex-shrink-0" />
+          )}
+        </div>
+        <AnimatePresence>
+          {isGameDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-12 left-0 w-full sm:w-36 bg-white rounded-lg shadow-lg z-10"
+            >
+              {["all", "Pickleball", "Padel"].map((option) => (
+                <div
+                  key={option}
+                  className="px-4 py-2 text-gray-900 text-xs sm:text-sm font-medium font-['Raleway'] hover:bg-gray-100 cursor-pointer capitalize"
+                  onClick={() => handleGameSelect(option)}
+                >
+                  {option}
                 </div>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                  {/* Game Dropdown */}
-                  <div
-                    className="relative w-full sm:w-36"
-                    ref={gameDropdownRef}
-                  >
-                    <div
-                      className="px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-900 rounded-3xl flex justify-between items-center gap-2 sm:gap-3 cursor-pointer"
-                      onClick={() => setIsGameDropdownOpen(!isGameDropdownOpen)}
-                    >
-                      <div className="text-white text-xs sm:text-sm font-medium font-['Raleway'] capitalize truncate">
-                        {game}
-                      </div>
-                      {isGameDropdownOpen ? (
-                        <ChevronUp className="w-4 h-4 text-white flex-shrink-0" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-white flex-shrink-0" />
-                      )}
-                    </div>
-                    <AnimatePresence>
-                      {isGameDropdownOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute top-12 left-0 w-full sm:w-36 bg-white rounded-lg shadow-lg z-10"
-                        >
-                          {["all", "Pickleball", "Padel"].map((option) => (
-                            <div
-                              key={option}
-                              className="px-4 py-2 text-gray-900 text-xs sm:text-sm font-medium font-['Raleway'] hover:bg-gray-100 cursor-pointer capitalize"
-                              onClick={() => handleGameSelect(option)}
-                            >
-                              {option}
-                            </div>
-                          ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-                  {/* Date Picker */}
-                  <div className="relative w-full sm:w-36" ref={datePickerRef}>
-                    <div
-                      className="px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-900 rounded-3xl flex justify-between items-center gap-2 sm:gap-3 cursor-pointer"
-                      onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-                    >
-                      <div className="text-white text-xs sm:text-sm font-medium font-['Raleway'] truncate">
-                        {date || "Select a date"}
-                      </div>
-                      {isDatePickerOpen ? (
-                        <ChevronUp className="w-4 h-4 text-white flex-shrink-0" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-white flex-shrink-0" />
-                      )}
-                    </div>
-                    <AnimatePresence>
-                      {isDatePickerOpen && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute top-12 right-0 sm:right-2 bg-white rounded-lg shadow-lg z-10 w-full sm:w-auto"
-                        >
-                          <DatePicker
-                            selected={date ? new Date(date) : null}
-                            onChange={handleDateSelect}
-                            inline
-                            popperPlacement="bottom-end"
-                            className="border-none w-full"
-                            calendarClassName="bg-white rounded-lg shadow-lg"
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-              </div>
+      {/* Date Picker */}
+      <div className="relative w-full sm:w-36" ref={datePickerRef}>
+        <div
+          className="px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-900 rounded-3xl flex justify-between items-center gap-2 sm:gap-3 cursor-pointer"
+          onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+        >
+          <div className="text-white text-xs sm:text-sm font-medium font-['Raleway'] truncate">
+            {date || "Select a date"}
+          </div>
+          {isDatePickerOpen ? (
+            <ChevronUp className="w-4 h-4 text-white flex-shrink-0" />
+          ) : (
+            <ChevronDown className="w-4 h-4 text-white flex-shrink-0" />
+          )}
+        </div>
+        <AnimatePresence>
+          {isDatePickerOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-12 right-0 sm:right-2 bg-white rounded-lg shadow-lg z-10 w-full sm:w-auto"
+            >
+              <DatePicker
+                selected={date ? new Date(date) : null}
+                onChange={handleDateSelect}
+                inline
+                popperPlacement="bottom-end"
+                className="border-none w-full"
+                calendarClassName="bg-white rounded-lg shadow-lg"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  </div>
+</div>
 
               {/* Loading and Error States */}
               {loading && (
@@ -483,8 +463,6 @@ const Matches: React.FC = () => {
               </AnimatePresence>
             </div>
           </div>
-        </>
-      ) : null}
     </>
   );
 };

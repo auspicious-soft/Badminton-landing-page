@@ -318,7 +318,7 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
                         {matchData.courtId.games} Game
                       </div>
                       <div className="text-gray-900 text-xs sm:text-sm md:text-base font-semibold font-['Raleway']">
-                        120 Mins
+                        60 Mins
                       </div>
                     </div>
                     <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3">

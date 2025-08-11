@@ -43,6 +43,9 @@ interface NotificationModalProps {
   notifications: Notification[];
   onMarkAllRead: () => void;
   onMarkRead: (notificationId: string) => void;
+    onScrollEnd?: () => void;
+    loadingNot: boolean;
+    
 }
 
 const NotificationModal: React.FC<NotificationModalProps> = ({
@@ -51,8 +54,13 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
   notifications,
   onMarkAllRead,
   onMarkRead,
+  onScrollEnd,
+  loadingNot,
 }) => {
-      const modalRef = useRef<HTMLDivElement>(null);
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
   const modalVariants: Variants = {
     hidden: { opacity: 0, y: -10 },
     visible: {
@@ -97,6 +105,16 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
+  const handleScroll = () => {
+    if (listRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = listRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        onScrollEnd && onScrollEnd();
+      }
+    }
+  };
+
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -129,7 +147,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                
               </div>
             </div>
-            <div className="max-h-96 overflow-y-auto hide-scrollbar">
+            <div 
+            className="max-h-96 overflow-y-auto hide-scrollbar"
+             onScroll={handleScroll}
+              ref={listRef}
+            >
               {notifications.length === 0 ? (
                 <div className="p-4 text-center text-gray-600 text-sm font-['Raleway']">
                   No notifications available
@@ -166,6 +188,26 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                         </>
                       )}
                     </div>
+                    {loadingNot && (
+                    <div className="flex justify-center items-center py-4">
+                      <svg className="animate-spin h-6 w-6 text-blue-500" viewBox="0 0 24 24">
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                        />
+                      </svg>
+                    </div>
+                  )}
                   </div>
                 ))
               )}

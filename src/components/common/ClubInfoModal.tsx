@@ -3,6 +3,7 @@ import { postApi } from "../../utils/api";
 import { URLS } from "../../utils/urls";
 import { motion, AnimatePresence } from "framer-motion";
 import Loader from "./Loader";
+import { useAuth } from "../../utils/AuthContext";
 
 interface SimpleFormModalProps {
   isOpen: boolean;
@@ -20,7 +21,9 @@ const ClubInfoModal: React.FC<SimpleFormModalProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [isApiSuccess, setIsApiSuccess] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+const { updateUserData } = useAuth();
 
+  
   const handleButtonClick = async (value: boolean) => {
     setField1(value);
     setError(null);
@@ -28,16 +31,22 @@ const ClubInfoModal: React.FC<SimpleFormModalProps> = ({
       setField2("");
       setLoading(true);
       try {
-        await postApi(URLS.clubInfo, {
+         const res = await postApi(URLS.clubInfo, {
           clubResponse: value,
           clubId: "",
+        });
+          if (res.status === 200) {
+        setIsApiSuccess(true);
+        updateUserData({
+          clubResponse: true, // ✅ update instantly
+          clubId: "" // empty
         });
         setIsApiSuccess(true);
         onSubmit(value, "");
         setField1(null);
         setField2("");
         onClose();
-      } catch (err) {
+      } }catch (err) {
         console.error("Error calling API on No:", err);
         setError("Failed to process club details. Please try again.");
         setIsApiSuccess(false);
@@ -71,6 +80,10 @@ const ClubInfoModal: React.FC<SimpleFormModalProps> = ({
         setField2("");
         setError(null);
         onClose();
+         updateUserData({
+    clubResponse: true,
+    ...(field2 ? { clubId: field2 } : {})
+  });
       }
     } catch (err) {
       console.error("Error submitting form:", err);
@@ -82,6 +95,8 @@ const ClubInfoModal: React.FC<SimpleFormModalProps> = ({
     setLoading(false)
   }
   };
+
+  
 
   const handleClose = () => {
     if (isApiSuccess) {

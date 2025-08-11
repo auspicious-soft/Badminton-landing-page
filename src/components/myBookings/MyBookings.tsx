@@ -42,6 +42,8 @@ interface Booking {
 interface BookingGroup {
   date: string;
   time: string;
+    court: any;
+
   bookings: Booking[];
 }
 
@@ -78,7 +80,7 @@ const cardHoverVariants: Variants = {
     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
   },
   hover: {
-    scale: 1.03,
+    scale: 0.99,
     backgroundColor: "#E2E8F0",
     boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
     transition: {
@@ -114,6 +116,8 @@ const MyBookings: React.FC<MyBookingsProps> = ({ bookingGroups , onScoreUpdate})
   const [selectedGameType, setSelectedgameType] = useState<string | null>(null);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(false);
+  const [infoMessage, setInfoMessage] = useState("");
+
   const { userData } = useAuth();
   const { successToast, errorToast } = useToast();
 
@@ -234,14 +238,50 @@ const MyBookings: React.FC<MyBookingsProps> = ({ bookingGroups , onScoreUpdate})
     setSelectedBookingId(null);
   };
 
-  const openModifyModal = (bookingId: string, askToJoin: boolean) => {
-    setSelectedBookingId(bookingId);
-    if (!askToJoin) {
-      setShowModifyModal(true);
-    } else {
-      setShowInfoModal(true);
-    }
-  };
+  const canModifyBooking = (bookingdate: string) => {
+  const bookingTime = new Date(bookingdate).getTime();
+  const now = Date.now();
+  const hoursLeft = (bookingTime - now) / (1000 * 60 * 60);
+  return hoursLeft > 4; // Allow modify only if more than 4 hours remain
+};
+
+
+const openModifyModal = (
+  bookingId: string,
+  askToJoin: boolean,
+  bookingdate?: string,
+  bookingtype?:string,
+) => {
+  setSelectedBookingId(bookingId);
+
+  if (askToJoin) {
+    setInfoMessage(
+      "Sorry! Only private and upcoming bookings created by the creator are allowed to modify."
+    );
+    setShowInfoModal(true);
+    return;
+  }
+
+  if (bookingdate && !canModifyBooking(bookingdate)) {
+    setInfoMessage(
+      "Sorry! Modifications are only allowed up to 4 hours before the booking start time."
+    );
+    setShowInfoModal(true);
+    return;
+  }
+
+  if(  bookingtype && bookingtype === "Cancelled") {
+    setInfoMessage(
+      "Sorry! Cancelled Bookings cannot be modified."
+    );
+    setShowInfoModal(true);
+    return;
+  }
+
+
+  setShowModifyModal(true);
+};
+
 
   const closeModifyModal = () => {
     setShowModifyModal(false);
@@ -270,390 +310,392 @@ const MyBookings: React.FC<MyBookingsProps> = ({ bookingGroups , onScoreUpdate})
   };
 
   return (
-    <div className="w-full inline-flex flex-col justify-start items-start gap-4 sm:gap-5">
-      {bookingGroups.map((group, index) => (
-        <div
-          key={index}
-          className="self-stretch flex flex-col justify-start items-start gap-2 sm:gap-2.5"
-        >
-          <div className="self-stretch justify-center text-gray-600 text-xs sm:text-sm font-semibold font-['Raleway'] leading-none">
-            {group.date} | {group.time}
-          </div>
-          <div className="self-stretch flex flex-col justify-start items-start gap-1.5 sm:gap-2">
-            {group.bookings.map((booking, bookingIndex) => (
-              <motion.div
-                key={bookingIndex}
-                className="self-stretch px-4 sm:px-5 py-2 sm:py-2.5 rounded-[10px] flex flex-col justify-start items-start gap-2 sm:gap-2.5 cursor-pointer overflow-hidden"
-                variants={{ ...bookingVariants, ...cardHoverVariants }}
-                initial="hidden"
-                animate="rest"
-                whileInView="visible"
-                whileHover="hover"
-                viewport={{ once: true, amount: 0.2 }}
-                style={{ backgroundColor: "#F3F4F6" }}
-                onClick={() =>
-                  openModifyModal(booking.bookingId, booking.askToJoin)
-                }
-              >
-                <div className="self-stretch flex flex-col justify-start items-start gap-3 sm:gap-4">
-                  <div className="self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
-                    <div className="flex justify-start items-center gap-1 sm:gap-[5px] flex-shrink-0">
-                      <div className="justify-center text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
-                        {booking.game}
-                      </div>
-                      <div className="justify-center text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
-                        {booking.duration}
-                      </div>
-                    </div>
-                    <div className="flex justify-end items-center flex-shrink-0">
-                      <div
-                        className={`px-4 sm:px-3 py-2 sm:py-1.5 rounded-md text-base sm:text-sm font-medium text-white transition-colors duration-200 font-['Raleway'] ${getStatusStyles(
-                          booking.bookingType,
-                          booking.status
-                        )}`}
-                      >
-                        {getStatusText(booking.bookingType, booking.status)}
-                      </div>
-                    </div>
+   <div className="w-full grid grid-cols-1 md720:grid-cols-2 justify-start items-start gap-6 sm:gap-8">
+  {bookingGroups.map((group, index) => (
+    <div
+      key={index}
+      className="self-stretch flex flex-col justify-start items-start gap-2 sm:gap-2.5"
+    >
+      <div className="self-stretch justify-center text-gray-600 text-xs sm:text-sm font-semibold font-['Raleway'] leading-none">
+    {group.date} | {group.time}
+  </div>
+      <div className="self-stretch gird grid-cols-2 justify-start items-start gap-1.5 sm:gap-2">
+        {group.bookings.map((booking, bookingIndex) => (
+          <motion.div
+            key={bookingIndex}
+            className="self-stretch px-3 sm:px-4 py-2 sm:py-2.5 rounded-[10px] flex flex-col justify-start items-start gap-2 sm:gap-2.5 cursor-pointer overflow-hidden "
+            variants={{ ...bookingVariants, ...cardHoverVariants }}
+            initial="hidden"
+            animate="rest"
+            whileInView="visible"
+            whileHover="hover"
+            viewport={{ once: true, amount: 0.0001 }}
+        style={{ backgroundColor: "#F3F4F6"}} 
+            onClick={() =>
+  openModifyModal(booking.bookingId, booking.askToJoin, booking.bookingdate, booking.bookingType)
+            }
+          >
+            <div className="self-stretch flex flex-col justify-start items-start gap-3 sm:gap-4">
+              <div className="self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+                <div className="flex justify-start items-center gap-1 sm:gap-[5px] flex-shrink-0">
+                  <div className="justify-center text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
+                    {booking.game}
                   </div>
-                  <div className="self-stretch inline-flex flex-col sm:flex-row items-start justify-between sm:items-center gap-2 sm:gap-0">
-                    <div className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
-                      {booking.isComp.charAt(0).toUpperCase() +
-                        booking.isComp.slice(1)}
-                    </div>
-                    <div className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
-                      {booking.askToJoin ? "Public Match" : "Private Match"}
-                    </div>
+                  <div className="justify-center text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
+                    {booking.duration}
                   </div>
-                  <div className="self-stretch inline-flex flex-col sm:flex-row justify-center items-start gap-3 sm:gap-5">
-                    <div className="flex-1 flex justify-start items-center gap-1 sm:gap-1.5">
-                      {booking.team1.map((player, playerIndex) => (
-                        <div
-                          key={playerIndex}
-                          className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
-                        >
-                          <div
-                            className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-full ${
-                              booking.score?.winner === "team1"
-                                ? "border-2 border-yellow-400"
-                                : ""
-                            }`}
-                          >
-                            <img
-                              className="w-full h-full rounded-full object-cover"
-                              src={
-                                player.imageUrl &&
-                                player.imageUrl.startsWith("https://")
-                                  ? player.imageUrl
-                                  : player.imageUrl
-                                  ? `${baseImgUrl}/${player.imageUrl}`
-                                  : dummyUserImg
-                              }
-                              alt={player.name}
-                            />
-                            {booking.score?.winner === "team1" && (
-                              <Crown
-                                className="absolute -top-4 right-2 w-6 h-3 sm:w-8 sm:h-5 text-yellow-500"
-                                strokeWidth={2}
-                              />
-                            )}
-                          </div>
-                          <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
-                            {player.name.split(" ")[0]}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="w-full sm:w-0 h-10 sm:h-11 relative flex-shrink-0">
-                      <div className="w-10 sm:w-11 h-0 left-0 top-[40px] sm:top-[45.01px] absolute origin-top-left -rotate-90 outline outline-1 outline-offset-[-0.5px] outline-white"></div>
-                    </div>
-                    <div className="flex-1 flex justify-start items-center gap-1 sm:gap-1.5">
-                      {booking.team2.map((player, playerIndex) => (
-                        <div
-                          key={playerIndex}
-                          className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
-                        >
-                          <div
-                            className={`relative w-12 h-12 sm:w-14 sm:h-14 rounded-full ${
-                              booking.score?.winner === "team2"
-                                ? "border-2 border-yellow-400"
-                                : ""
-                            }`}
-                          >
-                            <img
-                              className="w-full h-full rounded-full object-cover"
-                              src={
-                                player.imageUrl &&
-                                player.imageUrl.startsWith("https://")
-                                  ? player.imageUrl
-                                  : player.imageUrl
-                                  ? `${baseImgUrl}/${player.imageUrl}`
-                                  : dummyUserImg
-                              }
-                              alt={player.name}
-                            />
-                            {booking.score?.winner === "team2" && (
-                              <Crown
-                                className="absolute -top-4 right-2 w-6 h-3 sm:w-8 sm:h-5 text-yellow-500"
-                                strokeWidth={2}
-                              />
-                            )}
-                          </div>
-                          <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
-                            {player.name.split(" ")[0]}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="w-full inline-flex justify-between items-center gap-1 sm:gap-2">
-                    <div className="inline-flex justify-start items-center gap-1 sm:gap-2 flex-grow">
-                      <MapPin className="w-3 sm:w-4 h-3 sm:h-4 text-dark-blue" />
-                      <div className="justify-center text-gray-600 text-xs sm:text-sm font-normal font-['Raleway'] leading-none">
-                        {booking.location}
-                      </div>
-                    </div>
-                    <div className="flex justify-end items-center gap-2 flex-shrink-0">
-                      {booking.status.toLowerCase() === "upcoming" &&
-                        isWithin24Hours(booking.bookingdate) &&
-                        booking.bookingType.toLowerCase() !== "cancelled" &&
-                        userData &&
-                        userData._id === booking.userId && (
-                          <button
-                            className="px-6 sm:px-5.5 py-2 sm:py-1.5 rounded-md text-base sm:text-sm font-medium font-['Raleway'] bg-red-600 text-white hover:bg-red-700 transition-colors duration-200"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openCancelModal(booking.bookingId);
-                            }}
-                          >
-                            Cancel
-                          </button>
-                        )}
-                      {booking.status.toLowerCase() === "previous" &&
-                        userData &&
-                        userData._id === booking.userId && (
-                          <button
-                            className={`px-5 sm:px-4 py-2 sm:py-1.5 rounded-md text-base sm:text-sm font-medium font-['Raleway'] text-white transition-colors duration-200 ${
-                              booking.score &&
-                              Object.keys(booking.score).length > 0
-                                ? "bg-dark-blue hover:bg-blue-600"
-                                : "bg-blue-600 hover:bg-blue-700"
-                            }`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openUploadScoreModal(
-                                booking.bookingId,
-                                booking.game,
-                                booking.score
-                              );
-                            }}
-                          >
-                            {booking.score &&
-                            Object.keys(booking.score).length > 0
-                              ? "Update"
-                              : "Upload"}
-                          </button>
-                        )}
-                    </div>
-                  </div>
-                  {booking.score && Object.keys(booking.score).length > 0 && (
-                    <div className="w-full flex gap-2 items-center justify-between">
-                      <div className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] flex justify-center items-center gap-2">
-                        <span>Score</span>
-                      </div>
-                      <div className="flex flex-col text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] text-start gap-2">
-                        <span>Team 1</span>
-                        <hr className="w-full border-gray-300" />
-                        <span>Team 2</span>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex justify-center gap-8 sm:gap-8">
-                          {(["set1", "set2", "set3"] as const).map((set) =>
-                            booking.score[set] &&
-                            (booking.score[set].team1 !== "" ||
-                              booking.score[set].team2 !== "") ? (
-                              <div
-                                key={set}
-                                className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway']"
-                              >
-                                {booking.score[set].team1}
-                              </div>
-                            ) : null
-                          )}
-                        </div>
-                        <hr className="w-full border-gray-300" />
-                        <div className="flex justify-center gap-8 sm:gap-8">
-                          {(["set1", "set2", "set3"] as const).map((set) =>
-                            booking.score[set] &&
-                            (booking.score[set].team1 !== "" ||
-                              booking.score[set].team2 !== "") ? (
-                              <div
-                                key={set}
-                                className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway']"
-                              >
-                                {booking.score[set].team2}
-                              </div>
-                            ) : null
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
                 </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      ))}
-
-      {/* Cancel Confirmation Modal */}
-      {showCancelModal && (
-        <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="bg-white rounded-lg p-6 w-full max-w-md mx-4 sm:mx-0"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <h2 className="text-lg sm:text-xl font-semibold font-['Raleway'] text-gray-800 mb-4">
-              Confirm Cancellation
-            </h2>
-            <p className="text-sm sm:text-base font-['Raleway'] text-gray-600 mb-6">
-              Are you sure you want to cancel this booking? This action cannot
-              be undone.
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                className="px-4 py-2 rounded-md text-sm sm:text-base font-medium font-['Raleway'] bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors duration-200"
-                onClick={closeCancelModal}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 rounded-md text-sm sm:text-base font-medium font-['Raleway'] bg-red-600 text-white hover:bg-red-700 transition-colors duration-200"
-                onClick={() =>
-                  selectedBookingId && handleCancelBooking(selectedBookingId)
-                }
-              >
-                Confirm
-              </button>
+                <div className="flex justify-end items-center flex-shrink-0">
+                  <div
+                    className={`px-3 sm:px-3 py-1.5 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium text-white transition-colors duration-200 font-['Raleway'] ${getStatusStyles(
+                      booking.bookingType,
+                      booking.status
+                    )}`}
+                  >
+                    {getStatusText(booking.bookingType, booking.status)}
+                  </div>
+                </div>
+              </div>
+              <div className="self-stretch inline-flex flex-col sm:flex-row items-start justify-between sm:items-center gap-2 sm:gap-0">
+                <div className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
+                  {booking.isComp.charAt(0).toUpperCase() +
+                    booking.isComp.slice(1)}
+                </div>
+                <div className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
+                  {booking.askToJoin ? "Public Match" : "Private Match"}
+                </div>
+              </div>
+              <div className="self-stretch inline-flex flex-row justify-center items-start gap-2 sm:gap-4">
+                <div className="flex-1 flex flex-row justify-start items-center gap-2 sm:gap-3">
+                  {booking.team1.map((player, playerIndex) => (
+                    <div
+                      key={playerIndex}
+                      className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
+                    >
+                      <div
+                        className={`relative w-10 sm:w-12 h-10 sm:h-12 rounded-full ${
+                          booking.score?.winner === "team1"
+                            ? "border-2 border-yellow-400"
+                            : ""
+                        }`}
+                      >
+                        <img
+                          className="w-full h-full rounded-full object-cover"
+                          src={
+                            player.imageUrl &&
+                            player.imageUrl.startsWith("https://")
+                              ? player.imageUrl
+                              : player.imageUrl
+                              ? `${baseImgUrl}/${player.imageUrl}`
+                              : dummyUserImg
+                          }
+                          alt={player.name}
+                        />
+                        {booking.score?.winner === "team1" && (
+                          <Crown
+                            className="absolute -top-3 right-1 w-5 h-3 sm:w-6 sm:h-4 text-yellow-500"
+                            strokeWidth={2}
+                          />
+                        )}
+                      </div>
+                      <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
+                        {player.name.split(" ")[0]}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="w-8 sm:w-10 h-8 sm:h-10 relative flex-shrink-0">
+                  <div className="w-8 sm:w-10 h-0 left-0 top-[32px] sm:top-[40px] absolute origin-top-left -rotate-90 outline outline-1 outline-offset-[-0.5px] outline-white"></div>
+                </div>
+                <div className="flex-1 flex flex-row justify-start items-center gap-2 sm:gap-3">
+                  {booking.team2.map((player, playerIndex) => (
+                    <div
+                      key={playerIndex}
+                      className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
+                    >
+                      <div
+                        className={`relative w-10 sm:w-12 h-10 sm:h-12 rounded-full ${
+                          booking.score?.winner === "team2"
+                            ? "border-2 border-yellow-400"
+                            : ""
+                        }`}
+                      >
+                        <img
+                          className="w-full h-full rounded-full object-cover"
+                          src={
+                            player.imageUrl &&
+                            player.imageUrl.startsWith("https://")
+                              ? player.imageUrl
+                              : player.imageUrl
+                              ? `${baseImgUrl}/${player.imageUrl}`
+                              : dummyUserImg
+                          }
+                          alt={player.name}
+                        />
+                        {booking.score?.winner === "team2" && (
+                          <Crown
+                            className="absolute -top-3 right-1 w-5 h-3 sm:w-6 sm:h-4 text-yellow-500"
+                            strokeWidth={2}
+                          />
+                        )}
+                      </div>
+                      <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
+                        {player.name.split(" ")[0]}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="w-full inline-flex justify-between items-center gap-1 sm:gap-2">
+                <div className="inline-flex justify-start items-center gap-1 sm:gap-2 flex-grow">
+                  <MapPin className="w-3 sm:w-4 h-3 sm:h-4 text-dark-blue" />
+                  <div className="justify-center text-gray-600 text-xs sm:text-sm font-normal font-['Raleway'] leading-none">
+                    {booking.location}
+                  </div>
+                </div>
+                <div className="flex justify-end items-center gap-2 flex-shrink-0">
+                  {booking.status.toLowerCase() === "upcoming" &&
+                    isWithin24Hours(booking.bookingdate) &&
+                    booking.bookingType.toLowerCase() !== "cancelled" &&
+                    userData &&
+                    userData._id === booking.userId && (
+                      <button
+                        className="px-4 sm:px-5 py-1.5 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium font-['Raleway'] bg-red-600 text-white hover:bg-red-700 transition-colors duration-200"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openCancelModal(booking.bookingId);
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  {booking.status.toLowerCase() === "previous" &&
+                    userData &&
+                    userData._id === booking.userId && (
+                      <button
+                        className={`px-4 sm:px-4 py-1.5 sm:py-1.5 rounded-md text-xs sm:text-sm font-medium font-['Raleway'] text-white transition-colors duration-200 ${
+                          booking.score &&
+                          Object.keys(booking.score).length > 0
+                            ? "bg-dark-blue hover:bg-blue-600"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openUploadScoreModal(
+                            booking.bookingId,
+                            booking.game,
+                            booking.score
+                          );
+                        }}
+                      >
+                        {booking.score &&
+                        Object.keys(booking.score).length > 0
+                          ? "Update"
+                          : "Upload"}
+                      </button>
+                    )}
+                </div>
+              </div>
+              {booking.score && Object.keys(booking.score).length > 0 ? (
+                <div className="w-full flex gap-2 items-center justify-between">
+                  <div className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] flex justify-center items-center gap-2">
+                    <span>Score</span>
+                  </div>
+                  <div className="flex flex-col text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] text-start gap-2">
+                    <span>Team 1</span>
+                    <hr className="w-full border-gray-300" />
+                    <span>Team 2</span>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-center gap-6 sm:gap-8">
+                      {(["set1", "set2", "set3"] as const).map((set) =>
+                        booking.score[set] &&
+                        (booking.score[set].team1 !== "" ||
+                          booking.score[set].team2 !== "") ? (
+                          <div
+                            key={set}
+                            className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway']"
+                          >
+                            {booking.score[set].team1}
+                          </div>
+                        ) : null
+                      )}
+                    </div>
+                    <hr className="w-full border-gray-300" />
+                    <div className="flex justify-center gap-6 sm:gap-8">
+                      {(["set1", "set2", "set3"] as const).map((set) =>
+                        booking.score[set] &&
+                        (booking.score[set].team1 !== "" ||
+                          booking.score[set].team2 !== "") ? (
+                          <div
+                            key={set}
+                            className="text-gray-600 text-xs sm:text-sm font-medium font-['Raleway']"
+                          >
+                            {booking.score[set].team2}
+                          </div>
+                        ) : null
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ): (<>
+              <div>
+               
+              </div>
+              </>)}
             </div>
           </motion.div>
-        </motion.div>
-      )}
-
-      {/* Info Modal */}
-      {showInfoModal && (
-        <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="bg-white rounded-lg p-6 w-full max-w-md mx-4 sm:mx-0"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <h2 className="text-lg sm:text-xl font-semibold font-['Raleway'] text-gray-800 mb-4">
-              Couldn't Modify This Booking.
-            </h2>
-            <p className="text-sm sm:text-base font-['Raleway'] text-gray-600 mb-6">
-              Sorry! only Private and Upcoming bookings which are created by
-              creator are allowed to Modify.
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                className="px-4 py-2 rounded-md text-sm sm:text-base font-medium font-['Raleway'] bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors duration-200"
-                onClick={closeInfoModal}
-              >
-                Cancel
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* Modify Booking Modal */}
-      {showModifyModal && (
-        <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="bg-white rounded-lg p-6 w-full max-w-[95vw] sm:max-w-[900px] md:max-w-[700px]"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <ModifyBooking
-              isOpen={showModifyModal}
-              onClose={closeModifyModal}
-              bookingId={selectedBookingId || ""}
-              friends={friends}
-              onPlayerSelect={handlePlayerSelect}
-              onFriendsUpdate={handleFriendsUpdate}
-              onScoreUpdate={  onScoreUpdate}
-            />
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* Upload Score Modal */}
-      {showUploadScoreModal && (
-        <motion.div
-          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-[95vw] sm:max-w-[800px] md:max-w-[700px] max-h-[90vh] overflow-y-auto"
-            variants={modalVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <UploadScoreModal
-              isOpen={showUploadScoreModal}
-              onClose={closeUploadScoreModal}
-              bookingId={selectedBookingId || ""}
-              gameType={selectedGameType || ""}
-              team1={
-                bookingGroups
-                  .flatMap((group) => group.bookings)
-                  .find((booking) => booking.bookingId === selectedBookingId)
-                  ?.team1 || []
-              }
-              team2={
-                bookingGroups
-                  .flatMap((group) => group.bookings)
-                  .find((booking) => booking.bookingId === selectedBookingId)
-                  ?.team2 || []
-              }
-              score={
-                bookingGroups
-                  .flatMap((group) => group.bookings)
-                  .find((booking) => booking.bookingId === selectedBookingId)
-                  ?.score || {}
-              }
-              onScoreUpdate={onScoreUpdate}
-            />
-          </motion.div>
-        </motion.div>
-      )}
+        ))}
+      </div>
     </div>
+  ))}
+
+  {/* Cancel Confirmation Modal */}
+  {showCancelModal && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-lg p-6 w-full max-w-md mx-4 sm:mx-0"
+        variants={modalVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <h2 className="text-lg sm:text-xl font-semibold font-['Raleway'] text-gray-800 mb-4">
+          Confirm Cancellation
+        </h2>
+        <p className="text-sm sm:text-base font-['Raleway'] text-gray-600 mb-6">
+          Are you sure you want to cancel this booking? This action cannot be undone.
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            className="px-4 py-2 rounded-md text-sm sm:text-base font-medium font-['Raleway'] bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors duration-200"
+            onClick={closeCancelModal}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-4 py-2 rounded-md text-sm sm:text-base font-medium font-['Raleway'] bg-red-600 text-white hover:bg-red-700 transition-colors duration-200"
+            onClick={() =>
+              selectedBookingId && handleCancelBooking(selectedBookingId)
+            }
+          >
+            Confirm
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+
+  {/* Info Modal */}
+  {showInfoModal && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-lg p-6 w-full max-w-md mx-4 sm:mx-0"
+        variants={modalVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+      <h2 className="text-lg sm:text-xl font-semibold font-['Raleway'] text-gray-800 mb-4">
+  Couldn't Modify This Booking.
+</h2>
+<p className="text-sm sm:text-base font-['Raleway'] text-gray-600 mb-6">
+  {infoMessage}
+</p>
+        <div className="flex justify-end gap-3">
+          <button
+            className="px-4 py-2 rounded-md text-sm sm:text-base font-medium font-['Raleway'] bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors duration-200"
+            onClick={closeInfoModal}
+          >
+            Cancel
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+
+  {/* Modify Booking Modal */}
+  {showModifyModal && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-lg p-6 w-full max-w-[95vw] sm:max-w-[700px]"
+        variants={modalVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <ModifyBooking
+          isOpen={showModifyModal}
+          onClose={closeModifyModal}
+          bookingId={selectedBookingId || ""}
+          friends={friends}
+          onPlayerSelect={handlePlayerSelect}
+          onFriendsUpdate={handleFriendsUpdate}
+          onScoreUpdate={onScoreUpdate}
+        />
+      </motion.div>
+    </motion.div>
+  )}
+
+  {/* Upload Score Modal */}
+  {showUploadScoreModal && (
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto"
+        variants={modalVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <UploadScoreModal
+          isOpen={showUploadScoreModal}
+          onClose={closeUploadScoreModal}
+          bookingId={selectedBookingId || ""}
+          gameType={selectedGameType || ""}
+          team1={
+            bookingGroups
+              .flatMap((group) => group.bookings)
+              .find((booking) => booking.bookingId === selectedBookingId)
+              ?.team1 || []
+          }
+          team2={
+            bookingGroups
+              .flatMap((group) => group.bookings)
+              .find((booking) => booking.bookingId === selectedBookingId)
+              ?.team2 || []
+          }
+          score={
+            bookingGroups
+              .flatMap((group) => group.bookings)
+              .find((booking) => booking.bookingId === selectedBookingId)
+              ?.score || {}
+          }
+          onScoreUpdate={onScoreUpdate}
+        />
+      </motion.div>
+    </motion.div>
+  )}
+</div>
   );
 };
 
