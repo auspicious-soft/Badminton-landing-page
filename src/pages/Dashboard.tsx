@@ -83,7 +83,7 @@ const Dashboard = () => {
 
   return (
     <>
-      {loading && <Loader fullScreen />}
+      {loading && <Loader fullScreen />}  
     <div
   className="w-screen bg-fix overflow-hidden relative bg-[#e9f5ff]"
   style={{ backgroundImage: `url(${backgroundImage})` }}
