@@ -14,6 +14,7 @@ import SingleVenue from "./pages/SingleVenue";
 import Account from "./pages/Account";
 import MyBookings from "./components/myBookings/MyBookings";
 import MyBookingsPage from "./pages/MyBookingsPage";
+import Venues2 from "./pages/NewMatchesPage";
 
 function App() {
   const location = useLocation();
@@ -34,7 +35,7 @@ function App() {
     
 
         <Route element={<ProtectedRoute />}>
-        <Route
+        {/* <Route
             path="/matches"
             element={
               <>
@@ -44,8 +45,19 @@ function App() {
                 </div>
               </>
             }
-          />
+          /> */}
 
+ <Route
+            path="/matches"
+            element={
+              <>
+                <Navbar />
+                <div className="pt">
+                  <Venues2 />
+                </div>
+              </>
+            }
+          />
                <Route 
             path="/venues"
             element={

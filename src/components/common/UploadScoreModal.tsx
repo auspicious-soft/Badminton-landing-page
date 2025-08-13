@@ -297,11 +297,11 @@ const UploadScoreModal: React.FC<UploadScoreModalProps> = ({
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <button
-            className="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-red-600"
+         <button
+            className="absolute -top-5 -right-5 bg-slate-50/90border-white rounded-full text-blue-900 hover:text-blue-600 hover:bg-gray-50 shadow-lg p-2 z-20"
             onClick={onClose}
           >
-            <X className="w-5 sm:w-6 h-5 sm:h-6" />
+            <X className="w-6 h-6" />
           </button>
           <div className="text-gray-900 text-lg sm:text-xl font-semibold font-['Raleway']">
             Upload {gameType.charAt(0).toUpperCase() + gameType.slice(1)} Match Scores

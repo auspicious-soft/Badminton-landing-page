@@ -184,6 +184,7 @@ function SingleVenue() {
     .filter((p) => p.type === "user" && p.id !== null)
     .map((p) => p.id);
 
+  
   // Handle navigation state for pre-selected court and game
   useEffect(() => {
     if (location.state) {
@@ -518,6 +519,24 @@ useEffect(() => {
     setShowPaymentModal(true);
   };
 
+    useEffect(() => {
+      // Check if any modal is open
+      const anyModalOpen =
+        showFriendModal ||
+        showPaymentModal;
+    
+      if (anyModalOpen) {
+        document.body.classList.add("body-no-scroll");
+      } else {
+        document.body.classList.remove("body-no-scroll");
+      }
+    
+      // Cleanup on unmount
+      return () => {
+        document.body.classList.remove("body-no-scroll");
+      };
+    }, [showFriendModal, showPaymentModal]);
+    
 
   return (
     <>
@@ -987,7 +1006,7 @@ useEffect(() => {
               transition={{ duration: 0.3 }}
             >
               <motion.div
-                className="relative bg-transparent overflow-y-auto hide-scrollbar w-full max-w-md sm:max-w-lg"
+                className="relative bg-transparent hide-scrollbar w-full max-w-2xl sm:max-w-4xl"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.8, opacity: 0 }}
@@ -1022,12 +1041,6 @@ useEffect(() => {
                   }}
                   VenueId={VenueId}
                 />
-               {/* <button
-          className="absolute top-2 right-2 text-red-600 rounded-full w-6 h-6 sm:w-8 sm:h-8 flex justify-center items-center z-10"
-          onClick={() => setShowPaymentModal(false)}
-        >
-          <X />
-        </button> */}
               </motion.div>
             </motion.div>
           )}

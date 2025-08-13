@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import paymentSuccess from "../../assets/accepted-1.png";
 import paymentFailed from "../../assets/image-1.png";
 import defaultIcon from "../../assets/tennis-ball.png";
@@ -119,7 +119,10 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-start justify-end pt-14 pr-4 sm:pr-6"
+         className="
+      fixed inset-0 z-50 flex items-start justify-end pt-14 pr-4 sm:pr-6
+      max-[500px]:mt-[6rem] max-[500px]:pt-0 max-[500px]:pr-0 max-[500px]:justify-center
+    "
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -127,28 +130,41 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
         >
           <motion.div
             ref={modalRef}
-            className="w-full max-w-md bg-white rounded-lg shadow-lg"
+             className="
+    w-full max-w-md bg-white rounded-lg shadow-lg
+    max-[550px]:w-full max-[550px]:h-screen max-[550px]:rounded-none
+  "
             variants={modalVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
           >
-            <div className="flex justify-between items-center p-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold font-['Raleway'] text-gray-800">
-                Notifications
-              </h2>
-              <div className="flex items-center gap-2">
-                <button
-                  className="text-sm font-medium font-['Raleway'] text-blue-600 hover:text-blue-700"
-                  onClick={onMarkAllRead}
-                >
-                  Mark all as read
-                </button>
-               
-              </div>
-            </div>
+           <div className="flex justify-between items-center p-4 border-b border-gray-200">
+  <div className="flex items-center gap-2">
+    {/* Show back icon only on mobile */}
+    <button
+      onClick={onClose}
+      className="hidden max-[550px]:inline-flex items-center justify-center p-1 rounded-full hover:bg-gray-100"
+    >
+   <ChevronLeft className="w-5 h-5"/>
+    </button>
+
+    <h2 className="text-lg font-semibold font-['Raleway'] text-gray-800">
+      Notifications
+    </h2>
+  </div>
+
+  <button
+    className="text-sm font-medium font-['Raleway'] text-blue-600 hover:text-blue-700"
+    onClick={onMarkAllRead}
+  >
+    Mark all as read
+  </button>
+</div>
+
             <div 
-            className="max-h-96 overflow-y-auto hide-scrollbar"
+            className=" max-h-96 overflow-y-auto hide-scrollbar
+    max-[550px]:max-h-[calc(100vh-60px)]"
              onScroll={handleScroll}
               ref={listRef}
             >

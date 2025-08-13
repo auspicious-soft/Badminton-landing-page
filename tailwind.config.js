@@ -10,7 +10,9 @@ export default {
            'Secondary-Font':'#7F7F8A',
            'Grey':'#6C7278',
            'Row-color':'#e5e7eb',
-           'Table-Clr':'#f2f2f4'
+           'Table-Clr':'#f2f2f4',
+             'blue-light': '#ebf8ff', // lighter than blue-50
+        'indigo-light': '#e0e7ff', // lighter than indigo-50
          },
           screens: {
         md720: '720px', // custom breakpoint at 700px

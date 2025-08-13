@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Download } from "lucide-react";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -22,6 +24,21 @@ const Header = () => {
     }
     // else default anchor scroll
   };
+
+  useEffect(() => {
+  const anyModalOpen = isMenuOpen || showNotificationModal; // add more modals if needed
+
+  if (anyModalOpen) {
+    document.body.classList.add("body-no-scroll");
+  } else {
+    document.body.classList.remove("body-no-scroll");
+  }
+
+  // Cleanup on unmount
+  return () => {
+    document.body.classList.remove("body-no-scroll");
+  };
+}, [isMenuOpen, showNotificationModal]);
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-b border-gray-100 z-50">

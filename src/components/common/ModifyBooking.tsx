@@ -262,7 +262,7 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
   };
 
   return (
-    <>
+    <div>
       {loading && <Loader fullScreen />}
 
       <style>
@@ -289,14 +289,14 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
             transition={{ duration: 0.3 }}
           >
             <motion.div
-              className="relative bg-white rounded-[12px] sm:rounded-[20px] p-4 sm:p-6 pt-8 sm:pt-10 w-full max-w-[80vw]  sm:max-w-[500px] md:max-w-[730px] max-h-[75vh] overflow-y-auto"
+              className="relative bg-white rounded-[12px] sm:rounded-[20px] p-4 sm:p-6 w-full max-w-[80vw]  sm:max-w-[500px] md:max-w-[730px] max-h-[75vh] "
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <button
-                className="absolute top-2 right-2 sm:top-4 sm:right-4 text-gray-600 hover:text-red-600"
+             <button
+                className="absolute -top-2 -right-3 sm:-top-3 sm:-right-4 bg-white border-white rounded-full text-blue-900 hover:text-blue-600 shadow-lg p-2 sm:p-3 z-30"
                 onClick={onClose}
               >
                 <X className="w-5 h-5 sm:w-6 sm:h-6" />
@@ -376,7 +376,7 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
         selectedFriendIds={selectedFriendIds}
         onFriendsUpdate={onFriendsUpdate}
       />
-    </>
+    </div>
   );
 };
 

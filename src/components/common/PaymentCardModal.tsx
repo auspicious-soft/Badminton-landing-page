@@ -281,14 +281,16 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
 };
 
   return (
-    <>
-   <div className="relative p-4 sm:p-6 bg-white rounded-[20px] flex flex-col justify-start items-start gap-4 w-full max-w-[90vw] sm:max-w-[656px] max-h-[90vh] overflow-y-auto hide-scrollbar">
-  <button
-    className="absolute top-2 right-2 text-red-600 rounded-full w-6 h-6 sm:w-8 sm:h-8 flex justify-center items-center z-10"
-    onClick={onClose}
-  >
-    <X />
-  </button>
+  <div className="relative mx-4 sm:mx-6 md:mx-8 lg:mx-auto w-full max-w-[calc(100vw-2rem)] sm:max-w-[calc(100vw-3rem)] md:max-w-[calc(100vw-4rem)] lg:max-w-[800px]">
+         <button
+      className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 bg-white border-white rounded-full text-blue-900 hover:text-blue-600 shadow-lg p-2 sm:p-3 z-30"
+      onClick={onClose}
+    >
+      <X className="w-5 h-5 sm:w-6 sm:h-6" />
+    </button>
+        <div className="relative p-4 sm:p-6 lg:p-8 bg-white rounded-[20px] flex flex-col justify-start items-start gap-4 sm:gap-6 w-full max-h-[90vh] overflow-y-auto hide-scrollbar">
+
+   
   {/* Image Section */}
   <img
     className="w-full h-40 sm:h-60 rounded-[12px] object-cover"
@@ -500,7 +502,7 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
     </button>
   </div>
 </div>
-    </>
+    </div>
 
   );
 };

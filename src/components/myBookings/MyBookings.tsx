@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Crown } from "lucide-react";
+import { MapPin, Crown, X } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 import { baseImgUrl, URLS } from "../../utils/urls";
 import dummyUserImg from "../../assets/dashboarduser.png";
@@ -309,6 +309,25 @@ const openModifyModal = (
     setSelectedgameType(null);
   };
 
+useEffect(() => {
+  // Check if any modal is open
+  const anyModalOpen =
+    showUploadScoreModal ||
+    showCancelModal ||
+    showInfoModal ||
+    showModifyModal;
+
+  if (anyModalOpen) {
+    document.body.classList.add("body-no-scroll");
+  } else {
+    document.body.classList.remove("body-no-scroll");
+  }
+
+  // Cleanup on unmount
+  return () => {
+    document.body.classList.remove("body-no-scroll");
+  };
+}, [showUploadScoreModal, showCancelModal, showInfoModal, showModifyModal]);
   return (
    <div className="w-full grid grid-cols-1 md720:grid-cols-2 justify-start items-start gap-6 sm:gap-8">
   {bookingGroups.map((group, index) => (
@@ -633,7 +652,7 @@ const openModifyModal = (
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white rounded-lg p-6 w-full max-w-[95vw] sm:max-w-[700px]"
+        className="bg-white rounded-lg p-4 sm:p-6 max-w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto w-0"
         variants={modalVariants}
         initial="hidden"
         animate="visible"
@@ -693,6 +712,13 @@ const openModifyModal = (
           onScoreUpdate={onScoreUpdate}
         />
       </motion.div>
+       <button
+        className="absolute -top-4 -right-4 bg-white border-2 border-gray-200 rounded-full text-gray-600 hover:text-gray-800 hover:bg-gray-50 shadow-lg p-2 z-10"
+        onClick={closeUploadScoreModal}
+      >
+        <X className="w-5 h-5" />
+      </button>
+
     </motion.div>
   )}
 </div>

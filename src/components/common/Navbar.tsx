@@ -2,7 +2,14 @@ import React, { useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImage from "../../assets/logonew-removebg-preview.png";
-import { Calendar, User, LogOut, Bell, UserRound } from "lucide-react";
+import {
+  Calendar,
+  User,
+  LogOut,
+  Bell,
+  UserRound,
+  TicketCheck,
+} from "lucide-react";
 import { getApi, postApi } from "../../utils/api";
 import { baseImgUrl, URLS } from "../../utils/urls";
 import NotificationModal from "./NotificationModal";
@@ -63,9 +70,9 @@ const Navbar = () => {
   const profileRef = useRef<HTMLDivElement>(null);
 
   const navItems = [
-    { name: "Venues", path: "/venues" },
-    { name: "Open Matches", path: "/matches" },
-    { name: "Bookings", path: "/my-bookings" },
+    { name: "Create Game", path: "/venues" },
+    { name: "Join Match", path: "/matches" },
+    // { name: "Bookings", path: "/my-bookings" },
   ];
 
   const unreadCount = notificationsData.filter(
@@ -136,6 +143,17 @@ const Navbar = () => {
     navigate("/");
   };
 
+  const handleBookingNavigation = () => {
+    setIsProfileDropdownOpen(false);
+    navigate("/my-bookings");
+  };
+
+    const handleAccountNavigation = () => {
+    setIsProfileDropdownOpen(false);
+    navigate("/account");
+  };
+
+
   useEffect(() => {
     getNotification();
   }, []);
@@ -154,6 +172,19 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+
+  useEffect(() => {
+    if (showNotificationModal) {
+      document.body.classList.add("body-no-scroll");
+    } else {
+      document.body.classList.remove("body-no-scroll");
+    }
+    return () => {
+      document.body.classList.remove("body-no-scroll");
+    };
+  }, [showNotificationModal]);
+  
 
   return (
     <nav className="w-full px-4 sm:px-6 py-4 bg-slate-50/60">
@@ -226,10 +257,19 @@ const Navbar = () => {
                   >
                     <div
                       className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={() => navigate("/account")}
+                      onClick={handleAccountNavigation}
                     >
                       <UserRound className="w-5 h-5 text-gray-900" />
                       <span className="text-gray-900 font-medium">Account</span>
+                    </div>
+                    <div
+                      className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
+                      onClick={handleBookingNavigation}
+                    >
+                      <TicketCheck className="w-5 h-5 text-gray-900" />
+                      <span className="text-gray-900 font-medium">
+                        Bookings
+                      </span>
                     </div>
                     <div
                       className="px-4 py-2 flex items-center gap-2 hover:bg-gray-100 cursor-pointer"
