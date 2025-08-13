@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { MapPin, Crown, X } from "lucide-react";
+import { MapPin, Crown, X, Plus } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 import { baseImgUrl, URLS } from "../../utils/urls";
 import dummyUserImg from "../../assets/dashboarduser.png";
@@ -385,85 +385,107 @@ useEffect(() => {
                 </div>
               </div>
               <div className="self-stretch inline-flex flex-row justify-center items-start gap-2 sm:gap-4">
-                <div className="flex-1 flex flex-row justify-start items-center gap-2 sm:gap-3">
-                  {booking.team1.map((player, playerIndex) => (
-                    <div
-                      key={playerIndex}
-                      className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
-                    >
-                      <div
-                        className={`relative w-10 sm:w-12 h-10 sm:h-12 rounded-full ${
-                          booking.score?.winner === "team1"
-                            ? "border-2 border-yellow-400"
-                            : ""
-                        }`}
-                      >
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src={
-                            player.imageUrl &&
-                            player.imageUrl.startsWith("https://")
-                              ? player.imageUrl
-                              : player.imageUrl
-                              ? `${baseImgUrl}/${player.imageUrl}`
-                              : dummyUserImg
-                          }
-                          alt={player.name}
-                        />
-                        {booking.score?.winner === "team1" && (
-                          <Crown
-                            className="absolute -top-3 right-1 w-5 h-3 sm:w-6 sm:h-4 text-yellow-500"
-                            strokeWidth={2}
-                          />
-                        )}
-                      </div>
-                      <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
-                        {player.name.split(" ")[0]}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <div className="flex-1 flex flex-row justify-start items-center gap-2 sm:gap-3">
+  {[0, 1].map((playerIndex) => {
+    const player = booking.team1[playerIndex];
+    if (player) {
+      return (
+        <div
+          key={playerIndex}
+          className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
+        >
+          <div className="relative w-10 sm:w-12 h-10 sm:h-12 rounded-full">
+            <img
+              className="w-full h-full rounded-full object-cover"
+              src={
+                player.imageUrl && player.imageUrl.startsWith("https://")
+                  ? player.imageUrl
+                  : player.imageUrl
+                  ? `${baseImgUrl}/${player.imageUrl}`
+                  : dummyUserImg
+              }
+              alt={player.name}
+            />
+          </div>
+          <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
+            {player.name.split(" ")[0]}
+          </div>
+        </div>
+      );
+    } else {
+  
+      return (
+        <div
+          key={playerIndex}
+          className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
+        >
+          <div
+            className="w-10 sm:w-12 h-10 sm:h-12 rounded-full border-2 border-dashed border-gray-400 bg-gray-100 flex items-center justify-center"
+            style={{ pointerEvents: "none" }}
+          >
+                <Plus className="text-gray-400 text-xs sm:text-sm font-medium font-['Raleway'] leading-none"/>
+        
+          </div>
+          <div className="text-center justify-center text-gray-400 text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
+
+          </div>
+        </div>
+      );
+    }
+  })}
+</div>
                 <div className="w-8 sm:w-10 h-8 sm:h-10 relative flex-shrink-0">
                   <div className="w-8 sm:w-10 h-0 left-0 top-[32px] sm:top-[40px] absolute origin-top-left -rotate-90 outline outline-1 outline-offset-[-0.5px] outline-white"></div>
                 </div>
                 <div className="flex-1 flex flex-row justify-start items-center gap-2 sm:gap-3">
-                  {booking.team2.map((player, playerIndex) => (
-                    <div
-                      key={playerIndex}
-                      className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
-                    >
-                      <div
-                        className={`relative w-10 sm:w-12 h-10 sm:h-12 rounded-full ${
-                          booking.score?.winner === "team2"
-                            ? "border-2 border-yellow-400"
-                            : ""
-                        }`}
-                      >
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src={
-                            player.imageUrl &&
-                            player.imageUrl.startsWith("https://")
-                              ? player.imageUrl
-                              : player.imageUrl
-                              ? `${baseImgUrl}/${player.imageUrl}`
-                              : dummyUserImg
-                          }
-                          alt={player.name}
-                        />
-                        {booking.score?.winner === "team2" && (
-                          <Crown
-                            className="absolute -top-3 right-1 w-5 h-3 sm:w-6 sm:h-4 text-yellow-500"
-                            strokeWidth={2}
-                          />
-                        )}
-                      </div>
-                      <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
-                        {player.name.split(" ")[0]}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+  {[0, 1].map((playerIndex) => {
+    const player = booking.team2[playerIndex];
+    if (player) {
+      return (
+        <div
+          key={playerIndex}
+          className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
+        >
+          <div className="relative w-10 sm:w-12 h-10 sm:h-12 rounded-full">
+            <img
+              className="w-full h-full rounded-full object-cover"
+              src={
+                player.imageUrl && player.imageUrl.startsWith("https://")
+                  ? player.imageUrl
+                  : player.imageUrl
+                  ? `${baseImgUrl}/${player.imageUrl}`
+                  : dummyUserImg
+              }
+              alt={player.name}
+            />
+          </div>
+          <div className="text-center justify-center text-dark-blue text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
+            {player.name.split(" ")[0]}
+          </div>
+        </div>
+      );
+    } else {
+
+      return (
+        <div
+          key={playerIndex}
+          className="flex-1 inline-flex flex-col justify-center items-center gap-1 sm:gap-1.5 relative"
+        >
+          <div
+            className="w-10 sm:w-12 h-10 sm:h-12 rounded-full border-2 border-dashed border-gray-400 bg-gray-100 flex items-center justify-center"
+            style={{ pointerEvents: "none" }}
+          >
+              <Plus className="text-gray-400 text-xs sm:text-sm font-medium font-['Raleway'] leading-none"/>
+        
+          </div>
+          <div className="text-center justify-center text-gray-400 text-xs sm:text-sm font-medium font-['Raleway'] leading-none mt-1 sm:mt-2">
+         
+          </div>
+        </div>
+      );
+    }
+  })}
+</div>
               </div>
               <div className="w-full inline-flex justify-between items-center gap-1 sm:gap-2">
                 <div className="inline-flex justify-start items-center gap-1 sm:gap-2 flex-grow">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import logoImage from "../../assets/logonew-removebg-preview.png";
 import {
   Calendar,
@@ -48,6 +48,20 @@ interface Notification {
   updatedAt: string;
 }
 
+const modalVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.2, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.8,
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+};
+
 const Navbar = () => {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
@@ -64,6 +78,7 @@ const Navbar = () => {
     hasNextPage: true,
   });
   const [notificationLoading, setNotificationLoading] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
   const { userData, logout } = useAuth();
   const { errorToast, successToast } = useToast();
   const navigate = useNavigate();
@@ -137,7 +152,16 @@ const Navbar = () => {
   };
 
   const handleLogout = async () => {
+    // logout();
+    setShowLogoutModal(true)
+    setIsProfileDropdownOpen(false);
+    // successToast("Logout SuccessFully.");
+    // navigate("/");
+  };
+
+  const handleLogoutPopup = async () => {
     logout();
+    setShowLogoutModal(false)
     setIsProfileDropdownOpen(false);
     successToast("Logout SuccessFully.");
     navigate("/");
@@ -147,6 +171,11 @@ const Navbar = () => {
     setIsProfileDropdownOpen(false);
     navigate("/my-bookings");
   };
+
+    const closeLogoutModal = () => {
+    setShowLogoutModal(false);
+  };
+
 
     const handleAccountNavigation = () => {
     setIsProfileDropdownOpen(false);
@@ -175,7 +204,10 @@ const Navbar = () => {
 
 
   useEffect(() => {
-    if (showNotificationModal) {
+      const anyModalOpen =
+    showNotificationModal ||
+    showLogoutModal ;
+    if (anyModalOpen) {
       document.body.classList.add("body-no-scroll");
     } else {
       document.body.classList.remove("body-no-scroll");
@@ -183,7 +215,7 @@ const Navbar = () => {
     return () => {
       document.body.classList.remove("body-no-scroll");
     };
-  }, [showNotificationModal]);
+  }, [showNotificationModal, showLogoutModal]);
   
 
   return (
@@ -336,6 +368,48 @@ const Navbar = () => {
         }}
         loadingNot={notificationLoading}
       />
+
+       {showLogoutModal && (
+  <motion.div
+    className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <motion.div
+      className="bg-white shadow-xl rounded-xl p-6 sm:p-8 w-full max-w-md mx-4 sm:mx-0 relative"
+      variants={modalVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+    >
+      <h2 className="text-lg sm:text-xl font-semibold font-['Raleway'] text-gray-800 mb-3 text-center">
+        Confirmation
+      </h2>
+      <p className="text-sm sm:text-base font-['Raleway'] text-gray-600 mb-8 text-center">
+        Are you sure you want to logout?
+      </p>
+
+      <div className="flex gap-4 justify-end">
+        <button
+          className="flex-1 px-4 py-2 rounded-lg text-sm sm:text-base font-medium font-['Raleway'] bg-green-600 text-white hover:bg-green-700 transition-all duration-200"
+          onClick={handleLogoutPopup}
+        >
+          Yes
+        </button>
+
+        <button
+          className="flex-1 px-4 py-2 rounded-lg text-sm sm:text-base font-medium font-['Raleway'] bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all duration-200"
+          onClick={closeLogoutModal}
+        >
+          No
+        </button>
+      </div>
+    </motion.div>
+  </motion.div>
+)}
+
+
     </nav>
   );
 };

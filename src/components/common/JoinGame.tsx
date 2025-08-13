@@ -500,27 +500,24 @@ const team2Slots = slots.slice(2, 4);
         </div>
 
         {/* Join Game Button */}
-        <div className="w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-dark-blue hover:bg-blue-700 transition-colors rounded-lg flex justify-center items-center gap-3">
-          <motion.button
-            className={`text-white text-sm sm:text-base font-medium font-['Raleway'] ${
-              selectedSlot === null || loading
-                ? "opacity-50 cursor-not-allowed"
-                : ""
-            }`}
-            onClick={handleJoinGame}
-            disabled={selectedSlot === null || loading}
-            whileTap={selectedSlot !== null && !loading ? { scale: 0.95 } : {}}
-            whileHover={
-              selectedSlot !== null && !loading ? { scale: 1.02 } : {}
-            }
-          >
-            {loading
-              ? "Processing..."
-              : selectedSlot !== null
-              ? "Join Game"
-              : "Select a Position"}
-          </motion.button>
-        </div>
+      <motion.button
+  className={`w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-dark-blue hover:bg-blue-700 transition-colors rounded-lg flex justify-center items-center gap-3 ${
+    selectedSlot === null || loading ? "opacity-50 cursor-not-allowed" : ""
+  }`}
+  onClick={handleJoinGame}
+  disabled={selectedSlot === null || loading}
+  whileTap={selectedSlot !== null && !loading ? { scale: 0.95 } : {}}
+  whileHover={selectedSlot !== null && !loading ? { scale: 1.02 } : {}}
+>
+  <span className="text-white text-sm sm:text-base font-medium">
+    {loading
+      ? "Processing..."
+      : selectedSlot !== null
+      ? "Join Game"
+      : "Select a Position"}
+  </span>
+</motion.button>
+
       </div>
     </>
   );

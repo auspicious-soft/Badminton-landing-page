@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getApi } from "../utils/api";
 import { URLS, baseImgUrl } from "../utils/urls";
 import { useAuth } from "../utils/AuthContext";
-import DatePicker from "react-datepicker";
+import DatePicker, { CalendarContainer } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Loader from "../components/common/Loader";
 import { useToast } from "../utils/ToastContext";
@@ -434,14 +434,40 @@ useEffect(() => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="mb-6 text-center"
+            className="text-center"
           >
             <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-gray-900">
               Join an Open Game
             </h1>
-            <p className="text-gray-600 text-sm sm:text-lg">
+            <p className="text-gray-600 text-sm sm:text-lg mb-6  ">
               Find a game that matches your skill and schedule.
             </p>
+
+           <div className="flex justify-between items-start sm:items-center gap-4 custom-flex-col-below-300 ml-4 mb-2  ">
+  <div className="flex flex-col gap-1 ">
+
+  <div style={{ minHeight: 25, minWidth: 100 }}>
+  {isDatePickerOpen && date ? (
+    <button
+      className="bg-[#ed8936] text-white px-3 py-2 rounded-lg hover:bg-[#ed8936] text-sm font-medium font-['Raleway'] w-[100px]"
+      onClick={() => {
+        setDate("");
+        setIsDatePickerOpen(false);
+        fetchMatches();
+      }}
+    >
+      Clear Date
+    </button>
+  ) : (
+    <div style={{ height: 25, width: 100 }} />
+  )}
+</div>
+
+   
+  </div>
+
+</div>
+
           </motion.div>
 
         <div className="flex justify-between items-start sm:items-center gap-4 mb-6 custom-flex-col-below-300">
@@ -454,12 +480,15 @@ useEffect(() => {
 `}</style>
 
  <div className="relative w-full sm:w-40" ref={datePickerRef}>
+   
   <div
     className="px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-900 rounded-3xl flex justify-between items-center gap-2 sm:gap-3 cursor-pointer"
     onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
   >
     <div className="text-white text-xs sm:text-sm font-medium font-['Raleway'] truncate">
       {date || "Select a date"}
+
+    
     </div>
     {isDatePickerOpen ? (
       <ChevronUp className="w-4 h-4 text-white flex-shrink-0" />
@@ -502,6 +531,7 @@ useEffect(() => {
           ]}
           className="border-none w-full relative z-10"
           calendarClassName="bg-white rounded-lg shadow-lg"
+        
         />
       </motion.div>
     )}
@@ -610,7 +640,7 @@ useEffect(() => {
         transition={{ duration: 0.3 }}
       >
         <button
-          className="absolute top-0 right-0 bg-slate-50/90 border-white rounded-full text-blue-900 hover:text-blue-600 sm:top-0 sm:right-0 mt-[-10px] mr-[-10px]"
+          className="absolute p-2 top-0 right-0 bg-slate-50/90 border-white rounded-full text-blue-900 hover:text-blue-600 sm:top-0 sm:right-0 mt-[-12px] mr-[-12px]"
           onClick={handleCloseJoinGameModal}
         > 
           <X className="w-6 h-6 sm:w-6 sm:h-6" />

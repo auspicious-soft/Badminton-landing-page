@@ -38,6 +38,7 @@ interface ScoreErrors {
   set3: string;
 }
 
+
 const UploadScoreModal: React.FC<UploadScoreModalProps> = ({
   isOpen,
   onClose,
@@ -97,7 +98,7 @@ const UploadScoreModal: React.FC<UploadScoreModalProps> = ({
       return "";
     }
 
-    if (isNaN(team1Score) || isNaN(team2Score)) {
+    if (isNaN(team1Score) && isNaN(team2Score)) {
       return "Scores must be numeric values.";
     }
     if (team1Score < 0 || team2Score < 0) {
@@ -179,6 +180,8 @@ const UploadScoreModal: React.FC<UploadScoreModalProps> = ({
     const set2Error = validateSet(scores.set2);
     const set3Error = validateSet(scores.set3);
 
+
+
     return (
       (scores.set1.team1 !== "" && scores.set1.team2 !== "" && !set1Error) ||
       (scores.set2.team1 !== "" && scores.set2.team2 !== "" && !set2Error) ||
@@ -186,8 +189,41 @@ const UploadScoreModal: React.FC<UploadScoreModalProps> = ({
     );
   }, [scores, gameType]);
 
+
+        const isFormComplete = useMemo(() => {
+    return (
+      scores.set1.team1 !== "" &&
+      scores.set1.team2 !== "" &&
+      scores.set2.team1 !== "" &&
+      scores.set2.team2 !== "" &&
+      scores.set3.team1 !== "" &&
+      scores.set3.team2 !== ""
+    );
+  }, [scores]);
+
+
   const handleSubmit = async () => {
+
+      if (!isFormComplete) {
+      errorToast("Please enter scores for all sets");
+      return;
+    }
     if (!isFormValid) {
+      return;
+    }
+
+     const set1Error = validateSet(scores.set1);
+    const set2Error = validateSet(scores.set2);
+    const set3Error = validateSet(scores.set3);
+
+    // Set errors if any
+    if (set1Error || set2Error || set3Error) {
+      setErrors({
+        set1: set1Error,
+        set2: set2Error,
+        set3: set3Error,
+      });
+      errorToast("Please correct the invalid scores");
       return;
     }
 

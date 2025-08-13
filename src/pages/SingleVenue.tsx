@@ -188,7 +188,7 @@ function SingleVenue() {
     racket1: 0,
     ball: 0,
   });
-  const [showCardian, setShowCardian] = useState(false);
+  const [showAccordian, setShowAccordian] = useState(false);
     const isSmallScreen = useIsSmallScreen();
   const datePickerRef = useRef<HTMLDivElement>(null);
   const { VenueId } = useParams<{ VenueId: string }>();
@@ -557,9 +557,9 @@ useEffect(() => {
     useEffect(() => {
     // On large screens, always show details
     if (!isSmallScreen) {
-      setShowCardian(true);
+      setShowAccordian(true);
     } else {
-      setShowCardian(false);
+      setShowAccordian(false);
     }
   }, [isSmallScreen]);
 
@@ -921,12 +921,12 @@ useEffect(() => {
       {/* Accordion Toggle Button */}
      {isSmallScreen && (
             <button
-              onClick={() => setShowCardian((prev) => !prev)}
+              onClick={() => setShowAccordian((prev) => !prev)}
               className="w-full flex justify-between items-center text-sm font-semibold text-blue-700 hover:underline"
             >
-              {showCardian ? "Hide Details" : "Show Details"}
+              {showAccordian ? "Hide Details" : "Show Details"}
               <motion.span
-                animate={{ rotate: showCardian ? 180 : 0 }}
+                animate={{ rotate: showAccordian ? 180 : 0 }}
                 transition={{ duration: 0.3 }}
               >
                 ▼
@@ -936,7 +936,7 @@ useEffect(() => {
 
       {/* Accordion Content with Animation */}
       <AnimatePresence>
-        {showCardian && (
+        {showAccordian && (
           <motion.div
             className="w-full flex flex-col gap-5"
             initial={{ opacity: 0, height: 0 }}
@@ -998,19 +998,27 @@ useEffect(() => {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-start items-center gap-3.5 w-full">
-              <button className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3">
-                <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
-                  <MousePointer2 className="w-4 h-4 text-white rotate-90" strokeWidth={1.5} />
-                </div>
-                <a
-                  href={`https://www.google.com/maps?q=${venueData?.location.coordinates[1]},${venueData?.location.coordinates[0]}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway']"
-                >
-                  Directions
-                </a>
-              </button>
+             <button
+  className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3"
+  onClick={() =>
+    window.open(
+      `https://www.google.com/maps?q=${venueData?.location.coordinates[1]},${venueData?.location.coordinates[0]}`,
+      "_blank",
+      "noopener,noreferrer"
+    )
+  }
+>
+  <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
+    <MousePointer2
+      className="w-4 h-4 text-white rotate-90"
+      strokeWidth={1.5}
+    />
+  </div>
+  <span className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway']">
+    Directions
+  </span>
+</button>
+
 
               <button
                 onClick={() => {
