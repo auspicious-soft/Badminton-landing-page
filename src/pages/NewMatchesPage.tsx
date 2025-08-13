@@ -603,7 +603,7 @@ useEffect(() => {
       transition={{ duration: 0.3 }}
     >
       <motion.div
-        className="relative bg-white rounded-2xl p-4 w-full max-w-[95vw] sm:max-w-[800px] md:max-w-[800px]"
+        className="relative bg-white rounded-2xl w-full max-w-[85vw] sm:max-w-[700px] md:max-w-[700px]"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.8, opacity: 0 }}

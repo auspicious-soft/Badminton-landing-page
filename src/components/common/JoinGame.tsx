@@ -254,7 +254,7 @@ const team2Slots = slots.slice(2, 4);
   return (
     <>
       {loading && <Loader fullScreen />}
-      <div className="p-4 sm:p-4 bg-white rounded-[20px] flex flex-col justify-start items-start gap-4 w-full max-w-[95vw] sm:max-w-[800px] md:max-w-[1200px] max-h-[90vh] overflow-y-auto hide-scrollbar">
+      <div className="p-4 sm:p-4 bg-white rounded-[20px] flex flex-col justify-start items-start gap-4 w-full max-w-[85vw] sm:max-w-[700px] md:max-w-[1000px] max-h-[80vh] overflow-y-auto hide-scrollbar">
         {/* Image Section */}
         <img
           className="w-full h-40 sm:h-60 rounded-[12px] object-cover"

@@ -138,6 +138,20 @@ const TimeSlotSection: React.FC<TimeSlotSectionProps> = ({
   );
 };
 
+
+function useIsSmallScreen() {
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    const checkSize = () => setIsSmall(window.innerWidth < 1024);
+    checkSize();
+    window.addEventListener("resize", checkSize);
+    return () => window.removeEventListener("resize", checkSize);
+  }, []);
+
+  return isSmall;
+}
+
 function SingleVenue() {
   const [venueData, setVenueData] = useState<VenueData | null>(null);
   const [selectedGame, setSelectedGame] = useState<string>("Padel");
@@ -174,6 +188,8 @@ function SingleVenue() {
     racket1: 0,
     ball: 0,
   });
+  const [showCardian, setShowCardian] = useState(false);
+    const isSmallScreen = useIsSmallScreen();
   const datePickerRef = useRef<HTMLDivElement>(null);
   const { VenueId } = useParams<{ VenueId: string }>();
   const location = useLocation();
@@ -181,7 +197,7 @@ function SingleVenue() {
   const { successToast, errorToast } = useToast();
   
   const selectedFriendIds = players
-    .filter((p) => p.type === "user" && p.id !== null)
+  .filter((p) => (p.type === "user" || p.type === "guest") && p.id !== null)
     .map((p) => p.id);
 
   
@@ -538,6 +554,16 @@ useEffect(() => {
     }, [showFriendModal, showPaymentModal]);
     
 
+    useEffect(() => {
+    // On large screens, always show details
+    if (!isSmallScreen) {
+      setShowCardian(true);
+    } else {
+      setShowCardian(false);
+    }
+  }, [isSmallScreen]);
+
+
   return (
     <>
       {loading && <Loader fullScreen />}
@@ -875,107 +901,140 @@ useEffect(() => {
             </button>
           </div>
         </div>
-        <div className="SecondSection w-full lg:w-[30%]">
-          <div className="relative w-full max-w-full">
-            <div className="p-4 bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(92,138,255,0.10)] flex flex-col justify-start items-center gap-5 w-full">
-              <div className="w-full flex flex-col gap-2.5">
-                <div className="flex flex-col gap-5">
-                  <div className="flex flex-col gap-3">
-                    <div className="text-Primary-Font text-xl sm:text-2xl font-semibold font-['Raleway'] leading-7">
-                      {venueData?.name || "Name of the court"}
+    <div className="SecondSection w-full lg:w-[30%]">
+  <div className="relative w-full max-w-full">
+    <div className="p-4 bg-white rounded-[20px] shadow-[0px_4px_20px_0px_rgba(92,138,255,0.10)] flex flex-col justify-start items-center gap-5 w-full">
+      
+      {/* Court Name & Address */}
+      <div className="w-full">
+        <div className="flex flex-col gap-3">
+          <div className="text-Primary-Font text-xl sm:text-2xl font-semibold font-['Raleway'] leading-7">
+            {venueData?.name || "Name of the court"}
+          </div>
+          <div className="text-Primary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
+            {venueData &&
+              `${venueData.address}, ${venueData.city}, ${venueData.state} `}
+          </div>
+        </div>
+      </div>
+
+      {/* Accordion Toggle Button */}
+     {isSmallScreen && (
+            <button
+              onClick={() => setShowCardian((prev) => !prev)}
+              className="w-full flex justify-between items-center text-sm font-semibold text-blue-700 hover:underline"
+            >
+              {showCardian ? "Hide Details" : "Show Details"}
+              <motion.span
+                animate={{ rotate: showCardian ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                ▼
+              </motion.span>
+            </button>
+          )}
+
+      {/* Accordion Content with Animation */}
+      <AnimatePresence>
+        {showCardian && (
+          <motion.div
+            className="w-full flex flex-col gap-5"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
+          >
+            {/* Court Information */}
+            <div className="w-full flex flex-col gap-1">
+              <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway']">
+                Court Information
+              </div>
+              <div className="text-Grey text-xs sm:text-sm font-medium font-['Raleway']">
+                {venueData?.venueInfo ||
+                  "Consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt."}
+              </div>
+            </div>
+
+            {/* Opening Hours */}
+            <div className="w-full flex flex-col gap-[5px]">
+              <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway']">
+                Opening Hours
+              </div>
+              <div className="flex flex-col gap-px">
+                {venueData?.openingHours.map((hour) => (
+                  <div key={hour.day} className="w-full flex justify-between">
+                    <div className="text-Grey text-xs sm:text-sm font-medium font-['Raleway']">
+                      {hour.day}
                     </div>
-                    <div className="text-Primary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
-                      {venueData &&
-                        `${venueData.address}, ${venueData.city}, ${venueData.state} `}
+                    <div className="text-Grey text-xs sm:text-sm font-medium font-['Raleway']">
+                      {hour.hours.join(" - ")}
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-              <div className="w-full flex flex-col gap-1">
-                <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway'] leading-tight">
-                  Court Information
-                </div>
-                <div className="text-Grey text-xs sm:text-sm font-medium font-['Raleway'] leading-tight">
-                  {venueData?.venueInfo ||
-                    "Consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."}
-                </div>
+            </div>
+
+            {/* Facilities */}
+            <div className="w-full flex flex-col gap-[5px]">
+              <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway']">
+                Facilities
               </div>
-              <div className="w-full flex flex-col gap-[5px]">
-                <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway'] leading-tight">
-                  Opening Hours
-                </div>
-                <div className="flex flex-col gap-px">
-                  {venueData?.openingHours.map((hour) => (
-                    <div key={hour.day} className="w-full flex justify-between">
-                      <div className="text-Grey text-xs sm:text-sm font-medium font-['Raleway'] leading-tight">
-                        {hour.day}
-                      </div>
-                      <div className="text-Grey text-xs sm:text-sm font-medium font-['Raleway'] leading-tight">
-                        {hour.hours.join(" - ")}
+              <div className="flex flex-wrap gap-2.5">
+                {venueData?.facilities
+                  .filter((facility) => facility.isActive)
+                  .map((facility) => (
+                    <div
+                      key={facility.name}
+                      className="px-3 sm:px-4 py-1.5 bg-zinc-100 rounded-[39px] flex items-center gap-2.5"
+                    >
+                      <CloudDrizzle className="w-4 h-4 text-Secondary-Font" />
+                      <div className="text-Secondary-Font text-xs font-medium font-['Raleway']">
+                        {facility.name}
                       </div>
                     </div>
                   ))}
-                </div>
-              </div>
-              <div className="w-full flex flex-col gap-[5px]">
-                <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway'] leading-tight">
-                  Facilities
-                </div>
-                <div className="flex flex-wrap gap-2.5">
-                  {venueData?.facilities
-                    .filter((facility) => facility.isActive)
-                    .map((facility) => (
-                      <div
-                        key={facility.name}
-                        className="px-3 sm:px-4 py-1.5 bg-zinc-100 rounded-[39px] flex items-center gap-2.5"
-                      >
-                        <CloudDrizzle className="w-4 h-4 text-Secondary-Font" />
-                        <div className="text-Secondary-Font text-xs font-medium font-['Raleway'] leading-none">
-                          {facility.name}
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row justify-start items-center gap-3.5 w-full">
-                <button className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3">
-                  <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
-                    <MousePointer2
-                      className="w-4 h-4 text-white rotate-90"
-                      strokeWidth={1.5}
-                    />
-                  </div>
-                <a
-  href={`https://www.google.com/maps?q=${ venueData && venueData.location.coordinates[1]},${venueData && venueData.location.coordinates[0]}`}
-  target="_blank"
-  rel="noopener noreferrer"
-  className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-tight"
->
-  Directions
-</a>
-
-                </button>
-              <button
-  onClick={() => {
-    if (venueData?.contactInfo) {
-      navigator.clipboard.writeText(venueData.contactInfo);
-      successToast("Number copied to clipboard!");
-    }
-  }}
-  className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3"
->
-  <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
-    <Phone className="w-4 h-4 text-white" />
-  </div>
-  <div className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway'] leading-tight">
-    Call Now
-  </div>
-</button>
-
               </div>
             </div>
-          </div>
-        </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row justify-start items-center gap-3.5 w-full">
+              <button className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3">
+                <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
+                  <MousePointer2 className="w-4 h-4 text-white rotate-90" strokeWidth={1.5} />
+                </div>
+                <a
+                  href={`https://www.google.com/maps?q=${venueData?.location.coordinates[1]},${venueData?.location.coordinates[0]}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway']"
+                >
+                  Directions
+                </a>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (venueData?.contactInfo) {
+                    navigator.clipboard.writeText(venueData.contactInfo);
+                    successToast("Number copied to clipboard!");
+                  }
+                }}
+                className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3"
+              >
+                <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
+                  <Phone className="w-4 h-4 text-white" />
+                </div>
+                <div className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway']">
+                  Call Now
+                </div>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  </div>
+</div>
         <SelectFriendModal
           isOpen={showFriendModal}
           onClose={() => setShowFriendModal(false)}

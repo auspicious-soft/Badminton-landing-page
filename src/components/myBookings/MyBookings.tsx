@@ -680,7 +680,7 @@ useEffect(() => {
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-[95vw] sm:max-w-[700px] max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-lg p-4 sm:p-6 w-full max-w-[85vw] sm:max-w-[650px] max-h-[85vh] overflow-y-auto hide-scrollbar"
         variants={modalVariants}
         initial="hidden"
         animate="visible"
@@ -712,12 +712,7 @@ useEffect(() => {
           onScoreUpdate={onScoreUpdate}
         />
       </motion.div>
-       <button
-        className="absolute -top-4 -right-4 bg-white border-2 border-gray-200 rounded-full text-gray-600 hover:text-gray-800 hover:bg-gray-50 shadow-lg p-2 z-10"
-        onClick={closeUploadScoreModal}
-      >
-        <X className="w-5 h-5" />
-      </button>
+      
 
     </motion.div>
   )}

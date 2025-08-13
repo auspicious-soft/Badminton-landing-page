@@ -51,7 +51,7 @@ const AddGuestModal: React.FC<AddGuestModalProps> = ({
           const newGuest: Friend = {
             id: response.data.data._id || String(Date.now()), // Ensure string ID
             name: fullName,
-            image: null,
+           image: response.data.data.profilePic || null,
             type: "guest",
           };
           onAddGuest(newGuest);
@@ -185,7 +185,7 @@ const [loading, setLoading] = useState(false);
               </div>
               <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto hide-scrollbar">
                 {friends.map((friend) => {
-                  const isDisabled = selectedFriendIds.includes(friend.id);
+  const isDisabled = selectedFriendIds.map(String).includes(String(friend.id));
                   return (
                     <div
                       key={friend.id}
