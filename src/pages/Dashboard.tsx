@@ -35,10 +35,10 @@ const Dashboard = () => {
           }
         );
 
-        if (!navigator.geolocation) {
-          errorToast("Geolocation is not supported by your browser");
-          return;
-        }
+        // if (!navigator.geolocation) {
+        //   errorToast("Geolocation is not supported by your browser");
+        //   return;
+        // }
 
         navigator.geolocation.getCurrentPosition(
           async (position) => {
@@ -48,10 +48,10 @@ const Dashboard = () => {
             const payload = {
               authType: "Google",
               accessToken: tokenResponse.access_token,
-              location: {
-                type: "Point",
-                coordinates: [lng, lat],
-              },
+              // location: {
+              //   type: "Point",
+              //   coordinates: [lng, lat],
+              // },
               fcmToken: "your_firebase_cloud_messaging_token",
             };
 
@@ -67,7 +67,7 @@ const Dashboard = () => {
             }
           },
           () => {
-            errorToast("Please allow location access to continue.");
+            // errorToast("Please allow location access to continue.");
           }
         );
       } catch (err: any) {
