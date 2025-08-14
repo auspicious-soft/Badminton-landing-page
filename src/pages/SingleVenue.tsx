@@ -212,7 +212,6 @@ function SingleVenue() {
         preselectedDate: preselectedDateString
       } = navigationState;
       
-      console.log("Navigation state received:", navigationState);
       
     if (preselectedGame) {
   handleGameSelect(preselectedGame, true); // mark as from navigation
@@ -307,10 +306,11 @@ const handleGameSelect = (game: string, fromNavigation = false) => {
               : "120",
         }));
       }
-      const total = newTimes.reduce((acc, t) => {
-        const matched = dynamicPricing.find((slot) => slot.slot === t);
-        return acc + (matched?.price || 0);
-      }, 0);
+    const selectedCourt = venueData?.courts.find(court => court.id === selectedCourtId);
+const total = newTimes.reduce((acc, t) => {
+  const slot = selectedCourt?.availableSlots.find(slot => slot.time === t);
+  return acc + (slot?.price || 0);
+}, 0);
       setTotalPrice(total);
 
       return newTimes;
@@ -563,7 +563,6 @@ useEffect(() => {
     }
   }, [isSmallScreen]);
 
-
   return (
     <>
       {loading && <Loader fullScreen />}
@@ -636,11 +635,13 @@ useEffect(() => {
           
           {selectedDate && venueData?.courts && (
             <div className="w-full p-4 bg-Primary-Grey rounded-[10px] flex flex-col justify-start items-start gap-2.5 overflow-hidden">
+
+              { venueData.courts.length > 0 ? <>
               <div className="text-Primary-Font text-base sm:text-lg font-semibold font-['Raleway'] leading-snug">
                 Select a court
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-                {venueData.courts
+                { venueData.courts 
                   .filter((court) => court.games === selectedGame)
                   .map((court) => (
                     <div
@@ -671,8 +672,19 @@ useEffect(() => {
                         )}
                       </div>
                     </div>
-                  ))}
+                  ))
+              
+                }
               </div>
+              </>
+              : 
+              <>
+               <div className="text-Primary-Font text-base sm:text-lg font-semibold font-['Raleway'] leading-snug">
+             No Courts Available.
+              </div>
+              </>
+}
+
             </div>
           )}
           

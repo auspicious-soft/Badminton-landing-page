@@ -72,18 +72,17 @@ const PlayerAvatars = ({
               whileHover={{ scale: 1.1, zIndex: 20 }}
               onClick={isYou ? () => onSlotClick(i) : undefined}
             >
-            {item?.profilePic ? (
-  <img
-    src={item.profilePic}
-    alt={item.name}
-    className="w-full h-full rounded-full object-cover"
-  />
-) : (
-  <span className="text-white font-semibold">
-    {item?.name?.charAt(0).toUpperCase()}
-  </span>
-)}
-
+              {item?.profilePic ? (
+                <img
+                  src={item.profilePic}
+                  alt={item.name}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <span className="text-white font-semibold">
+                  {item?.name?.charAt(0).toUpperCase()}
+                </span>
+              )}
             </motion.div>
           );
         } else {
@@ -140,106 +139,107 @@ const GameCard = ({
 }) => {
   const openSpots = game.slots.filter((s) => s === null).length;
 
-  
   return (
-  <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: index * 0.1, duration: 0.3 }}
-  whileHover={{
-    scale: 1.02,
-    boxShadow: "0 10px 25px rgba(59, 130, 246, 0.15)",
-    transition: { duration: 0.2 },
-  }}
-  className="bg-gradient-to-r from-blue-light to-indigo-light hover:from-blue-50 hover:to-indigo-50
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.1, duration: 0.3 }}
+      whileHover={{
+        scale: 1.02,
+        boxShadow: "0 10px 25px rgba(59, 130, 246, 0.15)",
+        transition: { duration: 0.2 },
+      }}
+      className="bg-gradient-to-r from-blue-light to-indigo-light hover:from-blue-50 hover:to-indigo-50
     rounded-xl p-4 sm:p-6 mb-6 shadow-sm border border-blue-100 
     transition-all duration-300 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 hover:shadow-lg"
->
-  <div className="flex-1 min-w-0 w-full">
-    {/* Title + duration */}
-    <motion.div
-      className="flex flex-wrap items-center gap-2 mb-3"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: index * 0.1 + 0.2 }}
     >
-      <span className="text-lg sm:text-xl font-bold text-gray-900 truncate">{game.type}</span>
-      <span className="hidden sm:inline text-gray-400">•</span>
-      <span className="text-sm sm:text-base text-gray-600 font-medium">{game.duration}</span>
-    </motion.div>
+      <div className="flex-1 min-w-0 w-full">
+        {/* Title + duration */}
+        <motion.div
+          className="flex flex-wrap items-center gap-2 mb-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: index * 0.1 + 0.2 }}
+        >
+          <span className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+            {game.type}
+          </span>
+          <span className="hidden sm:inline text-gray-400">•</span>
+          <span className="text-sm sm:text-base text-gray-600 font-medium">
+            {game.duration}
+          </span>
+        </motion.div>
 
-    {/* Avatars + spots */}
-    <motion.div
-      className="flex flex-wrap items-center gap-2 mb-3"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: index * 0.1 + 0.3 }}
-    >
-      <PlayerAvatars slots={game.slots} onSlotClick={onSlotClick} />
-      <span className="text-gray-500 text-xs sm:text-sm truncate">
-        {game.slots
-          .filter((s) => s !== null)
-          .map((s) => (s as PlayerSlot).name)
-          .join(", ")}{" "}
-        {openSpots > 0 && `+ ${openSpots} spots open`}
-      </span>
-    </motion.div>
+        {/* Avatars + spots */}
+        <motion.div
+          className="flex flex-wrap items-center gap-2 mb-3"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: index * 0.1 + 0.3 }}
+        >
+          <PlayerAvatars slots={game.slots} onSlotClick={onSlotClick} />
+          <span className="text-gray-500 text-xs sm:text-sm truncate">
+            {game.slots
+              .filter((s) => s !== null)
+              .map((s) => (s as PlayerSlot).name)
+              .join(", ")}{" "}
+            {openSpots > 0 && `+ ${openSpots} spots open`}
+          </span>
+        </motion.div>
 
-    {/* Location */}
-    <motion.div
-      className="flex items-center gap-2 text-gray-600 mb-2"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: index * 0.1 + 0.4 }}
-    >
-      <span className="text-base">📍</span>
-      <span className="text-sm sm:text-base truncate">{game.location}</span>
-    </motion.div>
+        {/* Location */}
+        <motion.div
+          className="flex items-center gap-2 text-gray-600 mb-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: index * 0.1 + 0.4 }}
+        >
+          <span className="text-base">📍</span>
+          <span className="text-sm sm:text-base truncate">{game.location}</span>
+        </motion.div>
 
-    {/* Time */}
-    <motion.div
-      className="flex items-center gap-2 text-gray-600"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: index * 0.1 + 0.5 }}
-    >
-      <span className="text-base">📅</span>
-      <span className="text-sm sm:text-base">{game.time}</span>
-    </motion.div>
-  </div>
+        {/* Time */}
+        <motion.div
+          className="flex items-center gap-2 text-gray-600"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: index * 0.1 + 0.5 }}
+        >
+          <span className="text-base">📅</span>
+          <span className="text-sm sm:text-base">{game.time}</span>
+        </motion.div>
+      </div>
 
-  {/* Right side */}
-<div className="flex flex-row sm:flex-col sm:items-end justify-between sm:justify-center gap-4 w-full sm:w-auto">
-  <motion.span
-    className="text-xs sm:text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full whitespace-nowrap"
-    initial={{ opacity: 0, scale: 0.8 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ delay: index * 0.1 + 0.6 }}
-  >
-    {game.matchType}
-  </motion.span>
+      {/* Right side */}
+      <div className="flex flex-row sm:flex-col sm:items-end justify-between sm:justify-center gap-4 w-full sm:w-auto">
+        <motion.span
+          className="text-xs sm:text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full whitespace-nowrap"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: index * 0.1 + 0.6 }}
+        >
+          {game.matchType}
+        </motion.span>
 
-  <motion.button
-    className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200
+        <motion.button
+          className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base transition-all duration-200
       sm:min-w-[140px] sm:max-w-[160px] ${
         openSpots > 0 || isSelected
           ? "bg-blue-500 hover:bg-blue-600 text-white shadow-md hover:shadow-lg"
           : "bg-gray-300 text-gray-500 cursor-not-allowed"
       }`}
-    disabled={!(openSpots > 0 || isSelected)}
-    whileHover={openSpots > 0 || isSelected ? { scale: 1.05 } : {}}
-    whileTap={openSpots > 0 || isSelected ? { scale: 0.95 } : {}}
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: index * 0.1 + 0.7 }}
-    onClick={onJoinClick}
-  >
-    {openSpots > 0 || isSelected ? "Join Now" : "Full"}
-  </motion.button>
-</div>
-
-
-</motion.div>
+          disabled={!(openSpots > 0 || isSelected)}
+          whileHover={openSpots > 0 || isSelected ? { scale: 1.05 } : {}}
+          whileTap={openSpots > 0 || isSelected ? { scale: 0.95 } : {}}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 + 0.7 }}
+          onClick={onJoinClick}
+        >
+          {openSpots > 0 || isSelected ? "Join Now" : "Full"}
+        </motion.button>
+      </div>
+    </motion.div>
   );
 };
 
@@ -275,7 +275,9 @@ function Venues2() {
     try {
       setLoading(true);
       const response = await getApi(
-        `${URLS.getMatches}?date=${date}&distance=ASC&game=${game}&lng=${coordinates.long}&lat=${coordinates.lat}&page=${currentPage}&limit=${limit}`
+        `${URLS.getMatches}?date=${date || ""}&distance=ASC&game=${game}&lng=${
+          coordinates.long
+        }&lat=${coordinates.lat}&page=${currentPage}&limit=${limit}`
       );
 
       if (response.status === 200) {
@@ -285,24 +287,23 @@ function Venues2() {
         setTotalPages(Math.ceil(total / limit));
 
         const transformedGames: Game[] = matches.map((match: any) => {
-         const team1Players: PlayerSlot[] = match.team1.map((p: any) => ({
-  name: p.player.name.split(" ")[0],
-  profilePic: p.player.image
-    ? p.player.image.startsWith("http")
-      ? p.player.image
-      : `${baseImgUrl}/${p.player.image}`
-    : null,
-}));
+          const team1Players: PlayerSlot[] = match.team1.map((p: any) => ({
+            name: p.player.name.split(" ")[0],
+            profilePic: p.player.image
+              ? p.player.image.startsWith("http")
+                ? p.player.image
+                : `${baseImgUrl}/${p.player.image}`
+              : null,
+          }));
 
-const team2Players: PlayerSlot[] = match.team2.map((p: any) => ({
-  name: p.player.name.split(" ")[0],
-  profilePic: p.player.image
-    ? p.player.image.startsWith("http")
-      ? p.player.image
-      : `${baseImgUrl}/${p.player.image}`
-    : null,
-}));
-
+          const team2Players: PlayerSlot[] = match.team2.map((p: any) => ({
+            name: p.player.name.split(" ")[0],
+            profilePic: p.player.image
+              ? p.player.image.startsWith("http")
+                ? p.player.image
+                : `${baseImgUrl}/${p.player.image}`
+              : null,
+          }));
 
           const team1Slots = [
             ...team1Players,
@@ -359,13 +360,13 @@ const team2Players: PlayerSlot[] = match.team2.map((p: any) => ({
     setCurrentPage(page);
   };
 
-const handleSlotClick = (gameId: string, slot: number) => {
-  setSelfSlot({ gameId, slot });
-  setShowJoinGameModal(true);
-};
+  const handleSlotClick = (gameId: string, slot: number) => {
+    setSelfSlot({ gameId, slot });
+    setShowJoinGameModal(true);
+  };
 
   const handleJoinClick = (gameId: string) => {
-    setSelfSlot({ gameId, slot: -1 }); 
+    setSelfSlot({ gameId, slot: -1 });
     setShowJoinGameModal(true);
   };
 
@@ -396,34 +397,53 @@ const handleSlotClick = (gameId: string, slot: number) => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Check if the click is on the "Clear Date" button
+      const isClearDateButton = (event.target as HTMLElement).closest(
+        ".clear-date-button"
+      );
+
       if (
         gameDropdownRef.current &&
         !gameDropdownRef.current.contains(event.target as Node)
       ) {
         setIsGameDropdownOpen(false);
       }
+
       if (
         datePickerRef.current &&
-        !datePickerRef.current.contains(event.target as Node)
+        !datePickerRef.current.contains(event.target as Node) &&
+        !isClearDateButton // Skip if clicking the "Clear Date" button
       ) {
         setIsDatePickerOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-useEffect(() => {
-  if (showJoinGameModal) {
-    document.body.classList.add("body-no-scroll");
-  } else {
-    document.body.classList.remove("body-no-scroll");
-  }
-  return () => {
-    document.body.classList.remove("body-no-scroll");
-  };
-}, [showJoinGameModal]);
+  console.log(date, "darte");
+  useEffect(() => {
+    if (showJoinGameModal) {
+      document.body.classList.add("body-no-scroll");
+    } else {
+      document.body.classList.remove("body-no-scroll");
+    }
+    return () => {
+      document.body.classList.remove("body-no-scroll");
+    };
+  }, [showJoinGameModal]);
 
+  const handleClearDate = () => {
+    setDate("");
+    setCurrentPage(1);
+    setIsDatePickerOpen(false);
+    fetchMatches();
+  };
+
+  useEffect(() => {
+    console.log("Current date state:", date);
+  }, [date]);
 
   return (
     <>
@@ -443,35 +463,28 @@ useEffect(() => {
               Find a game that matches your skill and schedule.
             </p>
 
-           <div className="flex justify-between items-start sm:items-center gap-4 custom-flex-col-below-300 ml-4 mb-2  ">
-  <div className="flex flex-col gap-1 ">
-
-  <div style={{ minHeight: 25, minWidth: 100 }}>
-  {isDatePickerOpen && date ? (
-    <button
-      className="bg-[#ed8936] text-white px-3 py-2 rounded-lg hover:bg-[#ed8936] text-sm font-medium font-['Raleway'] w-[100px]"
-      onClick={() => {
-        setDate("");
-        setIsDatePickerOpen(false);
-        fetchMatches();
-      }}
-    >
-      Clear Date
-    </button>
-  ) : (
-    <div style={{ height: 25, width: 100 }} />
-  )}
-</div>
-
-   
-  </div>
-
-</div>
-
+            <div className="flex justify-between items-start sm:items-center gap-4 custom-flex-col-below-300 ml-4 mb-2  ">
+              <div className="flex flex-col gap-1 ">
+                <div style={{ minHeight: 25, minWidth: 100 }}>
+                  {isDatePickerOpen && date ? (
+                    <button
+                      className="bg-[#ed8936] text-white px-3 py-2 rounded-lg hover:bg-[#ed8936] text-sm font-medium font-['Raleway'] w-[100px] clear-date-button"
+                      onClick={() => {
+                        handleClearDate();
+                      }}
+                    >
+                      Clear Date
+                    </button>
+                  ) : (
+                    <div style={{ height: 25, width: 100 }} />
+                  )}
+                </div>
+              </div>
+            </div>
           </motion.div>
 
-        <div className="flex justify-between items-start sm:items-center gap-4 mb-6 custom-flex-col-below-300">
-<style >{`
+          <div className="flex justify-between items-start sm:items-center gap-4 mb-6 custom-flex-col-below-300">
+            <style>{`
   @media (max-width: 300px) {
     .custom-flex-col-below-300 {
       flex-direction: column !important;
@@ -479,64 +492,66 @@ useEffect(() => {
   }
 `}</style>
 
- <div className="relative w-full sm:w-40" ref={datePickerRef}>
-   
-  <div
-    className="px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-900 rounded-3xl flex justify-between items-center gap-2 sm:gap-3 cursor-pointer"
-    onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-  >
-    <div className="text-white text-xs sm:text-sm font-medium font-['Raleway'] truncate">
-      {date || "Select a date"}
-
-    
-    </div>
-    {isDatePickerOpen ? (
-      <ChevronUp className="w-4 h-4 text-white flex-shrink-0" />
-    ) : (
-      <ChevronDown className="w-4 h-4 text-white flex-shrink-0" />
-    )}
-  </div>
-  <AnimatePresence>
-    {isDatePickerOpen && (
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.2 }}
-            className="absolute z-[9999] "
-        style={{
-          // right: window.innerWidth > 300 && window.innerWidth < 640 ? '0px' : undefined
-          
-        }}
-      >
-        <DatePicker
-          selected={date ? new Date(date) : null}
-          onChange={handleDateSelect}
-          inline
-          popperPlacement="bottom-end"
-          popperModifiers={[
-            {
-              name: 'preventOverflow',
-              options: {
-                boundary: 'viewport',
-                padding: 8,
-              },
-            } as any,
-            {
-              name: 'flip',
-              options: {
-                fallbackPlacements: ['bottom-start', 'top-end', 'top-start'],
-              },
-            } as any,
-          ]}
-          className="border-none w-full relative z-10"
-          calendarClassName="bg-white rounded-lg shadow-lg"
-        
-        />
-      </motion.div>
-    )}
-  </AnimatePresence>
-</div>
+            <div className="relative w-full sm:w-40" ref={datePickerRef}>
+              <div
+                className="px-4 sm:px-5 py-2.5 sm:py-3 bg-gray-900 rounded-3xl flex justify-between items-center gap-2 sm:gap-3 cursor-pointer"
+                onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+              >
+                <div className="text-white text-xs sm:text-sm font-medium font-['Raleway'] truncate">
+                  {date || "Select a date"}
+                </div>
+                {isDatePickerOpen ? (
+                  <ChevronUp className="w-4 h-4 text-white flex-shrink-0" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-white flex-shrink-0" />
+                )}
+              </div>
+              <AnimatePresence>
+                {isDatePickerOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute z-[9999] "
+                    style={
+                      {
+                        // right: window.innerWidth > 300 && window.innerWidth < 640 ? '0px' : undefined
+                      }
+                    }
+                  >
+                    <DatePicker
+                      selected={date ? new Date(date) : null}
+                      onChange={handleDateSelect}
+                      inline
+minDate={new Date()}
+                      popperPlacement="bottom-end"
+                      popperModifiers={[
+                        {
+                          name: "preventOverflow",
+                          options: {
+                            boundary: "viewport",
+                            padding: 8,
+                          },
+                        } as any,
+                        {
+                          name: "flip",
+                          options: {
+                            fallbackPlacements: [
+                              "bottom-start",
+                              "top-end",
+                              "top-start",
+                            ],
+                          },
+                        } as any,
+                      ]}
+                      className="border-none w-full relative z-10"
+                      calendarClassName="bg-white rounded-lg shadow-lg"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             <div className="relative w-full sm:w-36" ref={gameDropdownRef}>
               <div
@@ -574,8 +589,6 @@ useEffect(() => {
                 )}
               </AnimatePresence>
             </div>
-                
-       
           </div>
 
           {error && (
@@ -623,56 +636,58 @@ useEffect(() => {
             </div>
           )}
 
-        <AnimatePresence>
-  {showJoinGameModal && (
-    <motion.div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <motion.div
-        className="relative bg-white rounded-2xl w-full max-w-[85vw] sm:max-w-[700px] md:max-w-[700px]"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <button
-          className="absolute p-2 top-0 right-0 bg-slate-50/90 border-white rounded-full text-blue-900 hover:text-blue-600 sm:top-0 sm:right-0 mt-[-12px] mr-[-12px]"
-          onClick={handleCloseJoinGameModal}
-        > 
-          <X className="w-6 h-6 sm:w-6 sm:h-6" />
-        </button>
-        <JoinGame
-  bookingId={selfSlot?.gameId || ""}
-  requestedPosition={
-    selfSlot?.slot !== undefined && selfSlot.slot >= 0
-      ? `player${selfSlot.slot + 1}`
-      : "" // empty string if no slot chosen
-  }
-  requestedTeam={
-    selfSlot?.slot !== undefined && selfSlot.slot >= 0
-      ? selfSlot.slot < 2
-        ? "team1"
-        : "team2"
-      : "" // empty string if no slot chosen
-  }
-  imageUrl={
-    games.find((g) => g.id === selfSlot?.gameId)?.imageUrl || paddleImage
-  }
-  slots={games.find((g) => g.id === selfSlot?.gameId)?.slots || []}
-  onClose={handleCloseJoinGameModal}
-  onJoinSuccess={handleJoinSuccess}
-/>
+          <AnimatePresence>
+            {showJoinGameModal && (
+              <motion.div
+                className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div
+                  className="relative bg-white rounded-2xl w-full max-w-[85vw] sm:max-w-[700px] md:max-w-[700px]"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <button
+                    className="absolute p-2 top-0 right-0 bg-slate-50/90 border-white rounded-full text-blue-900 hover:text-blue-600 sm:top-0 sm:right-0 mt-[-12px] mr-[-12px]"
+                    onClick={handleCloseJoinGameModal}
+                  >
+                    <X className="w-6 h-6 sm:w-6 sm:h-6" />
+                  </button>
+                  <JoinGame
+                    bookingId={selfSlot?.gameId || ""}
+                    requestedPosition={
+                      selfSlot?.slot !== undefined && selfSlot.slot >= 0
+                        ? `player${selfSlot.slot + 1}`
+                        : "" // empty string if no slot chosen
+                    }
+                    requestedTeam={
+                      selfSlot?.slot !== undefined && selfSlot.slot >= 0
+                        ? selfSlot.slot < 2
+                          ? "team1"
+                          : "team2"
+                        : "" // empty string if no slot chosen
+                    }
+                    imageUrl={
+                      games.find((g) => g.id === selfSlot?.gameId)?.imageUrl ||
+                      paddleImage
+                    }
+                    slots={
+                      games.find((g) => g.id === selfSlot?.gameId)?.slots || []
+                    }
+                    onClose={handleCloseJoinGameModal}
+                    onJoinSuccess={handleJoinSuccess}
+                  />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      </motion.div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
-<style>{`
+          <style>{`
   .scrollbar-thin::-webkit-scrollbar {
     width: 6px;
   }
@@ -848,11 +863,12 @@ useEffect(() => {
       z-index: 1000 !important;
     }
   }
-//     @media (min-width: 301px) and (max-width: 640px) {
-//   .react-datepicker {
-    right: 100px;
-//   }
-// }
+.react-datepicker__day--disabled {
+  cursor: not-allowed !important;
+  opacity: 0.4; /* make them look inactive */
+
+}
+
 `}</style>
         </div>
       </div>

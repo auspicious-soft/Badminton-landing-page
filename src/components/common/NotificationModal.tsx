@@ -176,7 +176,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                 notifications.map((notification) => (
                   <div
                     key={notification._id}
-                    className="flex items-start gap-3 p-4 border-b border-gray-100 hover:bg-gray-50"
+                    className="flex items-start gap-3 p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
+                        
+                     {...(!notification.isRead
+    ? { onClick: () => onMarkRead(notification._id) }
+    : {})}
                   >
                     <div className="flex-shrink-0 mt-1">
                       {getIcon(notification.type)}
@@ -195,12 +199,12 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                           <div className="flex-shrink-0 mt-2">
                             <div className="w-2 h-2 rounded-full bg-green-500"></div>
                           </div>
-                          <button
+                          {/* <button
                             className="text-xs font-medium font-['Raleway'] text-blue-600 hover:text-blue-700"
                             onClick={() => onMarkRead(notification._id)}
                           >
                             Mark as read
-                          </button>
+                          </button> */}
                         </>
                       )}
                     </div>
