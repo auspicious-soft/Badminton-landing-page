@@ -9,6 +9,7 @@ import { useAuth } from "../../utils/AuthContext";
 import UploadScoreModal from "../common/UploadScoreModal";
 import { useToast } from "../../utils/ToastContext";
 import { error, group } from "console";
+import Loader from "../common/Loader";
 
 interface Player {
   name: string;
@@ -329,6 +330,9 @@ useEffect(() => {
   };
 }, [showUploadScoreModal, showCancelModal, showInfoModal, showModifyModal]);
   return (
+    <>
+          {loading && <Loader fullScreen />}
+
    <div className="w-full grid grid-cols-1 md720:grid-cols-2 justify-start items-start gap-6 sm:gap-8">
   {bookingGroups.map((group, index) => (
     <div
@@ -739,6 +743,7 @@ useEffect(() => {
     </motion.div>
   )}
 </div>
+</>
   );
 };
 

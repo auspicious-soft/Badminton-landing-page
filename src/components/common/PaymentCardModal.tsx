@@ -199,6 +199,10 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
   
 
   const handlePayNow = async () => {
+    if(!selectedPayment){
+      errorToast("Please Select Payment Method")
+      return
+    }
     setLoading(true);
   try {
     // Step 1: Create the booking
@@ -489,7 +493,9 @@ if(!selectedDateForBooking || !selectedCourtId || !selectedTimes){
 
   {/* Pay Button */}
   <div 
-  className="w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-blue-600 rounded-lg flex justify-center items-center gap-3 cursor-pointer"
+  className={`w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-blue-600 rounded-lg flex justify-center items-center gap-3 ${
+    !selectedPayment ? 'cursor-not-allowed opacity-60' : 'cursor-pointer '
+  }`}
     onClick={handlePayNow}>
     <button
   className={`text-white text-sm sm:text-base font-medium font-['Raleway'] ${

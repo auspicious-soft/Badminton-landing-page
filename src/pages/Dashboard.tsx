@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import backgroundImage from "../assets/BackgroundFrame.png";
+import backgroundImage from "../assets/newbg.png";
 import logoImage from "../assets/logo1.png";
 import googleIcon from "../assets/googleIcon.png";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -96,7 +96,7 @@ const Dashboard = () => {
                 alt="Logo"
                 className="w-50 h-50 object-contain object-top logo-img"
               />
-              <div className="text-center text-black text-3xl font-semibold font-['Raleway']">
+              <div className="text-center text-dark-blue text-3xl font-semibold font-['Raleway']">
                 Welcome Back
               </div>
             </div>
