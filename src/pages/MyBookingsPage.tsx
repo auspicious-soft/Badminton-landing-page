@@ -32,6 +32,7 @@ interface Booking {
   userId: string;
   score: object;
   bookingdate: string;
+  courtName:string;
 }
 
 interface BookingGroup {
@@ -77,6 +78,7 @@ interface ApiBooking {
   };
   courtId: {
     _id: string;
+    name:string;
     games: string;
   };
   bookingType: string;
@@ -129,6 +131,7 @@ const MyBookingsPage: React.FC = () => {
             const time = booking.bookingSlots;
              const court = booking.courtId.games;
     const courtId = booking.courtId._id;
+    const courtName = booking.courtId.name;
 
             const team1: Player[] = booking.team1.map((player) => ({
               name: player.playerData.fullName,
@@ -172,13 +175,16 @@ const MyBookingsPage: React.FC = () => {
               userId: booking.userId,
               score: booking.score ? booking.score : {},
               bookingdate: booking.bookingDate,
+              courtName: booking.courtId.name,
+
             };
 
            let group = groups.find(
       (g) =>
         g.date === formattedDate &&
         g.time === time &&
-        g.courtId === courtId
+        g.courtId === courtId &&
+         g.court === courtName
     );
     if (!group) {
       group = { date: formattedDate, time, court, courtId, bookings: [] };

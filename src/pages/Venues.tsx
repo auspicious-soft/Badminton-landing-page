@@ -11,6 +11,7 @@ import Pagination from "../components/common/Pagination";
 import InfiniteScrollPagination from "../components/common/ScrollPagination";
 import Loader from "../components/common/Loader";
 import ClubInfoModal from "../components/common/ClubInfoModal";
+import VerifyPhoneModal from "../components/common/PhoneNumbModal";
 
 // Define interfaces for type safety
 interface Player {
@@ -167,8 +168,9 @@ const MainVenueComp: React.FC = () => {
   const [bookingsCurrentPage, setBookingsCurrentPage] = useState(1);
   const [bookingsTotalPages, setBookingsTotalPages] = useState(1);
   const [bookingsTotalItems, setBookingsTotalItems] = useState(0);
-    const [showClubInfoModal, setShowClubInfoModal] = useState(false);
-  
+  const [showClubInfoModal, setShowClubInfoModal] = useState(false);
+  const [showPhoneNumberModal, setShowPhoneNumberModal] = useState(false);
+
   const limit = 10;
   const { userData } = useAuth();
   const navigate = useNavigate();
@@ -315,17 +317,20 @@ const MainVenueComp: React.FC = () => {
   };
 
   // New function to handle court selection
-  const handleCourtClick = (venue: Venue, court: { _id: string; games: string }) => {
+  const handleCourtClick = (
+    venue: Venue,
+    court: { _id: string; games: string }
+  ) => {
     const currentDate = new Date();
-    const dateParam = currentDate.toISOString().split('T')[0]; // Format: YYYY-MM-DD
-    
+    const dateParam = currentDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+
     navigate(`/venues/${venue._id}`, {
       state: {
         selectedCourtId: court._id,
         selectedGame: court.games,
         selectedDate: currentDate.getDate(),
-        preselectedDate: dateParam
-      }
+        preselectedDate: dateParam,
+      },
     });
   };
 
@@ -347,61 +352,90 @@ const MainVenueComp: React.FC = () => {
     setBookingsCurrentPage(page);
   };
 
-    const closeClubInfoModal = () => {
-      setShowClubInfoModal(false);
-    };
-  
-    const handleSubmit = (field1: boolean, field2: string) => {
-      setShowClubInfoModal(false);
-    };
-  
-    useEffect(() => {
-      if (userData && !userData.clubResponse) {
+const closeClubInfoModal = () => {
+    setShowClubInfoModal(false);
+    // Open VerifyPhoneModal only if phone number is not verified
+    if (userData && !userData.phoneVerified) {
+      setShowPhoneNumberModal(true);
+    }
+  };
+
+const closePhoneNumberModal = () => {
+    setShowPhoneNumberModal(false);
+  };
+
+const handleClubInfoSubmit = (field1: boolean, field2: string) => {
+    setShowClubInfoModal(false);
+    // Open VerifyPhoneModal only if phone number is not verified
+    if (userData && !userData.phoneVerified) {
+      setShowPhoneNumberModal(true);
+    }
+  };
+
+  const handlePhoneNumberSubmit = (phone: string) => {
+    setShowPhoneNumberModal(false);
+  };
+
+useEffect(() => {
+    if (userData) {
+      // Show ClubInfoModal if clubResponse is false
+      if (!userData.clubResponse) {
         setShowClubInfoModal(true);
       }
-    }, [userData]);
-  
+      // Show VerifyPhoneModal if clubResponse is true and phone is not verified
+      else if (!userData.phoneVerified && !showClubInfoModal) {
+        setShowPhoneNumberModal(true);
+      }
+    }
+  }, [userData]);
+
 
   return (
     <>
       {loading && <Loader fullScreen />}
-   <ClubInfoModal
+      <ClubInfoModal
         isOpen={showClubInfoModal}
         onClose={closeClubInfoModal}
-        onSubmit={handleSubmit}
+        onSubmit={handleClubInfoSubmit}
       />
-     {userData && userData.clubResponse ? ( <> 
-       <div className="w-full max-w-screen p-4 sm:p-6 flex flex-col lg:flex-row gap-6 lg:gap-10 overflow-x-hidden bg-slate-50/60">
-        <div className="w-full lg:w-[100%] flex flex-col gap-5">
-          <div className="self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
-            <div className="text-dark-blue text-2xl sm:text-3xl font-semibold font-['Raleway']">
-              All Venues
+      <VerifyPhoneModal
+        isOpen={showPhoneNumberModal}
+        onClose={closePhoneNumberModal}
+        onSubmit={handlePhoneNumberSubmit}
+      />
+      {userData && userData.clubResponse ? (
+        <>
+          <div className="w-full max-w-screen p-4 sm:p-6 flex flex-col lg:flex-row gap-6 lg:gap-10 overflow-x-hidden bg-slate-50/60">
+            <div className="w-full lg:w-[100%] flex flex-col gap-5">
+              <div className="self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
+                <div className="text-dark-blue text-2xl sm:text-3xl font-semibold font-['Raleway']">
+                  All Venues
+                </div>
+              </div>
+              {loading && <div>Loading venues...</div>}
+              {error && <div className="text-red-500">{error}</div>}
+              {!loading && !error && (
+                <Venues
+                  venues={venuesData}
+                  onVenueClick={handleVenueClick}
+                  onCourtClick={handleCourtClick}
+                />
+              )}
+              {venuesData && venuesData.length >= 10 && (
+                <div className="mt-6 sm:mt-8">
+                  <Pagination
+                    currentPage={venuesCurrentPage}
+                    totalPages={venuesTotalPages}
+                    totalItems={venuesTotalItems}
+                    itemsPerPage={limit}
+                    onPageChange={handleVenuesPageChange}
+                  />
+                </div>
+              )}
             </div>
           </div>
-          {loading && <div>Loading venues...</div>}
-          {error && <div className="text-red-500">{error}</div>}
-          {!loading && !error && (
-            <Venues 
-              venues={venuesData} 
-              onVenueClick={handleVenueClick}
-              onCourtClick={handleCourtClick}
-            />
-          )}
-          {venuesData && venuesData.length >= 10 && (
-            <div className="mt-6 sm:mt-8">
-              <Pagination
-                currentPage={venuesCurrentPage}
-                totalPages={venuesTotalPages}
-                totalItems={venuesTotalItems}
-                itemsPerPage={limit}
-                onPageChange={handleVenuesPageChange}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-     </> ) : null }
-    
+        </>
+      ) : null}
     </>
   );
 };

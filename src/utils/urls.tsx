@@ -37,6 +37,9 @@ export const URLS = {
     uploadScore:`${userbaseUrl}/upload-score`,
     clubInfo:`${userbaseUrl}/club-status`,
     getNotifications:`${userbaseUrl}/user-notifications`,
-    markAllNotificationsRead:`${userbaseUrl}/user-notifications`
+    markAllNotificationsRead:`${userbaseUrl}/user-notifications`,
+
+    submitPhoneNumber:`${userbaseUrl}/submit-phone`,
+    verifyPhoneNumber:`${userbaseUrl}/verify-phone`,
 }
 

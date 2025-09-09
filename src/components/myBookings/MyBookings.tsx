@@ -31,6 +31,7 @@ interface Booking {
   bookingType: string;
   askToJoin: boolean;
   userId: string;
+  courtName:string;
   bookingdate: string;
   score: {
     set1?: { team1: string; team2: string };
@@ -340,7 +341,7 @@ useEffect(() => {
       className="self-stretch flex flex-col justify-start items-start gap-2 sm:gap-2.5"
     >
       <div className="self-stretch justify-center text-gray-600 text-xs sm:text-sm font-semibold font-['Raleway'] leading-none">
-    {group.date} | {group.time}
+    {group.date} | {group.court}
   </div>
       <div className="self-stretch gird grid-cols-2 justify-start items-start gap-1.5 sm:gap-2">
         {group.bookings.map((booking, bookingIndex) => (
@@ -365,7 +366,7 @@ useEffect(() => {
                     {booking.game}
                   </div>
                   <div className="justify-center text-gray-600 text-xs sm:text-sm font-medium font-['Raleway'] leading-none">
-                    {booking.duration}
+                   | {booking.courtName}
                   </div>
                 </div>
                 <div className="flex justify-end items-center flex-shrink-0">
