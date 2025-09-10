@@ -294,37 +294,64 @@ const handleGameSelect = (game: string, fromNavigation = false) => {
     }
   };
 
-  const handleTimeSelect = (time: string) => {
-    setSelectedTimes((prev) => {
-      let newTimes: string[];
-      if (prev.includes(time)) {
-        newTimes = prev.filter((t) => t !== time);
-      } else if (prev.length < 2) {
-        newTimes = [...prev, time].sort();
+const handleTimeSelect = (time: string) => {
+  setSelectedTimes((prev) => {
+    let newTimes: string[] = [...prev];
+
+    // Deselect if already selected
+    if (newTimes.includes(time)) {
+      newTimes = newTimes.filter((t) => t !== time);
+    } else {
+      if (newTimes.length === 0) {
+        // First slot selection
+        newTimes = [time];
+      } else if (newTimes.length === 1) {
+        // Check consecutive
+        const firstSlot = newTimes[0];
+
+        const getHour = (t: string) => parseInt(t.split(":")[0]);
+        const firstHour = getHour(firstSlot);
+        const newHour = getHour(time);
+
+        if (newHour === firstHour + 1 || newHour === firstHour - 1) {
+          newTimes = [...newTimes, time].sort();
+        } else {
+          errorToast("Only consecutive slots can be booked");
+          return prev; // 🚨 don't update
+        }
       } else {
+        // If already 2 slots selected, reset with the new one
         newTimes = [time];
       }
-      if (selectedCourtId) {
-        setSelectedCourts((prevCourts) => ({
-          ...prevCourts,
-          [selectedCourtId]:
-            newTimes.length === 0
-              ? undefined
-              : newTimes.length === 1
-              ? "60"
-              : "120",
-        }));
-      }
-    const selectedCourt = venueData?.courts.find(court => court.id === selectedCourtId);
-const total = newTimes.reduce((acc, t) => {
-  const slot = selectedCourt?.availableSlots.find(slot => slot.time === t);
-  return acc + (slot?.price || 0);
-}, 0);
-      setTotalPrice(total);
+    }
 
-      return newTimes;
-    });
-  };
+    // Update court booking duration
+    if (selectedCourtId) {
+      setSelectedCourts((prevCourts) => ({
+        ...prevCourts,
+        [selectedCourtId]:
+          newTimes.length === 0
+            ? undefined
+            : newTimes.length === 1
+            ? "60"
+            : "120",
+      }));
+    }
+
+    // Calculate total price
+    const selectedCourt = venueData?.courts.find(
+      (court) => court.id === selectedCourtId
+    );
+    const total = newTimes.reduce((acc, t) => {
+      const slot = selectedCourt?.availableSlots.find((slot) => slot.time === t);
+      return acc + (slot?.price || 0);
+    }, 0);
+    setTotalPrice(total);
+
+    return newTimes;
+  });
+};
+
 
   const handleGameTypeSelect = (type: string) => {
     setSelectedGameType(type);
