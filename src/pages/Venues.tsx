@@ -390,6 +390,19 @@ useEffect(() => {
   }, [userData]);
 
 
+  useEffect(() => {
+  if (showClubInfoModal || showPhoneNumberModal) {
+    
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+  return () => {
+    document.body.style.overflow = "auto";
+  };
+}, [showClubInfoModal, showPhoneNumberModal]);
+
+
   return (
     <>
       {loading && <Loader fullScreen />}

@@ -48,15 +48,18 @@ const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
     }
   };
 
-  const handleOtpChange = (index: number, value: string) => {
-    if (value.length > 1) return;
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-    if (value && index < 5) {
-      otpRefs.current[index + 1]?.focus();
-    }
-  };
+const handleOtpChange = (index: number, value: string) => {
+  // allow only digits
+  if (!/^\d?$/.test(value)) return;
+
+  const newOtp = [...otp];
+  newOtp[index] = value;
+  setOtp(newOtp);
+
+  if (value && index < 5) {
+    otpRefs.current[index + 1]?.focus();
+  }
+};
 
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
@@ -102,7 +105,9 @@ const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
         onClose();
       } else {
         setError("Invalid OTP. Please try again.");
-      }
+         setOtp(Array(6).fill(""));
+      otpRefs.current[0]?.focus();
+    }
     } catch (err) {
       console.error("Error verifying OTP:", err);
       setError("Failed to verify. Please try again.");
@@ -199,7 +204,7 @@ const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
                   {otp.map((digit, index) => (
                     <input
                       key={index}
-                      type="text"
+                      type="numeric"
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
