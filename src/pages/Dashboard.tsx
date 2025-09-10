@@ -125,11 +125,16 @@ const Dashboard = () => {
     <style>
   {`
     .bg-fix {
-      min-height: 100vh; 
-      background-size: cover; /* Always cover */
-      background-repeat: no-repeat;
-      background-position: center;
-    }
+  height: 100dvh; /* Full visible height, no overflow */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+body {
+  overflow: hidden; /* Ensure no body scroll */
+}
 
     @media (max-width: 1024px) {
       .dashboard-container {

@@ -104,13 +104,31 @@ const handleOtpChange = (index: number, value: string) => {
         setStep("enterPhone");
         onClose();
       } else {
-        setError("Invalid OTP. Please try again.");
-         setOtp(Array(6).fill(""));
-      otpRefs.current[0]?.focus();
+       setError("Invalid OTP. Please try again.");
+  const empty = Array(6).fill("");
+  setOtp(empty);
+
+  // also clear the actual input values
+  otpRefs.current.forEach((input) => {
+    if (input) input.value = "";
+  });
+
+  // focus back to first input
+  otpRefs.current[0]?.focus();
     }
     } catch (err) {
       console.error("Error verifying OTP:", err);
       setError("Failed to verify. Please try again.");
+       const empty = Array(6).fill("");
+  setOtp(empty);
+
+  // also clear the actual input values
+  otpRefs.current.forEach((input) => {
+    if (input) input.value = "";
+  });
+
+  // focus back to first input
+  otpRefs.current[0]?.focus();
       setIsApiSuccess(false);
     } finally {
       setLoading(false);
