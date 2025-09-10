@@ -161,14 +161,14 @@ const handleOtpChange = (index: number, value: string) => {
         transition={{ duration: 0.3 }}
         className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-2xl"
       >
-        <motion.div
-          initial={{ scale: 0.8, y: 50 }}
-          animate={{ scale: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: "easeOut" }}
-          className={`bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-md sm:max-w-lg ${
-            step === "enterOTP" ? "min-h-[400px]" : "min-h-[300px]"
-          } transition-all duration-300`}
-        >
+       <motion.div
+  initial={{ scale: 0.8, y: 50 }}
+  animate={{ scale: 1, y: 0 }}
+  transition={{ duration: 0.3, ease: "easeOut" }}
+  className={`bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-md sm:max-w-lg mx-4 sm:mx-0 ${
+    step === "enterOTP" ? "min-h-[400px]" : "min-h-[300px]"
+  } transition-all duration-300`}
+>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-dark-blue text-lg sm:text-xl font-semibold font-['Raleway']">
               Verify Phone Number
