@@ -82,31 +82,30 @@ const Dashboard = () => {
   });
 
   return (
-    <>
-      {loading && <Loader fullScreen />}  
-    <div
-  className="w-screen h-[100dvh] overflow-hidden relative bg-[#e9f5ff] bg-cover bg-no-repeat bg-center"
-  style={{ backgroundImage: `url(${backgroundImage})` }}
->
+ <>
+      {loading && <Loader fullScreen />}
 
-        <div className="absolute inset-0 flex justify-end items-center pr-40 z-10 dashboard-container">
-          <div className="w-96 p-14 bg-white rounded-[20px] flex flex-col justify-start items-center gap-5 login-box">
-            <div className="flex flex-col justify-start items-center gap-12">
+      <div
+        className="w-screen h-[100dvh] overflow-hidden relative bg-[#e9f5ff] bg-cover bg-no-repeat bg-center"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        <div className="absolute inset-0 flex justify-center items-center z-10 dashboard-container">
+          <div className="w-full max-w-md mx-4 p-8 sm:p-10 bg-white rounded-[20px] flex flex-col justify-start items-center gap-6 sm:gap-8 login-box">
+            <div className="flex flex-col justify-start items-center gap-8 sm:gap-12">
               <img
                 src={logoImage}
                 alt="Logo"
-                className="w-50 h-50 object-contain object-top logo-img"
+                className="w-40 h-40 sm:w-50 sm:h-50 object-contain logo-img"
               />
-              <div className="text-center text-dark-blue text-3xl font-semibold font-['Raleway']">
+              <div className="text-center text-dark-blue text-2xl sm:text-3xl font-semibold font-['Raleway']">
                 Welcome Back
               </div>
             </div>
+
             <div
-              className="w-full h-14 px-3.5 py-7 bg-white rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 flex justify-center items-center gap-2.5 overflow-hidden cursor-pointer"
-             onClick={() => {
-      loginWithGoogle();
-  }}
->
+              className="w-full h-14 px-4 py-3 sm:px-3.5 sm:py-7 bg-white rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 flex justify-center items-center gap-2.5 cursor-pointer"
+              onClick={() => loginWithGoogle()}
+            >
               <div className="w-6 h-6 relative overflow-hidden">
                 <img
                   src={googleIcon}
@@ -123,65 +122,62 @@ const Dashboard = () => {
       </div>
 
       {/* Responsive styles */}
-    <style>
-  {`
-    .bg-fix {
-  height: 100dvh; /* Full visible height, no overflow */
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  overflow: hidden; /* Prevent scrolling */
-}
-  .dashboard-container {
-  max-height: 100%;
-  overflow: hidden;
-  justify-content: flex-end;
-  align-items: center;
-}
+      <style>
+        {`
+          html, body {
+            margin: 0;
+            padding: 0;
+            height: 100dvh;
+            width: 100%;
+            overflow: hidden;
+          }
 
-body {
-  overflow: hidden; /* Ensure no body scroll */
-}
+          .bg-fix {
+            height: 100dvh;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            overflow: hidden;
+          }
 
-    @media (max-width: 1024px) {
-      .dashboard-container {
-        justify-content: center !important;
-        padding-right: 0 !important;
-      }
-    }
-      .login-box {
-  max-height: 90dvh; /* never exceed viewport height */
-  overflow-y: auto;  /* scroll internally if needed */
-  padding: 3rem;     /* reduce padding on mobile */
-  box-sizing: border-box;
-}
+          .dashboard-container {
+            max-height: 100%;
+            overflow: hidden;
+          }
 
+          .login-box {
+            max-height: 90dvh;
+            overflow-y: auto;
+            box-sizing: border-box;
+          }
 
+          .login-box::-webkit-scrollbar {
+            display: none;
+          }
 
-    @media (max-width: 640px) {
-      .login-box {
-        padding: 1.5rem !important;
-        gap: 1.5rem !important;
-      }
-      .logo-img {
-        object-fit: contain !important;
-      }
-      .login-box div.text-3xl {
-        font-size: 1.5rem !important;
-      }
-    }
+          @media (max-width: 640px) {
+            .login-box {
+              padding: 1.5rem !important;
+              gap: 1.5rem !important;
+              margin: 0 16px !important; /* Add breathing space from sides */
+            }
+            .login-box div.text-2xl {
+              font-size: 1.5rem !important;
+            }
+            .logo-img {
+              width: 32px !important;
+              height: 32px !important;
+            }
+          }
 
-    /* Below 350px — give breathing space on sides */
-    @media (max-width: 350px) {
-      .login-box {
-        margin: 0 10px !important;
-        width: auto !important;
-      }
-    }
-  `}
-</style>
-
-
+          @media (max-width: 350px) {
+            .login-box {
+              margin: 0 12px !important;
+              width: auto !important;
+            }
+          }
+        `}
+      </style>
     </>
   );
 };
