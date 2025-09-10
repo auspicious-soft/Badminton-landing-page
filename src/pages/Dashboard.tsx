@@ -102,21 +102,31 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div
-              className="w-full h-14 px-4 py-3 sm:px-3.5 sm:py-7 bg-white rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 flex justify-center items-center gap-2.5 cursor-pointer"
-              onClick={() => loginWithGoogle()}
-            >
-              <div className="w-6 h-6 relative overflow-hidden">
-                <img
-                  src={googleIcon}
-                  alt="Google Icon"
-                  className="w-6 h-6 object-contain"
-                />
-              </div>
-              <div className="text-black/60 text-base font-medium font-['Raleway']">
-                Continue with Google
-              </div>
-            </div>
+           <div
+  className="
+    w-full h-14 px-4 py-3 sm:px-3.5 sm:py-7 
+    bg-white rounded-[66px] 
+    shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] 
+    outline outline-1 outline-offset-[-1px] outline-gray-200 
+    flex justify-center items-center gap-2.5 cursor-pointer
+
+    hover:bg-blue-500 hover:shadow-lg transition-all duration-200
+    active:bg-blue-600
+  "
+  onClick={() => loginWithGoogle()}
+>
+  <div className="w-6 h-6 relative overflow-hidden">
+    <img
+      src={googleIcon}
+      alt="Google Icon"
+      className="w-6 h-6 object-contain"
+    />
+  </div>
+  <div className="text-black/60 font-medium font-['Raleway'] hover:text-white transition-colors duration-200">
+    Continue with Google
+  </div>
+</div>
+
           </div>
         </div>
       </div>
@@ -165,8 +175,8 @@ const Dashboard = () => {
               font-size: 1.5rem !important;
             }
             .logo-img {
-              width: 32px !important;
-              height: 32px !important;
+              width: 105px !important;
+              height: 105px !important;
             }
           }
 
