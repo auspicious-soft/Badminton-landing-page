@@ -85,9 +85,10 @@ const Dashboard = () => {
     <>
       {loading && <Loader fullScreen />}  
     <div
-  className="w-screen bg-fix overflow-hidden relative bg-[#e9f5ff]"
+  className="w-screen h-[100dvh] overflow-hidden relative bg-[#e9f5ff] bg-cover bg-no-repeat bg-center"
   style={{ backgroundImage: `url(${backgroundImage})` }}
 >
+
         <div className="absolute inset-0 flex justify-end items-center pr-40 z-10 dashboard-container">
           <div className="w-96 p-14 bg-white rounded-[20px] flex flex-col justify-start items-center gap-5 login-box">
             <div className="flex flex-col justify-start items-center gap-12">
@@ -131,6 +132,12 @@ const Dashboard = () => {
   background-position: center;
   overflow: hidden; /* Prevent scrolling */
 }
+  .dashboard-container {
+  max-height: 100%;
+  overflow: hidden;
+  justify-content: flex-end;
+  align-items: center;
+}
 
 body {
   overflow: hidden; /* Ensure no body scroll */
@@ -142,6 +149,14 @@ body {
         padding-right: 0 !important;
       }
     }
+      .login-box {
+  max-height: 90dvh; /* never exceed viewport height */
+  overflow-y: auto;  /* scroll internally if needed */
+  padding: 3rem;     /* reduce padding on mobile */
+  box-sizing: border-box;
+}
+
+
 
     @media (max-width: 640px) {
       .login-box {
