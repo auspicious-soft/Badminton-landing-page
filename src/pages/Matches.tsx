@@ -239,6 +239,24 @@ const Matches: React.FC = () => {
     fetchFriends();
   }, []);
 
+  useEffect(() => {
+  if (activeRowId) {
+    // Modal is open → lock body scroll
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none"; // prevents iOS rubber-band scroll
+  } else {
+    // Modal closed → restore scroll
+    document.body.style.overflow = "";
+    document.body.style.touchAction = "";
+  }
+
+  // Cleanup when unmount
+  return () => {
+    document.body.style.overflow = "";
+    document.body.style.touchAction = "";
+  };
+}, [activeRowId]);
+
 
   return (
     <>
