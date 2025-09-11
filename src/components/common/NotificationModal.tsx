@@ -8,38 +8,39 @@ import freeGame from "../../assets/star-badge-1.png";
 import playerJoined from "../../assets/football-player.png";
 import { postApi } from "../../utils/api";
 import { URLS } from "../../utils/urls";
+import { Notification } from "../../types/Notification"; // ✅ shared type
 
-interface Notification {
-  _id: string;
-  recipientId: string;
-  type:
-    | "PAYMENT_FAILED"
-    | "PAYMENT_SUCCESSFUL"
-    | "PLAYER_JOINED_GAME"
-    | "FREE_GAME_EARNED";
-  title: string;
-  message: string;
-  notificationType: string;
-  category: "PAYMENT" | "GAME" | "SYSTEM";
-  priority: string;
-  referenceId: string;
-  referenceType: string;
-  metadata: {
-    bookingId: string;
-    transactionId?: string;
-    amount?: number;
-    newPlayerId?: string;
-    newPlayerName?: string;
-    newPlayerPosition?: string;
-    newPlayerTeam?: string;
-    timestamp: string;
-  };
-  isRead: boolean;
-  isReadyByAdmin: boolean;
-  isDeleted: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+// interface Notification {
+//   _id: string;
+//   recipientId: string;
+//   type:
+//     | "PAYMENT_FAILED"
+//     | "PAYMENT_SUCCESSFUL"
+//     | "PLAYER_JOINED_GAME"
+//     | "FREE_GAME_EARNED";
+//   title: string;
+//   message: string;
+//   notificationType: string;
+//   category: "PAYMENT" | "GAME" | "SYSTEM";
+//   priority: string;
+//   referenceId: string;
+//   referenceType: string;
+//   metadata: {
+//     bookingId: string;
+//     transactionId?: string;
+//     amount?: number;
+//     newPlayerId?: string;
+//     newPlayerName?: string;
+//     newPlayerPosition?: string;
+//     newPlayerTeam?: string;
+//     timestamp: string;
+//   };
+//   isRead: boolean;
+//   isReadyByAdmin: boolean;
+//   isDeleted: boolean;
+//   createdAt: string;
+//   updatedAt: string;
+// }
 
 interface NotificationModalProps {
   isOpen: boolean;

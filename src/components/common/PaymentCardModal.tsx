@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
 import { useToast } from "../../utils/ToastContext";
 import coins from "../../assets/price.png";
+import { useNotification } from "../../utils/NotificationContext";
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY;
 
 declare global {
@@ -133,7 +134,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
 const [showDelayedLoader, setShowDelayedLoader] = useState(false);
   const { successToast, errorToast } = useToast();
   const navigate = useNavigate();
-
+  const {refreshNotifications } = useNotification();
   const handleToggleEquipment = () => setIsEquipmentOpen(!isEquipmentOpen);
   const handleToggleCancellation = () =>
     setIsCancellationOpen(!isCancellationOpen);
@@ -258,6 +259,7 @@ const [showDelayedLoader, setShowDelayedLoader] = useState(false);
       });
 
       if (response.status === 200) {
+         await refreshNotifications(); 
       }
       return response;
     } catch (error) {

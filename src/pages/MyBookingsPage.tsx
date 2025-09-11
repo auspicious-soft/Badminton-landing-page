@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import MyBookings from "../components/myBookings/MyBookings";
@@ -8,6 +7,7 @@ import { baseImgUrl, URLS } from "../utils/urls";
 import { useAuth } from "../utils/AuthContext";
 import Pagination from "../components/common/Pagination";
 import Loader from "../components/common/Loader";
+import { useNotification } from "../utils/NotificationContext";
 
 // Define interfaces (copied/adapted from Venues.tsx for type safety)
 interface Player {
@@ -32,13 +32,13 @@ interface Booking {
   userId: string;
   score: object;
   bookingdate: string;
-  courtName:string;
+  courtName: string;
 }
 
 interface BookingGroup {
   date: string;
   time: string;
-    court: string; // court name/game
+  court: string; // court name/game
   courtId: string;
   bookings: Booking[];
 }
@@ -78,7 +78,7 @@ interface ApiBooking {
   };
   courtId: {
     _id: string;
-    name:string;
+    name: string;
     games: string;
   };
   bookingType: string;
@@ -100,7 +100,9 @@ const MyBookingsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [bookingGroups, setBookingGroups] = useState<BookingGroup[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState<"all" | "upcoming" | "previous">("all");
+  const [selectedFilter, setSelectedFilter] = useState<
+    "all" | "upcoming" | "previous"
+  >("all");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [bookingsCurrentPage, setBookingsCurrentPage] = useState(1);
   const [bookingsTotalPages, setBookingsTotalPages] = useState(1);
@@ -108,7 +110,14 @@ const MyBookingsPage: React.FC = () => {
   const limit = 10;
   const { userData } = useAuth();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { refreshNotifications } = useNotification();
+  const getNot = async () => {
+    await refreshNotifications();
+  };
 
+  useEffect(() => {
+    getNot();
+  }, []);
   const fetchBookings = async () => {
     try {
       setLoading(true);
@@ -117,7 +126,8 @@ const MyBookingsPage: React.FC = () => {
       );
       if (response.status === 200) {
         const apiBookings: ApiBooking[] = response.data.data;
-        const total = response.data.pagination?.totalCount || apiBookings.length;
+        const total =
+          response.data.pagination?.totalCount || apiBookings.length;
         setBookingsTotalItems(total);
         setBookingsTotalPages(Math.ceil(total / limit));
         const transformedBookingGroups: BookingGroup[] = apiBookings.reduce(
@@ -129,9 +139,9 @@ const MyBookingsPage: React.FC = () => {
               day: "numeric",
             });
             const time = booking.bookingSlots;
-             const court = booking.courtId.games;
-    const courtId = booking.courtId._id;
-    const courtName = booking.courtId.name;
+            const court = booking.courtId.games;
+            const courtId = booking.courtId._id;
+            const courtName = booking.courtId.name;
 
             const team1: Player[] = booking.team1.map((player) => ({
               name: player.playerData.fullName,
@@ -176,25 +186,30 @@ const MyBookingsPage: React.FC = () => {
               score: booking.score ? booking.score : {},
               bookingdate: booking.bookingDate,
               courtName: booking.courtId.name,
-
             };
 
-           let group = groups.find(
-      (g) =>
-        g.date === formattedDate &&
-        g.time === time &&
-        g.courtId === courtId &&
-         g.court === courtName
-    );
-    if (!group) {
-      group = { date: formattedDate, time, court, courtId, bookings: [] };
-      groups.push(group);
-    }
-    group.bookings.push(bookingItem);
+            let group = groups.find(
+              (g) =>
+                g.date === formattedDate &&
+                g.time === time &&
+                g.courtId === courtId &&
+                g.court === courtName
+            );
+            if (!group) {
+              group = {
+                date: formattedDate,
+                time,
+                court,
+                courtId,
+                bookings: [],
+              };
+              groups.push(group);
+            }
+            group.bookings.push(bookingItem);
 
-    return groups;
-  },
-  []
+            return groups;
+          },
+          []
         );
 
         setBookingGroups(transformedBookingGroups);
@@ -229,7 +244,7 @@ const MyBookingsPage: React.FC = () => {
     fetchBookings(); // Refresh bookings after score update
   };
 
-    useEffect(() => {
+  useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       // If dropdown is open and click is outside dropdownRef, close dropdown
       if (
@@ -256,7 +271,7 @@ const MyBookingsPage: React.FC = () => {
         <div className="text-dark-blue text-2xl sm:text-3xl font-semibold font-['Raleway'] leading-tight">
           My Bookings
         </div>
-        <div className="relative"  ref={dropdownRef}>
+        <div className="relative" ref={dropdownRef}>
           <button
             onClick={toggleDropdown}
             className="flex items-center justify-between gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-white rounded-[39px] shadow-[0px_4px_20px_0px_rgba(92,138,255,0.10)] text-dark-blue text-sm font-medium font-['Raleway'] w-32 sm:w-36 h-10 sm:h-12"
@@ -303,7 +318,10 @@ const MyBookingsPage: React.FC = () => {
         </div>
       ) : (
         <div className="max-h-[500px] overflow-y-auto hide-scrollbar">
-          <MyBookings bookingGroups={bookingGroups} onScoreUpdate={handleScoreUpdate} />
+          <MyBookings
+            bookingGroups={bookingGroups}
+            onScoreUpdate={handleScoreUpdate}
+          />
         </div>
       )}
       {bookingsTotalItems > 0 && (

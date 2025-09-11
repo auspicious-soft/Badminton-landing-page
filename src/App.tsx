@@ -15,6 +15,7 @@ import Account from "./pages/Account";
 import MyBookings from "./components/myBookings/MyBookings";
 import MyBookingsPage from "./pages/MyBookingsPage";
 import Venues2 from "./pages/NewMatchesPage";
+import { NotificationProvider } from "./utils/NotificationContext";
 
 function App() {
   const location = useLocation();
@@ -23,6 +24,7 @@ function App() {
   const shouldShowLayout = showLayoutRoutes.includes(location.pathname);
 
   return (
+      <NotificationProvider>
     <div className="min-h-screen">
       {shouldShowLayout && <Header />}
 
@@ -113,6 +115,7 @@ function App() {
 
       {shouldShowLayout && <Footer />}
     </div>
+    </NotificationProvider>
   );
 }
 
