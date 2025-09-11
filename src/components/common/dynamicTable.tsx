@@ -52,11 +52,11 @@ const DynamicTable: React.FC<DynamicTableProps> = ({
         <div className="w-full h-px bg-stone-300" />
 
         {/* Rows */}
-        <div className="flex flex-col gap-1 sm:gap-2 md:gap-2.5 max-h-[560px]  overflow-y-hidden hide-scrollbar">
-          {rows.length === 0 ? (
-            <div className="text-center text-Primary-Font text-[8px] sm:text-[10px] md:text-xs font-medium font-['Raleway'] py-4">
-              No data available
-            </div>
+        <div className="flex flex-col gap-1 sm:gap-2 md:gap-2.5 max-h-[560px] overflow-y-auto hide-scrollbar">
+  {rows.length === 0 ? (
+    <div className="text-center text-Primary-Font text-[8px] sm:text-[10px] md:text-xs font-medium font-['Raleway'] py-4">
+      No data available
+    </div>
           ) : (
             rows.map((row, rowIdx) => {
               const isAlternate = rowIdx % 2 !== 0;

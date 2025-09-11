@@ -86,7 +86,7 @@ function Account() {
   const [totalItems, setTotalItems] = useState(0);
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
-  const limit = 10;
+  const limit = 12;
   const {successToast, errorToast} = useToast();
   const handleRowClick = (id: string | number) => {
     setActiveRowId(id);
