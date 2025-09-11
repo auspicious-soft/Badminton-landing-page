@@ -503,7 +503,7 @@ useEffect(() => {
             (friend: any) => ({
               id: friend._id,
               name: friend.fullName,
-              image: friend.profilePic,
+              image: friend.profilePic ,
               type: friend.email ? "user" : "guest",
             })
           );
@@ -810,11 +810,13 @@ useEffect(() => {
                           <div className="relative">
                             <img
                               src={
-                                player.image?.startsWith(
-                                  "https://lh3.googleusercontent.com/"
-                                )
-                                  ? player.image
-                                  : `${baseImgUrl}/${player.image}`
+                              !player.image || player.image.trim() === ""
+      ? userImg
+      : player.image === userImg
+      ? userImg
+      : player.image.startsWith("https://lh3.googleusercontent.com/")
+      ? player.image
+      : `${baseImgUrl}/${player.image}`
                               }
                               alt={player.name}
                               className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"
@@ -867,13 +869,15 @@ useEffect(() => {
                       ) : (
                         <>
                           <div className="relative">
-                            <img
+                           <img
                               src={
-                                player.image?.startsWith(
-                                  "https://lh3.googleusercontent.com/"
-                                )
-                                  ? player.image
-                                  : `${baseImgUrl}/${player.image}`
+                             !player.image || player.image.trim() === ""
+      ? userImg
+      : player.image === userImg
+      ? userImg
+      : player.image.startsWith("https://lh3.googleusercontent.com/")
+      ? player.image
+      : `${baseImgUrl}/${player.image}`
                               }
                               alt={player.name}
                               className="w-12 h-12 sm:w-14 sm:h-14 rounded-full"

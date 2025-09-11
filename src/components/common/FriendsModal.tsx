@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { X, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import userImg from "../../assets/user1book.png";
+import userImg2 from "../../assets/dashboarduser.png";
+
 import { postApi, getApi } from "../../utils/api";
 import { baseImgUrl, URLS } from "../../utils/urls";
 import Loader from "./Loader";
@@ -47,11 +49,15 @@ const AddGuestModal: React.FC<AddGuestModalProps> = ({
       setLoading(true);
       try {
         const response = await postApi(URLS.createGuestFriend, { fullName });
+        const profilePic =
+  response.data.data?.profilePic && response.data.data.profilePic.trim() !== ""
+    ? response.data.data.profilePic
+    : null;
         if (response.status === 200) {
           const newGuest: Friend = {
             id: response.data.data._id || String(Date.now()), // Ensure string ID
             name: fullName,
-           image: response.data.data.profilePic || null,
+           image:profilePic ,
             type: "guest",
           };
           onAddGuest(newGuest);
@@ -67,7 +73,9 @@ const AddGuestModal: React.FC<AddGuestModalProps> = ({
               (friend: any) => ({
                 id: friend._id,
                 name: friend.fullName,
-                image: friend.profilePic,
+                image: friend.profilePic && friend.profilePic.trim() !== "" 
+    ? friend.profilePic 
+    : userImg,
                 type: friend.email ? "user" : "guest",
               })
             );
@@ -207,7 +215,7 @@ const [loading, setLoading] = useState(false);
                             ? friend.image.startsWith("https://lh3")
                               ? friend.image
                               : `${baseImgUrl}/${friend.image}`
-                            : userImg
+                            : userImg2
                         }
                         alt={friend.name}
                         className="w-10 h-10 rounded-full"

@@ -11,8 +11,12 @@ import { URLS } from "../../utils/urls";
 
 interface Notification {
   _id: string;
-  recipientId: string;  
-  type: "PAYMENT_FAILED" | "PAYMENT_SUCCESSFUL" | "PLAYER_JOINED_GAME" | "FREE_GAME_EARNED";
+  recipientId: string;
+  type:
+    | "PAYMENT_FAILED"
+    | "PAYMENT_SUCCESSFUL"
+    | "PLAYER_JOINED_GAME"
+    | "FREE_GAME_EARNED";
   title: string;
   message: string;
   notificationType: string;
@@ -43,9 +47,8 @@ interface NotificationModalProps {
   notifications: Notification[];
   onMarkAllRead: () => void;
   onMarkRead: (notificationId: string) => void;
-    onScrollEnd?: () => void;
-    loadingNot: boolean;
-    
+  onScrollEnd?: () => void;
+  loadingNot: boolean;
 }
 
 const NotificationModal: React.FC<NotificationModalProps> = ({
@@ -57,7 +60,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
   onScrollEnd,
   loadingNot,
 }) => {
-
   const modalRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -81,27 +83,26 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
-
   const getIcon = (type: string) => {
     switch (type) {
       case "PAYMENT_SUCCESSFUL":
         return (
-          <img src={paymentSuccess} alt="Payment Icon" className="w-5 h-5 m-auto" />
+          <img
+            src={paymentSuccess}
+            alt="Payment Icon"
+            className="w-5 h-5 m-auto"
+          />
         );
-         case "PAYMENT_FAILED":
+      case "PAYMENT_FAILED":
         return (
           <img src={paymentFailed} alt="Payment Icon" className="w-5 h-5" />
         );
       case "PLAYER_JOINED_GAME":
         return <img src={playerJoined} alt="Game Icon" className="w-5 h-5" />;
       case "FREE_GAME_EARNED":
-        return (
-          <img src={freeGame} alt="System Icon" className="w-5 h-5" />
-        );
+        return <img src={freeGame} alt="System Icon" className="w-5 h-5" />;
       default:
-        return (
-          <img src={defaultIcon} alt="Default Icon" className="w-5 h-5" />
-        );
+        return <img src={defaultIcon} alt="Default Icon" className="w-5 h-5" />;
     }
   };
 
@@ -114,15 +115,13 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
-
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-         className="
+          className="
       fixed inset-0 z-50 flex items-start justify-end pt-14 pr-4 sm:pr-6
-      max-[500px]:mt-[6rem] max-[500px]:pt-0 max-[500px]:pr-0 max-[500px]:justify-center
-    "
+ max-[550px]:pt-6 max-[550px]:pr-0 max-[550px]:justify-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -130,7 +129,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
         >
           <motion.div
             ref={modalRef}
-             className="
+            className="
     w-full max-w-md bg-white rounded-lg shadow-lg
     max-[550px]:w-full max-[550px]:h-screen max-[550px]:rounded-none
   "
@@ -139,33 +138,33 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
             animate="visible"
             exit="exit"
           >
-           <div className="flex justify-between items-center p-4 border-b border-gray-200">
-  <div className="flex items-center gap-2">
-    {/* Show back icon only on mobile */}
-    <button
-      onClick={onClose}
-      className="hidden max-[550px]:inline-flex items-center justify-center p-1 rounded-full hover:bg-gray-100"
-    >
-   <ChevronLeft className="w-5 h-5"/>
-    </button>
+            <div className="flex justify-between items-center p-4 border-b border-gray-200">
+              <div className="flex items-center gap-2">
+                {/* Show back icon only on mobile */}
+                <button
+                  onClick={onClose}
+                  className="hidden max-[550px]:inline-flex items-center justify-center p-1 rounded-full hover:bg-gray-100"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
 
-    <h2 className="text-lg font-semibold font-['Raleway'] text-gray-800">
-      Notifications
-    </h2>
-  </div>
+                <h2 className="text-lg font-semibold font-['Raleway'] text-gray-800">
+                  Notifications
+                </h2>
+              </div>
 
-  <button
-    className="text-sm font-medium font-['Raleway'] text-blue-600 hover:text-blue-700"
-    onClick={onMarkAllRead}
-  >
-    Mark all as read
-  </button>
-</div>
+              <button
+                className="text-sm font-medium font-['Raleway'] text-blue-600 hover:text-blue-700"
+                onClick={onMarkAllRead}
+              >
+                Mark all as read
+              </button>
+            </div>
 
-            <div 
-            className=" max-h-96 overflow-y-auto hide-scrollbar
+            <div
+              className=" max-h-96 overflow-y-auto hide-scrollbar
     max-[550px]:max-h-[calc(100vh-60px)]"
-             onScroll={handleScroll}
+              onScroll={handleScroll}
               ref={listRef}
             >
               {notifications.length === 0 ? (
@@ -177,10 +176,9 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                   <div
                     key={notification._id}
                     className="flex items-start gap-3 p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
-                        
-                     {...(!notification.isRead
-    ? { onClick: () => onMarkRead(notification._id) }
-    : {})}
+                    {...(!notification.isRead
+                      ? { onClick: () => onMarkRead(notification._id) }
+                      : {})}
                   >
                     <div className="flex-shrink-0 mt-1">
                       {getIcon(notification.type)}
@@ -209,25 +207,28 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                       )}
                     </div>
                     {loadingNot && (
-                    <div className="flex justify-center items-center py-4">
-                      <svg className="animate-spin h-6 w-6 text-blue-500" viewBox="0 0 24 24">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                        />
-                      </svg>
-                    </div>
-                  )}
+                      <div className="flex justify-center items-center py-4">
+                        <svg
+                          className="animate-spin h-6 w-6 text-blue-500"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                          />
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                          />
+                        </svg>
+                      </div>
+                    )}
                   </div>
                 ))
               )}

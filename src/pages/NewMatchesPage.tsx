@@ -281,29 +281,30 @@ function Venues2() {
       );
 
       if (response.status === 200) {
-        const matches = response.data.data;
+const matches = Array.isArray(response?.data?.data) ? response.data.data : [];
+        console.log(matches,"matcherssssssssss")
         const total = response.data.total || matches.length;
         setTotalItems(total);
         setTotalPages(Math.ceil(total / limit));
 
         const transformedGames: Game[] = matches.map((match: any) => {
-          const team1Players: PlayerSlot[] = match.team1.map((p: any) => ({
-            name: p.player.name.split(" ")[0],
-            profilePic: p.player.image
-              ? p.player.image.startsWith("http")
-                ? p.player.image
-                : `${baseImgUrl}/${p.player.image}`
-              : null,
-          }));
+        const team1Players: PlayerSlot[] = (match.team1 || []).map((p: any) => ({
+  name: p?.player?.name ? p.player.name.split(" ")[0] : "Player",
+  profilePic: p?.player?.image
+    ? p.player.image.startsWith("http")
+      ? p.player.image
+      : `${baseImgUrl}/${p.player.image}`
+    : null,
+}));
 
-          const team2Players: PlayerSlot[] = match.team2.map((p: any) => ({
-            name: p.player.name.split(" ")[0],
-            profilePic: p.player.image
-              ? p.player.image.startsWith("http")
-                ? p.player.image
-                : `${baseImgUrl}/${p.player.image}`
-              : null,
-          }));
+const team2Players: PlayerSlot[] = (match.team2 || []).map((p: any) => ({
+  name: p?.player?.name ? p.player.name.split(" ")[0] : "Player",
+  profilePic: p?.player?.image
+    ? p.player.image.startsWith("http")
+      ? p.player.image
+      : `${baseImgUrl}/${p.player.image}`
+    : null,
+}));
 
           const team1Slots = [
             ...team1Players,
@@ -330,16 +331,25 @@ function Venues2() {
           };
         });
 
+        
         setGames(transformedGames);
+        console.log(transformedGames,"transformeeddddddddd")
       }
     } catch (error) {
-      console.error("Error fetching matches:", error);
+     if(error && games.length !== 0){
+       console.error("Error fetching matches:", error);
       setError("Failed to fetch matches");
       errorToast("Failed to fetch matches");
+     }
+     else{
+
+     }
     } finally {
       setLoading(false);
     }
   };
+
+  console.log(games,"gamesssss")
 
   const handleGameSelect = (selectedGame: string) => {
     setGame(selectedGame);
