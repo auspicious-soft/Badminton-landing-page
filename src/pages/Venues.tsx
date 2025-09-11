@@ -182,41 +182,39 @@ const MainVenueComp: React.FC = () => {
   const today = new Date();
   const formattedDate = today.toISOString().split("T")[0];
 
-  useEffect(() => {
-    const fetchVenues = async () => {
-      try {
-        setLoading(true);
-        const response = await getApi(
-          `${URLS.getAllVenues}?date=${formattedDate}&distance=DESC&game=all&lng=${coordinates.long}&lat=${coordinates.lat}&page=${venuesCurrentPage}&limit=${limit}`
-        );
+  const fetchVenues = async () => {
+    try {
+      setLoading(true);
+      const response = await getApi(
+        `${URLS.getAllVenues}?date=${formattedDate}&distance=DESC&game=all&lng=${coordinates.long}&lat=${coordinates.lat}&page=${venuesCurrentPage}&limit=${limit}`
+      );
 
-        if (response.status === 200) {
-          const apiVenues: ApiVenue[] = response.data.data;
-          const total = response.data.total || apiVenues.length;
-          setVenuesTotalItems(total);
-          setVenuesTotalPages(Math.ceil(total / limit));
-          const transformedVenues: Venue[] = apiVenues.map((apiVenue) => ({
-            _id: apiVenue._id,
-            name: apiVenue.name,
-            location: `${apiVenue.city}, ${apiVenue.state}`,
-            imageUrl: `${baseImgUrl}/${apiVenue.image}`,
-            courts: apiVenue.courts,
-            weather: apiVenue.weather,
-          }));
-          setVenuesData(transformedVenues);
-        }
-      } catch (error) {
-        console.error("Error fetching venues:", error);
-        setError("Failed to fetch venues. Please try again.");
-      } finally {
-        setLoading(false);
+      if (response.status === 200) {
+        const apiVenues: ApiVenue[] = response.data.data;
+        const total = response.data.total || apiVenues.length;
+        setVenuesTotalItems(total);
+        setVenuesTotalPages(Math.ceil(total / limit));
+        const transformedVenues: Venue[] = apiVenues.map((apiVenue) => ({
+          _id: apiVenue._id,
+          name: apiVenue.name,
+          location: `${apiVenue.city}, ${apiVenue.state}`,
+          imageUrl: `${baseImgUrl}/${apiVenue.image}`,
+          courts: apiVenue.courts,
+          weather: apiVenue.weather,
+        }));
+        setVenuesData(transformedVenues);
       }
-    };
-
-    if (coordinates.long && coordinates.lat) {
-      fetchVenues();
+    } catch (error) {
+      console.error("Error fetching venues:", error);
+      setError("Failed to fetch venues. Please try again.");
+    } finally {
+      setLoading(false);
     }
-  }, [coordinates.long, coordinates.lat, venuesCurrentPage]);
+  };
+
+  useEffect(() => {
+    fetchVenues();
+  }, [venuesCurrentPage]);
 
   const fetchBookings = async () => {
     try {
@@ -352,7 +350,7 @@ const MainVenueComp: React.FC = () => {
     setBookingsCurrentPage(page);
   };
 
-const closeClubInfoModal = () => {
+  const closeClubInfoModal = () => {
     setShowClubInfoModal(false);
     // Open VerifyPhoneModal only if phone number is not verified
     if (userData && !userData.phoneVerified) {
@@ -360,11 +358,11 @@ const closeClubInfoModal = () => {
     }
   };
 
-const closePhoneNumberModal = () => {
+  const closePhoneNumberModal = () => {
     setShowPhoneNumberModal(false);
   };
 
-const handleClubInfoSubmit = (field1: boolean, field2: string) => {
+  const handleClubInfoSubmit = (field1: boolean, field2: string) => {
     setShowClubInfoModal(false);
     // Open VerifyPhoneModal only if phone number is not verified
     if (userData && !userData.phoneVerified) {
@@ -376,7 +374,7 @@ const handleClubInfoSubmit = (field1: boolean, field2: string) => {
     setShowPhoneNumberModal(false);
   };
 
-useEffect(() => {
+  useEffect(() => {
     if (userData) {
       // Show ClubInfoModal if clubResponse is false
       if (!userData.clubResponse) {
@@ -389,19 +387,16 @@ useEffect(() => {
     }
   }, [userData]);
 
-
   useEffect(() => {
-  if (showClubInfoModal || showPhoneNumberModal) {
-    
-    document.body.style.overflow = "hidden";
-  } else {
-    document.body.style.overflow = "auto";
-  }
-  return () => {
-    document.body.style.overflow = "auto";
-  };
-}, [showClubInfoModal, showPhoneNumberModal]);
-
+    if (showClubInfoModal || showPhoneNumberModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showClubInfoModal, showPhoneNumberModal]);
 
   return (
     <>
@@ -422,12 +417,12 @@ useEffect(() => {
             <div className="w-full lg:w-[100%] flex flex-col gap-5">
               <div className="self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                 <div className="text-dark-blue text-2xl sm:text-3xl font-semibold font-['Raleway']">
-                  All Venues
+                  All Venuesss
                 </div>
               </div>
               {loading && <div>Loading venues...</div>}
               {error && <div className="text-red-500">{error}</div>}
-              {!loading && !error && (
+              {!loading && (
                 <Venues
                   venues={venuesData}
                   onVenueClick={handleVenueClick}
