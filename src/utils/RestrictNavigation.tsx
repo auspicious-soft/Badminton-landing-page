@@ -5,7 +5,7 @@ export function useBlockIfNotOnboarded(userData: any) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isOnboarded = userData?.clubResponse && userData?.phoneVerified;
+  const isOnboarded = userData?.phoneVerified;
 
   useEffect(() => {
     if (!isOnboarded && location.pathname !== "/venues") {

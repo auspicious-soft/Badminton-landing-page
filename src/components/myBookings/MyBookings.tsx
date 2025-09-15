@@ -120,7 +120,7 @@ const MyBookings: React.FC<MyBookingsProps> = ({ bookingGroups , onScoreUpdate})
   const [friends, setFriends] = useState<Friend[]>([]);
   const [loading, setLoading] = useState(false);
   const [infoMessage, setInfoMessage] = useState("");
-  const {refreshNotifications} = useNotification();
+  const {refreshNotifications , fetchUserProfileData} = useNotification();
   const { userData } = useAuth();
   const { successToast, errorToast } = useToast();
 
@@ -156,7 +156,8 @@ const MyBookings: React.FC<MyBookingsProps> = ({ bookingGroups , onScoreUpdate})
         successToast(response.data.message);
         setShowCancelModal(false);
         onScoreUpdate();
-        await refreshNotifications()
+        await refreshNotifications();
+        await fetchUserProfileData();
       } else {
         setShowCancelModal(false);
         setLoading(false);

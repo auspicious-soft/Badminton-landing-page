@@ -8,9 +8,7 @@ import React, {
 } from "react";
 import { getApi, postApi } from "./api";
 import { URLS } from "./urls";
-import { Notification } from "../types/Notification";  // ✅ use shared type
-
-
+import { Notification } from "../types/Notification"; // ✅ use shared type
 
 interface NotificationMeta {
   total: number;
@@ -30,16 +28,23 @@ interface NotificationContextType {
   loadMore: () => Promise<void>;
   markAllAsRead: () => Promise<void>;
   markAsRead: (id: string) => Promise<void>;
-    refreshNotifications: () => Promise<void>; // 👈 add this
-
+  refreshNotifications: () => Promise<void>; // 👈 add this
+  fetchUserProfileData: () => Promise<void>;
+   mainData: any;
 }
-
+interface Data {
+  _id: string;
+  playCoins: number;
+  profilePic: string;
+  [key: string]: any;
+}
 const NotificationContext = createContext<NotificationContextType | null>(null);
 
 export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [mainData, setMainData] = useState<Data | null>(null);
   const [meta, setMeta] = useState<NotificationMeta>({
     total: 0,
     page: 1,
@@ -53,7 +58,9 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   const fetchNotifications = useCallback(async (page = 1) => {
     try {
       setLoading(true);
-      const res = await getApi(`${URLS.getNotifications}?page=${page}&limit=10`);
+      const res = await getApi(
+        `${URLS.getNotifications}?page=${page}&limit=10`
+      );
       if (res.status === 200) {
         const notifyData = res.data.data;
         const metaData = res.data.meta;
@@ -81,18 +88,28 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const res = await postApi(URLS.markAllNotificationsRead, {});
       if (res.status === 200) {
-        setNotifications((prev) =>
-          prev.map((n) => ({ ...n, isRead: true }))
-        );
+        setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
       }
     } catch (err) {
       console.error("Error marking all notifications as read:", err);
     }
   }, []);
+  const fetchUserProfileData = async () => {
+    try {
+      const response = await getApi(`${URLS.getUserProfile}`);
+      if (response.status === 200) {
+        setMainData(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    }
+  };
 
   const markAsRead = useCallback(async (id: string) => {
     try {
-      const res = await postApi(URLS.markAllNotificationsRead, { notificationId: id });
+      const res = await postApi(URLS.markAllNotificationsRead, {
+        notificationId: id,
+      });
       if (res.status === 200) {
         setNotifications((prev) =>
           prev.map((n) => (n._id === id ? { ...n, isRead: true } : n))
@@ -108,6 +125,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
   // fetch initial notifications once
   useEffect(() => {
     fetchNotifications(1);
+    fetchUserProfileData();
   }, [fetchNotifications]);
 
   return (
@@ -118,10 +136,12 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         hasNextPage: meta.hasNextPage,
         fetchNotifications,
+        fetchUserProfileData,
         loadMore,
         markAllAsRead,
         markAsRead,
-         refreshNotifications: () => fetchNotifications(1),
+        refreshNotifications: () => fetchNotifications(1),
+        mainData,
       }}
     >
       {children}
@@ -132,9 +152,7 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useNotification = () => {
   const ctx = useContext(NotificationContext);
   if (!ctx) {
-    throw new Error(
-      "useNotification must be used within NotificationProvider"
-    );
+    throw new Error("useNotification must be used within NotificationProvider");
   }
   return ctx;
 };

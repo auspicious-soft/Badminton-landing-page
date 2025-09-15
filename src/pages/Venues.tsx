@@ -332,43 +332,29 @@ const MainVenueComp: React.FC = () => {
     });
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleFilterSelect = (filter: "all" | "upcoming" | "previous") => {
-    setSelectedFilter(filter);
-    setIsDropdownOpen(false);
-    setBookingsCurrentPage(1); // Reset to page 1 on filter change
-  };
-
   const handleVenuesPageChange = (page: number) => {
     setVenuesCurrentPage(page);
   };
 
-  const handleBookingsPageChange = (page: number) => {
-    setBookingsCurrentPage(page);
-  };
-
-  const closeClubInfoModal = () => {
-    setShowClubInfoModal(false);
-    // Open VerifyPhoneModal only if phone number is not verified
-    if (userData && !userData.phoneVerified) {
-      setShowPhoneNumberModal(true);
-    }
-  };
+  // const closeClubInfoModal = () => {
+  //   setShowClubInfoModal(false);
+  //   // Open VerifyPhoneModal only if phone number is not verified
+  //   if (userData && !userData.phoneVerified) {
+  //     setShowPhoneNumberModal(true);
+  //   }
+  // };
 
   const closePhoneNumberModal = () => {
     setShowPhoneNumberModal(false);
   };
 
-  const handleClubInfoSubmit = (field1: boolean, field2: string) => {
-    setShowClubInfoModal(false);
-    // Open VerifyPhoneModal only if phone number is not verified
-    if (userData && !userData.phoneVerified) {
-      setShowPhoneNumberModal(true);
-    }
-  };
+  // const handleClubInfoSubmit = (field1: boolean, field2: string) => {
+  //   setShowClubInfoModal(false);
+  //   // Open VerifyPhoneModal only if phone number is not verified
+  //   if (userData && !userData.phoneVerified) {
+  //     setShowPhoneNumberModal(true);
+  //   }
+  // };
 
   const handlePhoneNumberSubmit = (phone: string) => {
     setShowPhoneNumberModal(false);
@@ -376,19 +362,14 @@ const MainVenueComp: React.FC = () => {
 
   useEffect(() => {
     if (userData) {
-      // Show ClubInfoModal if clubResponse is false
-      if (!userData.clubResponse) {
-        setShowClubInfoModal(true);
-      }
-      // Show VerifyPhoneModal if clubResponse is true and phone is not verified
-      else if (!userData.phoneVerified && !showClubInfoModal) {
+     if (!userData.phoneVerified ) {
         setShowPhoneNumberModal(true);
       }
     }
   }, [userData]);
 
   useEffect(() => {
-    if (showClubInfoModal || showPhoneNumberModal) {
+    if ( showPhoneNumberModal) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -396,22 +377,22 @@ const MainVenueComp: React.FC = () => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [showClubInfoModal, showPhoneNumberModal]);
+  }, [, showPhoneNumberModal]);
 
   return (
     <>
       {loading && <Loader fullScreen />}
-      <ClubInfoModal
+      {/* <ClubInfoModal
         isOpen={showClubInfoModal}
         onClose={closeClubInfoModal}
         onSubmit={handleClubInfoSubmit}
-      />
+      /> */}
       <VerifyPhoneModal
         isOpen={showPhoneNumberModal}
         onClose={closePhoneNumberModal}
         onSubmit={handlePhoneNumberSubmit}
       />
-      {userData && userData.clubResponse ? (
+      {userData ? (
         <>
           <div className="w-full max-w-screen p-4 sm:p-6 flex flex-col lg:flex-row gap-6 lg:gap-10 overflow-x-hidden bg-slate-50/60">
             <div className="w-full lg:w-[100%] flex flex-col gap-5">

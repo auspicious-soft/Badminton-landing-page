@@ -37,7 +37,7 @@ const modalVariants: Variants = {
 const Navbar = () => {
   const [showNotificationModal, setShowNotificationModal] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [mainData, setMainData] = useState<Data | null>(null);
+  // const [mainData, setMainData] = useState<Data | null>(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const { userData, logout } = useAuth();
@@ -55,6 +55,8 @@ const Navbar = () => {
     markAsRead,
     hasNextPage,
     loadMore,
+    fetchUserProfileData,
+    mainData
   } = useNotification();
 
   // ------------------ Navigation Items ------------------
@@ -64,16 +66,16 @@ const Navbar = () => {
   ];
 
   // ------------------ User Profile Fetch ------------------
-  const fetchUserProfileData = async () => {
-    try {
-      const response = await getApi(`${URLS.getUserProfile}`);
-      if (response.status === 200) {
-        setMainData(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    }
-  };
+  // const fetchUserProfileData = async () => {
+  //   try {
+  //     const response = await getApi(`${URLS.getUserProfile}`);
+  //     if (response.status === 200) {
+  //       setMainData(response.data.data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching user profile:", error);
+  //   }
+  // };
 
   useEffect(() => {
     fetchUserProfileData();

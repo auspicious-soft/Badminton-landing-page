@@ -130,35 +130,14 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
   }>({});
   const [loading, setLoading] = useState(false);
   const [finalAmount, setFinalAmount] = useState(bookingAmount);
-  const [mainData, setMaindata] = useState<Data | null>(null);
-const [showDelayedLoader, setShowDelayedLoader] = useState(false);
+  const [showDelayedLoader, setShowDelayedLoader] = useState(false);
   const { successToast, errorToast } = useToast();
   const navigate = useNavigate();
-  const {refreshNotifications } = useNotification();
+  const { refreshNotifications, fetchUserProfileData, mainData } =
+    useNotification();
   const handleToggleEquipment = () => setIsEquipmentOpen(!isEquipmentOpen);
   const handleToggleCancellation = () =>
     setIsCancellationOpen(!isCancellationOpen);
-
-  const fetchUserProfileData = async () => {
-    setLoading(true);
-    try {
-      const response = await getApi(`${URLS.getUserProfile}`);
-      if (response.status === 200) {
-        const uData = response?.data?.data;
-        if (uData) {
-          setMaindata(uData);
-        } else {
-          console.error("No user data found in response");
-        }
-      } else {
-        console.error("API call failed with status:", response.status);
-      }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     fetchUserProfileData();
@@ -259,137 +238,144 @@ const [showDelayedLoader, setShowDelayedLoader] = useState(false);
       });
 
       if (response.status === 200) {
-         await refreshNotifications(); 
+        await refreshNotifications();
       }
       return response;
     } catch (error) {
       return null; // ✅ Return null so you can handle failure gracefully
-    } 
+    }
   };
 
-const handlePayNow = async () => {
-  if (!selectedPayment) {
-    errorToast("Please Select Payment Method");
-    return;
-  }
+  const handlePayNow = async () => {
+    if (!selectedPayment) {
+      errorToast("Please Select Payment Method");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    // Step 1: Create the booking
-    const bookingResponse = await createBooking();
-    if (
-      bookingResponse?.data?.data?.transaction?._id &&
-      bookingResponse?.data?.data?.transaction?.amount
-    ) {
-      const transactionId = bookingResponse.data.data.transaction._id;
-
-      // 🎯 If payment method is playcoins, skip Razorpay
-      if (selectedPayment === "playcoins") {
-        successToast("Booking confirmed using PlayCoins!");
-        onClose?.();
-        setTimeout(() => {
-          navigate("/my-bookings");
-        }, 1000);
-        setLoading(false);
-        return;
-      }
-
-      // Step 2: Create Razorpay Order (only if not playcoins)
-      const paymentResponse = await postApi(`${URLS.bookingPayment}`, {
-        transactionId,
-        method: selectedPayment,
-      });
-
+    try {
+      // Step 1: Create the booking
+      const bookingResponse = await createBooking();
       if (
-        paymentResponse.status === 200 &&
-        paymentResponse?.data?.data?.razorpayOrderId
+        bookingResponse?.data?.data?.transaction?._id &&
+        bookingResponse?.data?.data?.transaction?.amount
       ) {
-        const { razorpayOrderId, currency } = paymentResponse.data.data;
+        const transactionId = bookingResponse.data.data.transaction._id;
 
-        // Step 3: Load Razorpay script
-        const loaded = await loadRazorpayScript();
-        if (!loaded) {
-          errorToast("Razorpay SDK failed to load. Are you online?");
+        // Step 2: Create Razorpay Order (only if not playcoins)
+        const paymentResponse = await postApi(`${URLS.bookingPayment}`, {
+          transactionId,
+          method: selectedPayment,
+        });
+
+        if (paymentResponse.status !== 200) {
+          errorToast("Failed to create payment. Please try again.");
           setLoading(false);
           return;
         }
 
-        const options = {
-          key: RAZORPAY_KEY_ID,
-          amount: payableAmount * 100, // Razorpay expects amount in paise
-          currency,
-          name: "Paddle Play",
-          description: "Court Booking Payment",
-          order_id: razorpayOrderId,
-          handler: async function () {
-            successToast(
-              "Payment successful. Your booking was created successfully!"
-            );
-            onClose?.();
-            setTimeout(() => {
-              navigate("/my-bookings");
-            }, 1000);
-          },
-          modal: {
-            ondismiss: function () {
-              setLoading(false);
-            },
-          },
-          prefill: {
-            name: userData?.name || "",
-            email: userData?.email || "",
-            contact: userData?.phone || "",
-          },
-          theme: {
-            color: "#3399cc",
-          },
-        };
+        if (selectedPayment === "playcoins") {
+          successToast("Booking confirmed using PlayCoins!");
+          await fetchUserProfileData();
+          onClose?.();
+          setTimeout(() => {
+            navigate("/my-bookings");
+          }, 1000);
+          setLoading(false);
+          return;
+        }
 
-        const razorpay = new window.Razorpay(options);
-        razorpay.open();
+        if (
+          paymentResponse.status === 200 &&
+          paymentResponse?.data?.data?.razorpayOrderId
+        ) {
+          const { razorpayOrderId, currency } = paymentResponse.data.data;
+
+          // Step 3: Load Razorpay script
+          const loaded = await loadRazorpayScript();
+          if (!loaded) {
+            errorToast("Razorpay SDK failed to load. Are you online?");
+            setLoading(false);
+            return;
+          }
+
+          const options = {
+            key: RAZORPAY_KEY_ID,
+            amount: payableAmount * 100, // Razorpay expects amount in paise
+            currency,
+            name: "Paddle Play",
+            description: "Court Booking Payment",
+            order_id: razorpayOrderId,
+            handler: async function () {
+              successToast(
+                "Payment successful. Your booking was created successfully!"
+              );
+              await fetchUserProfileData();
+              onClose?.();
+              setTimeout(() => {
+                navigate("/my-bookings");
+              }, 1000);
+            },
+            modal: {
+              ondismiss: function () {
+                setLoading(false);
+              },
+            },
+            prefill: {
+              name: userData?.name || "",
+              email: userData?.email || "",
+              contact: userData?.phone || "",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+
+          const razorpay = new window.Razorpay(options);
+          razorpay.open();
+        } else {
+          errorToast("Failed to create Razorpay order. Please try again.");
+          setLoading(false);
+        }
       } else {
-        errorToast("Failed to create Razorpay order. Please try again.");
+        errorToast("Failed to create booking. Please try again.");
         setLoading(false);
       }
-    } else {
-      errorToast("Failed to create booking. Please try again.");
+    } catch (error) {
+      console.error("Payment initiation failed", error);
+      errorToast(
+        "An error occurred during payment initiation. Please try again."
+      );
       setLoading(false);
     }
-  } catch (error) {
-    console.error("Payment initiation failed", error);
-    errorToast("An error occurred during payment initiation. Please try again.");
-    setLoading(false);
-  }
-};
-
+  };
 
   const isPlayCoinsDisabled =
     mainData !== null && bookingAmount !== undefined
       ? bookingAmount > mainData.playCoins
-      : true; 
+      : true;
 
-        const isPaymentBothDisabled =
+  const isPaymentBothDisabled =
     mainData !== null && bookingAmount !== undefined
       ? bookingAmount <= mainData.playCoins
-      : true; 
+      : true;
 
-const payableAmount = (() => {
-  if (!bookingAmount) return 0; // safeguard against undefined
+  const payableAmount = (() => {
+    if (!bookingAmount) return 0; // safeguard against undefined
 
-  if (!selectedPayment) return bookingAmount;
+    if (!selectedPayment) return bookingAmount;
 
-  if (selectedPayment === "both") {
-    return Math.max(bookingAmount - (mainData?.playCoins || 0), 0);
-  }
+    if (selectedPayment === "both") {
+      return Math.max(bookingAmount - (mainData?.playCoins || 0), 0);
+    }
 
-  if (selectedPayment === "playcoins") {
-    return 0; // fully covered by coins
-  }
+    if (selectedPayment === "playcoins") {
+      return 0; // fully covered by coins
+    }
 
-  return bookingAmount;
-})();
-
+    return bookingAmount;
+  })();
 
   return (
     <>
@@ -563,9 +549,8 @@ const payableAmount = (() => {
                 <div className="w-full flex flex-col justify-start items-start gap-5">
                   {paymentOptions.map((option) => {
                     const isDisabled =
-                     
-    (option.id === "playcoins" && isPlayCoinsDisabled) ||
-    (option.id === "both" && isPaymentBothDisabled);
+                      (option.id === "playcoins" && isPlayCoinsDisabled) ||
+                      (option.id === "both" && isPaymentBothDisabled);
 
                     return (
                       <div
@@ -655,22 +640,25 @@ const payableAmount = (() => {
 
               {/* Pay Button */}
               <div
-  className={`w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-blue-600 rounded-lg flex justify-center items-center gap-3`}
->
-  <button
-  onClick={handlePayNow}
-  disabled={loading || !selectedPayment}
-  className={`text-white text-sm sm:text-base font-medium font-['Raleway'] w-full h-full rounded-lg 
-    ${!selectedPayment || loading ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
->
-  {loading
-    ? "Processing..."
-    : selectedPayment === "playcoins"
-    ? "Pay with PlayCoins"
-    : `Pay ₹${payableAmount}`}
-</button>
-
-</div>
+                className={`w-full h-12 sm:h-14 px-6 sm:px-44 py-4 bg-blue-600 rounded-lg flex justify-center items-center gap-3`}
+              >
+                <button
+                  onClick={handlePayNow}
+                  disabled={loading || !selectedPayment}
+                  className={`text-white text-sm sm:text-base font-medium font-['Raleway'] w-full h-full rounded-lg 
+    ${
+      !selectedPayment || loading
+        ? "cursor-not-allowed opacity-60"
+        : "cursor-pointer"
+    }`}
+                >
+                  {loading
+                    ? "Processing..."
+                    : selectedPayment === "playcoins"
+                    ? "Pay with PlayCoins"
+                    : `Pay ₹${payableAmount}`}
+                </button>
+              </div>
             </div>
           </div>
         </>
