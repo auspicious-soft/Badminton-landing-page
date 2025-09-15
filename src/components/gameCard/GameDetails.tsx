@@ -118,8 +118,8 @@ const GameDetailsCard: React.FC<GameDetailsCardProps> = ({
     const selfPlayer: Player = {
       id: userData._id,
       name: "You",
-      image: userData.picture?.startsWith("https:")
-        ? userData.picture
+      image: userData.profilePic?.startsWith("https:")
+        ? userData.profilePic
         : `${baseImgUrl}/${userData.profilePic}` || userImg,
       type: "user",
     };
@@ -193,7 +193,7 @@ const GameDetailsCard: React.FC<GameDetailsCardProps> = ({
         >
           <img
             className={`w-10 h-10 rounded-full ${isSelf ? "border-2 border-blue-500" : ""} sm:w-12 sm:h-12`}
-            src={isSelf ? (userData.picture?.startsWith("https:") ? userData.picture : `${baseImgUrl}/${userData.profilePic}` || userImg) : playerImage}
+            src={isSelf ? (userData.profilePic?.startsWith("https:") ? userData.profilePic : `${baseImgUrl}/${userData.profilePic}` || userImg) : playerImage}
             alt={isSelf ? "You" : `${player.playerData.name} avatar`}
           />
           <span className="text-center text-gray-900 text-xs font-medium font-['Raleway'] leading-tight truncate max-w-[80px] sm:max-w-[100px]">

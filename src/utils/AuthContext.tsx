@@ -5,7 +5,7 @@ interface UserData {
   token: string;
   name?: string;
   email?: string;
-  picture?: string;
+  profilePic?: string;
   [key: string]: any; // For additional fields from Google response
 }
 

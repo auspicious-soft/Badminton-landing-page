@@ -9,6 +9,7 @@ import TransactionModal from "../components/common/TransactionModal";
 import Loader from "../components/common/Loader";
 import Pagination from "../components/common/Pagination";
 import { useToast } from "../utils/ToastContext";
+import { useAuth } from "../utils/AuthContext";
 
 const headers = ["S No.", "Venues", "Amount", "Date", "Time", "Action"];
 
@@ -88,6 +89,8 @@ function Account() {
     useState<Transaction | null>(null);
   const limit = 12;
   const {successToast, errorToast} = useToast();
+  const { updateUserData } = useAuth(); // 👈 import from your Auth context
+
   const handleRowClick = (id: string | number) => {
     setActiveRowId(id);
     const transaction = transactions.find((t) => t._id === id);
@@ -128,14 +131,21 @@ function Account() {
       if (response.status === 200) {
       successToast( response.data.message);
         // Update local userData with the new values
-        setUserdata((prev) => ({
-          ...prev!,
-          ...(data.firstName && { firstName: data.firstName }),
-          ...(data.lastName && { lastName: data.lastName }),
-          ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
-          ...(data.email && { email: data.email }),
-          ...(data.imageUrl && { profilePic: data.imageUrl }),
-        }));
+        // setUserdata((prev) => ({
+        //   ...prev!,
+        //   ...(data.firstName && { firstName: data.firstName }),
+        //   ...(data.lastName && { lastName: data.lastName }),
+        //   ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
+        //   ...(data.email && { email: data.email }),
+        //   ...(data.imageUrl && { profilePic: data.imageUrl }),
+        // }));
+          updateUserData({
+        ...(data.firstName && { firstName: data.firstName }), // or use firstName+lastName merged
+        ...(data.lastName && { lastName: data.lastName }), // keep if needed
+        ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
+        ...(data.email && { email: data.email }),
+        ...(data.imageUrl && { profilePic: data.imageUrl }),
+      });
       } else {
         errorToast("Failed to update profile");
       }
