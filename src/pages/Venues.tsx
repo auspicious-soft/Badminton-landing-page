@@ -398,7 +398,7 @@ const MainVenueComp: React.FC = () => {
             <div className="w-full lg:w-[100%] flex flex-col gap-5">
               <div className="self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0">
                 <div className="text-dark-blue text-2xl sm:text-3xl font-semibold font-['Raleway']">
-                  All Venuesss
+                  All Venues
                 </div>
               </div>
               {loading && <div>Loading venues...</div>}

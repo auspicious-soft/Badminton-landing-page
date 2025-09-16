@@ -589,6 +589,20 @@ useEffect(() => {
       };
     }, [showFriendModal, showPaymentModal]);
     
+useEffect(() => {
+  const anyModalOpen =
+        showFriendModal ||
+        showPaymentModal;
+    
+  if (anyModalOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [showFriendModal, showPaymentModal]);
 
     useEffect(() => {
     // On large screens, always show details
