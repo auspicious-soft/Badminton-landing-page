@@ -40,6 +40,7 @@ interface Booking {
     set3?: { team1: string; team2: string };
     winner?: "team1" | "team2";
   };
+  bookingSlots:string;
 }
 
 interface BookingGroup {
@@ -251,42 +252,46 @@ const MyBookings: React.FC<MyBookingsProps> = ({ bookingGroups , onScoreUpdate})
 };
 
 
-const openModifyModal = (
-  bookingId: string,
-  askToJoin: boolean,
-  bookingdate?: string,
-  bookingtype?:string,
-) => {
+// const openModifyModal = (
+//   bookingId: string,
+//   askToJoin: boolean,
+//   bookingdate?: string,
+//   bookingtype?:string,
+// ) => {
+//   setSelectedBookingId(bookingId);
+
+//   if (askToJoin) {
+//     setInfoMessage(
+//       "Sorry! Only private and upcoming bookings created by the creator are allowed to modify."
+//     );
+//     setShowInfoModal(true);
+//     return;
+//   }
+
+//   if (bookingdate && !canModifyBooking(bookingdate)) {
+//     setInfoMessage(
+//       "Sorry! Modifications are only allowed up to 4 hours before the booking start time."
+//     );
+//     setShowInfoModal(true);
+//     return;
+//   }
+
+//   if(  bookingtype && bookingtype === "Cancelled") {
+//     setInfoMessage(
+//       "Sorry! Cancelled Bookings cannot be modified."
+//     );
+//     setShowInfoModal(true);
+//     return;
+//   }
+
+
+//   setShowModifyModal(true);
+// };
+
+const openModifyModal = (bookingId: string) => {
   setSelectedBookingId(bookingId);
-
-  if (askToJoin) {
-    setInfoMessage(
-      "Sorry! Only private and upcoming bookings created by the creator are allowed to modify."
-    );
-    setShowInfoModal(true);
-    return;
-  }
-
-  if (bookingdate && !canModifyBooking(bookingdate)) {
-    setInfoMessage(
-      "Sorry! Modifications are only allowed up to 4 hours before the booking start time."
-    );
-    setShowInfoModal(true);
-    return;
-  }
-
-  if(  bookingtype && bookingtype === "Cancelled") {
-    setInfoMessage(
-      "Sorry! Cancelled Bookings cannot be modified."
-    );
-    setShowInfoModal(true);
-    return;
-  }
-
-
   setShowModifyModal(true);
 };
-
 
   const closeModifyModal = () => {
     setShowModifyModal(false);
@@ -315,7 +320,6 @@ const openModifyModal = (
   };
 
 useEffect(() => {
-  // Check if any modal is open
   const anyModalOpen =
     showUploadScoreModal ||
     showCancelModal ||
@@ -327,12 +331,33 @@ useEffect(() => {
   } else {
     document.body.classList.remove("body-no-scroll");
   }
-
-  // Cleanup on unmount
   return () => {
     document.body.classList.remove("body-no-scroll");
   };
 }, [showUploadScoreModal, showCancelModal, showInfoModal, showModifyModal]);
+
+
+useEffect(() => {
+  if (showModifyModal) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+  return () => {
+    document.body.style.overflow = "";
+  };
+}, [showModifyModal]);
+
+const formatTime = (timeStr: string) => {
+  const [hourStr, minuteStr] = timeStr.split(":");
+  let hour = parseInt(hourStr, 10);
+  const minute = parseInt(minuteStr, 10);
+  const ampm = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12 || 12; // 0 → 12
+  return `${hour}${minute > 0 ? `:${minute.toString().padStart(2, "0")}` : ""} ${ampm}`;
+};
+
+
   return (
     <>
           {loading && <Loader fullScreen />}
@@ -344,7 +369,7 @@ useEffect(() => {
       className="self-stretch flex flex-col justify-start items-start gap-2 sm:gap-2.5"
     >
       <div className="self-stretch justify-center text-gray-600 text-xs sm:text-sm font-semibold font-['Raleway'] leading-none">
-    {group.date} | {group.court}
+    {group.date} | {formatTime(group?.bookings[0]?.bookingSlots)}
   </div>
       <div className="self-stretch gird grid-cols-2 justify-start items-start gap-1.5 sm:gap-2">
         {group.bookings.map((booking, bookingIndex) => (
@@ -358,9 +383,7 @@ useEffect(() => {
             whileHover="hover"
             viewport={{ once: true, amount: 0.0001 }}
         style={{ backgroundColor: "#F3F4F6"}} 
-            onClick={() =>
-  openModifyModal(booking.bookingId, booking.askToJoin, booking.bookingdate, booking.bookingType)
-            }
+             onClick={() => openModifyModal(booking.bookingId)}
           >
             <div className="self-stretch flex flex-col justify-start items-start gap-3 sm:gap-4">
               <div className="self-stretch inline-flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">

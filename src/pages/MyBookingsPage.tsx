@@ -27,6 +27,7 @@ interface Booking {
   isComp: string;
   dateOfCreation: string;
   bookingId: string;
+  bookingSlots:string;
   bookingType: string;
   askToJoin: boolean;
   userId: string;
@@ -186,6 +187,7 @@ const MyBookingsPage: React.FC = () => {
               score: booking.score ? booking.score : {},
               bookingdate: booking.bookingDate,
               courtName: booking.courtId.name,
+              bookingSlots:booking.bookingSlots,
             };
 
             let group = groups.find(

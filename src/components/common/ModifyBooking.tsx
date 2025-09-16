@@ -30,9 +30,11 @@ interface MatchData {
     playerData: { _id: string; fullName: string; profilePic?: string | null };
   }>;
   venueId: { name: string; address: string; city: string; image?: string };
-  courtId: { games: string };
+  courtId: { games: string; name: string };
   bookingDate: string;
   bookingSlots: string;
+  bookingType: string;
+  askToJoin: string;
 }
 
 interface ModifyBookingProps {
@@ -47,7 +49,6 @@ interface ModifyBookingProps {
   ) => void;
   onFriendsUpdate: (friends: Player[]) => void;
   onScoreUpdate: () => void;
-
 }
 
 const ModifyBooking: React.FC<ModifyBookingProps> = ({
@@ -57,7 +58,7 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
   friends,
   onPlayerSelect,
   onFriendsUpdate,
-  onScoreUpdate
+  onScoreUpdate,
 }) => {
   const [matchData, setMatchData] = useState<MatchData | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<{
@@ -66,7 +67,8 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
   } | null>(null);
   const [showFriendsModal, setShowFriendsModal] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {successToast, errorToast}= useToast()
+  const { successToast, errorToast } = useToast();
+
   useEffect(() => {
     if (isOpen && bookingId) {
       const fetchBookingDetails = async () => {
@@ -106,12 +108,60 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
     ? [...matchData.team2, ...Array(2 - matchData.team2.length).fill(null)]
     : Array(2).fill(null);
 
+  const canModify = (): { allowed: boolean; reason?: string } => {
+    if (!matchData)
+      return { allowed: false, reason: "Booking not loaded yet." };
+
+    if (matchData.bookingType === "Cancelled") {
+      return {
+        allowed: false,
+        reason: "Sorry! Cancelled bookings cannot be modified.",
+      };
+    }
+
+    if (matchData.askToJoin) {
+      return {
+        allowed: false,
+        reason:
+          "Sorry! Only private and upcoming bookings created by the creator are allowed to modify.",
+      };
+    }
+
+    const now = new Date();
+    const bookingStart = new Date(
+      `${matchData.bookingDate}T${matchData.bookingSlots}`
+    );
+    const diffHours =
+      (bookingStart.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+    if (diffHours < 4) {
+      return {
+        allowed: false,
+        reason:
+          "Sorry! Modifications are only allowed up to 4 hours before the booking start time.",
+      };
+    }
+
+    return { allowed: true };
+  };
+
   const handlePlayerClick = (team: "team1" | "team2", index: number) => {
+    const check = canModify();
+    if (!check.allowed) {
+      errorToast(check.reason || "You cannot modify this booking.");
+      return;
+    }
+
     setSelectedSlot({ team, index });
     setShowFriendsModal(true);
   };
 
   const handleFriendSelect = (friend: Player) => {
+    const check = canModify();
+    if (!check.allowed) {
+      errorToast(check.reason || "You cannot modify this booking.");
+      return;
+    }
     if (selectedSlot) {
       const { team, index } = selectedSlot;
       setMatchData((prev) => {
@@ -135,6 +185,11 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
   };
 
   const handleRemovePlayer = (team: "team1" | "team2", index: number) => {
+    const check = canModify();
+    if (!check.allowed) {
+      errorToast(check.reason || "You cannot modify this booking.");
+      return;
+    }
     if (index === 0 && team === "team1") return;
     setMatchData((prev) => {
       if (!prev) return prev;
@@ -148,6 +203,12 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
   };
 
   const handleUpdate = async () => {
+    const check = canModify();
+    if (!check.allowed) {
+      errorToast(check.reason || "You cannot modify this booking.");
+      return;
+    }
+
     setLoading(true);
     try {
       const team1 =
@@ -185,14 +246,14 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
             onPlayerSelect("team2", index, friend);
           }
         });
-        onScoreUpdate()
+        onScoreUpdate();
         onClose();
-        successToast(response.data.message)
+        successToast(response.data.message);
       } else {
         errorToast("Failed to update players");
       }
-    } catch (error:any) {
-     errorToast(error?.response.data.message);
+    } catch (error: any) {
+      errorToast(error?.response.data.message);
     } finally {
       setLoading(false);
     }
@@ -261,6 +322,17 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
     }
   };
 
+  const formatTime = (timeStr: string) => {
+    const [hourStr, minuteStr] = timeStr.split(":");
+    let hour = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12; // 0 → 12
+    return `${hour}${
+      minute > 0 ? `:${minute.toString().padStart(2, "0")}` : ""
+    } ${ampm}`;
+  };
+
   return (
     <div>
       {loading && <Loader fullScreen />}
@@ -295,7 +367,7 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-             <button
+              <button
                 className="absolute -top-2 -right-3 sm:-top-3 sm:-right-4 bg-white border-white rounded-full text-blue-900 hover:text-blue-600 shadow-lg p-2 sm:p-3 z-30"
                 onClick={onClose}
               >
@@ -318,7 +390,7 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
                         {matchData.courtId.games} Game
                       </div>
                       <div className="text-gray-900 text-xs sm:text-sm md:text-base font-semibold font-['Raleway']">
-                        60 Mins
+                        {matchData.courtId.name}
                       </div>
                     </div>
                     <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3">
@@ -330,7 +402,7 @@ const ModifyBooking: React.FC<ModifyBookingProps> = ({
                           <span>{formattedDate}</span>
                         </div>
                         <div className="flex items-center gap-1 sm:gap-1.5 text-gray-500 text-xs sm:text-sm font-medium">
-                          <span>{matchData.bookingSlots}</span>
+                          <span>{formatTime(matchData.bookingSlots)}</span>
                         </div>
                       </div>
                     </div>
