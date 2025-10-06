@@ -14,6 +14,7 @@ const Header = () => {
     { name: "How it Works", href: "#how-it-works" },
     { name: "Testimonials", href: "#testimonials" },
     { name: "FAQ", href: "#faq" },
+      { name: "Cancellation & Refund", href: "/cancellation-refund" },
   ];
 
   // Helper for nav link click

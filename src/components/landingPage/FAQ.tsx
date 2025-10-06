@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-
+  const navigate = useNavigate()
   const faqs = [
     {
       question: "How do I book a match?",
@@ -85,7 +86,9 @@ const FAQ = () => {
 
         <div className="text-center mt-12">
           <p className="text-gray-600 mb-4">Still have questions?</p>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200">
+          <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200"
+          onClick={()=> navigate("/contact-us")}
+          >
             Contact Support
           </button>
         </div>

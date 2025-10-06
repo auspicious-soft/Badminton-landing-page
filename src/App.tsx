@@ -16,11 +16,13 @@ import MyBookings from "./components/myBookings/MyBookings";
 import MyBookingsPage from "./pages/MyBookingsPage";
 import Venues2 from "./pages/NewMatchesPage";
 import { NotificationProvider } from "./utils/NotificationContext";
+import ContactSupport from "./components/landingPage/ContactSupport";
+import CancellationAndRefund from "./components/landingPage/CancellationAndRefund";
 
 function App() {
   const location = useLocation();
 
-  const showLayoutRoutes = ["/", "/privacy", "/terms"];
+  const showLayoutRoutes = ["/", "/privacy", "/terms","/contact-us", "/cancellation-refund"];
   const shouldShowLayout = showLayoutRoutes.includes(location.pathname);
 
   return (
@@ -34,7 +36,9 @@ function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/dashboard" element={<Dashboard />} />
-    
+            <Route path="/contact-us" element={<ContactSupport />} />
+            <Route path="/cancellation-refund" element={<CancellationAndRefund />} />
+
 
         <Route element={<ProtectedRoute />}>
         {/* <Route

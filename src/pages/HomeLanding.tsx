@@ -4,6 +4,7 @@ import Features from '../components/landingPage/Features'
 import AppShowcase from '../components/landingPage/AppShowcase'
 import Testimonials from '../components/landingPage/Testimonials'
 import FAQ from '../components/landingPage/FAQ'
+import CancellationAndRefund from '../components/landingPage/CancellationAndRefund'
 
 const HomeLanding = () => {
   return (
