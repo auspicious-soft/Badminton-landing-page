@@ -38,11 +38,11 @@ const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
         setStep("enterOTP");
         setError(null);
       } else {
-        setError("Failed to send OTP. Please try again.");
+        setError("");
       }
-    } catch (err) {
+    } catch (err:any) {
       console.error("Error sending phone number:", err);
-      setError("Failed to process. Please try again.");
+      setError(err.response.data.message);
     } finally {
       setLoading(false);
     }
