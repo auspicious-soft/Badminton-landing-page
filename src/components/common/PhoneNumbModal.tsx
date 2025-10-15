@@ -45,7 +45,7 @@ const VerifyPhoneModal: React.FC<VerifyPhoneModalProps> = ({
       setError(err.response.data.message);
     } finally {
       setLoading(false);
-    }
+    } 
   };
 
 const handleOtpChange = (index: number, value: string) => {
