@@ -1,5 +1,9 @@
 import React from "react";
 import { Star, Quote } from "lucide-react";
+import Avatar1 from "../../../public/Ellipse 353.png";
+import Avatar2 from "../../../public/Ellipse 352.png";
+import Avatar3 from "../../../public/Ellipse 351.png";
+
 
 const Testimonials = () => {
   const testimonials = [
@@ -10,7 +14,7 @@ const Testimonials = () => {
         "Project Play App has completely changed how I find games. I've met so many great players and never struggle to find a court anymore!",
       rating: 5,
       avatar:
-        "../../../public/Ellipse 353.png",
+        Avatar1,
     },
     {
       name: "Tushar Thakur",
@@ -19,7 +23,7 @@ const Testimonials = () => {
         "The real-time availability feature is a game-changer. I can book courts on my lunch break and play immediately after work.",
       rating: 5,
       avatar:
-        "../../../public/Ellipse 352.png",
+        Avatar2,
     },
     {
       name: "Punnet Kumar",
@@ -28,7 +32,7 @@ const Testimonials = () => {
         "Group booking makes organizing tournaments so much easier. The app handles everything from invites to payment confirmations.",
       rating: 5,
       avatar:
-        "../../../public/Ellipse 351.png",
+        Avatar3,
     },
   ];
 
