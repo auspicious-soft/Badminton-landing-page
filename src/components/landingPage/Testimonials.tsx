@@ -1,8 +1,8 @@
 import React from "react";
 import { Star, Quote } from "lucide-react";
-import Avatar1 from "../../../public/Ellipse 353.png";
-import Avatar2 from "../../../public/Ellipse 352.png";
-import Avatar3 from "../../../public/Ellipse 351.png";
+import Avatar1 from "../../assets/Ellipse 353.png";
+import Avatar2 from "../../assets/Ellipse 352.png";
+import Avatar3 from "../../assets/Ellipse 351.png";
 
 
 const Testimonials = () => {
