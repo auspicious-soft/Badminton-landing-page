@@ -270,29 +270,48 @@ const handleGameSelect = (game: string, fromNavigation = false) => {
 };
 
 
-  const handleDateSelect = (
-    date: Date | null,
-    event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
-  ) => {
-    setLoading(false);
+const handleDateSelect = (
+  date: Date | null,
+  event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+) => {
+  setLoading(false);
 
-    try {
-      if (date) {
-        setSelectedDate(date.getDate());
-        setSelectedDateForBooking(date);
-        setIsDatePickerOpen(false);
-        // Reset court and time selection when date changes
-        setSelectedTimes([]);
-        setTotalPrice(0);
-      } else {
-        setSelectedDate(null);
+  try {
+    if (date) {
+      const today = new Date();
+      const selected = new Date(date);
+
+      // ✅ Fix: If the selected date’s day is less than today’s and we’re near month end,
+      // assume it’s for the next month.
+      if (
+        selected.getDate() < today.getDate() &&
+        today.getMonth() === selected.getMonth()
+      ) {
+        selected.setMonth(today.getMonth() + 1);
       }
-    } catch (error) {
-      setLoading(false);
-    } finally {
-      setLoading(false);
+
+      // ✅ Also handle December → January rollover
+      if (selected.getMonth() > 11) {
+        selected.setMonth(0);
+        selected.setFullYear(today.getFullYear() + 1);
+      }
+
+      setSelectedDate(selected.getDate());
+      setSelectedDateForBooking(selected);
+      setIsDatePickerOpen(false);
+
+      // Reset court and time selection when date changes
+      setSelectedTimes([]);
+      setTotalPrice(0);
+    } else {
+      setSelectedDate(null);
     }
-  };
+  } catch (error) {
+    console.error("Date select error:", error);
+  } finally {
+    setLoading(false);
+  }
+};
 
 const handleTimeSelect = (time: string) => {
   setSelectedTimes((prev) => {

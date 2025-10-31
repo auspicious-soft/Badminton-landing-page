@@ -142,10 +142,10 @@ const PrivacyPolicy = () => {
               <p className="text-gray-700">
                 Email:{" "}
                 <a
-                  href="mailto:privacy@Project Play App.com"
+                  href="mailto:tuckboxventures@gmail.com"
                   className="text-blue-600 hover:text-blue-700"
                 >
-                  privacy@Project Play App.com
+                  tuckboxventures@gmail.com
                 </a>
                 <br />
                 Address: 123 Sports Ave, San Francisco, CA 94102
