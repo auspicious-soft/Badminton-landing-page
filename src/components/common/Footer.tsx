@@ -59,7 +59,7 @@ const Footer = () => {
               Terms and Conditions
             </Link>
             <a
-              href="mailto:hello@Project Play App.com"
+              href="mailto:tuckboxventures@gmail.com"
               className="text-gray-400 hover:text-white transition-colors duration-200"
             >
               Contact

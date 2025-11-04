@@ -1,34 +1,38 @@
 import React from "react";
 import { Star, Quote } from "lucide-react";
+import Avatar1 from "../../assets/Ellipse 353.png";
+import Avatar2 from "../../assets/Ellipse 352.png";
+import Avatar3 from "../../assets/Ellipse 351.png";
+
 
 const Testimonials = () => {
   const testimonials = [
     {
-      name: "Sarah Johnson",
+      name: "Mansi Bhandari",
       role: "Pickleball Enthusiast",
       content:
         "Project Play App has completely changed how I find games. I've met so many great players and never struggle to find a court anymore!",
       rating: 5,
       avatar:
-        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop",
+        Avatar1,
     },
     {
-      name: "Mike Chen",
+      name: "Tushar Thakur",
       role: "Padel Player",
       content:
         "The real-time availability feature is a game-changer. I can book courts on my lunch break and play immediately after work.",
       rating: 5,
       avatar:
-        "https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop",
+        Avatar2,
     },
     {
-      name: "Emily Rodriguez",
+      name: "Punnet Kumar",
       role: "Tournament Organizer",
       content:
         "Group booking makes organizing tournaments so much easier. The app handles everything from invites to payment confirmations.",
       rating: 5,
       avatar:
-        "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&fit=crop",
+        Avatar3,
     },
   ];
 
