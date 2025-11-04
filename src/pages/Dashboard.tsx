@@ -382,7 +382,17 @@ const Dashboard = () => {
                           </button>
                         </div>
 
-                   <div className="relative mt-4">
+<div
+  className="relative mt-4 cursor-pointer"
+  onClick={() => {
+    const input = document.getElementById("dobInput") as HTMLInputElement | null;
+    if (input && typeof input.showPicker === "function") {
+      input.showPicker();
+    } else {
+      input?.focus();
+    }
+  }}
+>
   <label
     className={`
       absolute left-4 -top-3 z-10
@@ -396,6 +406,7 @@ const Dashboard = () => {
   </label>
 
   <input
+    id="dobInput"
     type="date"
     value={name.dob || ""}
     onChange={(e) => setName((p) => ({ ...p, dob: e.target.value }))}
@@ -406,15 +417,20 @@ const Dashboard = () => {
       font-['Raleway'] text-black/80 text-base
       focus:outline-2 focus:outline-blue-500
       transition-all duration-200 peer
+      cursor-pointer
       appearance-none
-      [&::-webkit-calendar-picker-indicator]:opacity-0
-      [&::-webkit-datetime-edit-fields-wrapper]:pt-1
+      bg-white
+      [color-scheme:light]
+      [&::-webkit-calendar-picker-indicator]:opacity-100 
+      [&::-webkit-calendar-picker-indicator]:cursor-pointer
+      [&::-webkit-calendar-picker-indicator]:mr-2
+      [&::-webkit-calendar-picker-indicator]:invert-0
     `}
-    required
   />
-
-
 </div>
+
+
+
                       </>
                     )}
 
