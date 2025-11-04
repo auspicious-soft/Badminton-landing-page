@@ -31,7 +31,7 @@ const Dashboard = () => {
     dob: "",
   });
   const [showVerification, setShowVerification] = useState(false);
-const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { successToast, errorToast } = useToast();
 
   useEffect(() => {
@@ -80,107 +80,108 @@ const [showPassword, setShowPassword] = useState(false);
     onError: () => errorToast("Login Failed"),
   });
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  if (isLogin) {
-    if (!email.trim()) {
-      errorToast("Please enter your email");
+    if (isLogin) {
+      if (!email.trim()) {
+        errorToast("Please enter your email");
+        return;
+      }
+      if (!password.trim()) {
+        errorToast("Please enter your password");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const payload = { email, password, authType: "Email-Phone" };
+        const response = await postApi(URLS.normalLogin, payload);
+
+        if (response?.status === 200) {
+          const userData = response.data.data;
+          login(userData);
+          successToast("Login Successful");
+          navigate("/venues");
+        } else {
+          errorToast(response?.data?.message || "Invalid credentials");
+        }
+      } catch (err: any) {
+        errorToast(err.response?.data?.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
       return;
     }
-    if (!password.trim()) {
-      errorToast("Please enter your password");
+
+    const errors: string[] = [];
+
+    if (!name.firstName.trim()) errors.push("First Name");
+    if (!name.lastName.trim()) errors.push("Last Name");
+    if (!name.email.trim()) errors.push("Email");
+    if (!name.phoneNumber.trim()) errors.push("Phone Number");
+    if (!name.countryCode.trim()) errors.push("Country Code");
+    if (!name.password.trim()) errors.push("Password");
+    if (!name.dob) errors.push("Date of Birth");
+
+    if (errors.length > 0) {
+      errorToast(`Please fill in: ${errors.join(", ")}`);
+      return;
+    }
+
+    // Optional: Basic format checks
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(name.email)) {
+      errorToast("Please enter a valid email");
+      return;
+    }
+
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(name.phoneNumber.replace(/\D/g, ""))) {
+      errorToast("Phone number must be 10 digits");
+      return;
+    }
+
+    if (name.password.length < 6) {
+      errorToast("Password must be at least 6 characters");
       return;
     }
 
     setLoading(true);
     try {
-      const payload = { email, password, authType: "Email-Phone" };
-      const response = await postApi(URLS.normalLogin, payload);
+      const payload = {
+        firstName: name.firstName,
+        lastName: name.lastName,
+        email: name.email,
+        phoneNumber: name.phoneNumber,
+        countryCode: name.countryCode,
+        password: name.password,
+        dob: name.dob,
+      };
 
-      if (response?.status === 200) {
-        const userData = response.data.data;
-        login(userData);
-        successToast("Login Successful");
-        navigate("/venues");
+      const response = await postApi(URLS.signUp, payload);
+
+      if (response?.status === 200 || response?.status === 201) {
+        successToast(
+          "Account created successfully! Please verify your email & phone."
+        );
+        setShowVerification(true);
+
+        const verificationToken = response?.data?.data?.token;
+        if (verificationToken) {
+          localStorage.setItem("verificationToken", verificationToken);
+        }
+        localStorage.setItem("signupEmail", payload.email);
+        localStorage.setItem("signupPhone", payload.phoneNumber);
       } else {
-        errorToast(response?.data?.message || "Invalid credentials");
+        errorToast(response?.data?.message || "Signup failed");
       }
     } catch (err: any) {
       errorToast(err.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
-    return;
-  }
-
-  const errors: string[] = [];
-
-  if (!name.firstName.trim()) errors.push("First Name");
-  if (!name.lastName.trim()) errors.push("Last Name");
-  if (!name.email.trim()) errors.push("Email");
-  if (!name.phoneNumber.trim()) errors.push("Phone Number");
-  if (!name.countryCode.trim()) errors.push("Country Code");
-  if (!name.password.trim()) errors.push("Password");
-  if (!name.dob) errors.push("Date of Birth");
-
-  if (errors.length > 0) {
-    errorToast(`Please fill in: ${errors.join(", ")}`);
-    return;
-  }
-
-  // Optional: Basic format checks
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(name.email)) {
-    errorToast("Please enter a valid email");
-    return;
-  }
-
-  const phoneRegex = /^\d{10}$/;
-  if (!phoneRegex.test(name.phoneNumber.replace(/\D/g, ""))) {
-    errorToast("Phone number must be 10 digits");
-    return;
-  }
-
-  if (name.password.length < 6) {
-    errorToast("Password must be at least 6 characters");
-    return;
-  }
-
-
-  setLoading(true);
-  try {
-    const payload = {
-      firstName: name.firstName,
-      lastName: name.lastName,
-      email: name.email,
-      phoneNumber: name.phoneNumber,
-      countryCode: name.countryCode,
-      password: name.password,
-      dob: name.dob,
-    };
-
-    const response = await postApi(URLS.signUp, payload);
-
-    if (response?.status === 200 || response?.status === 201) {
-      successToast("Account created successfully! Please verify your email & phone.");
-      setShowVerification(true);
-
-      const verificationToken = response?.data?.data?.token;
-      if (verificationToken) {
-        localStorage.setItem("verificationToken", verificationToken);
-      }
-      localStorage.setItem("signupEmail", payload.email);
-      localStorage.setItem("signupPhone", payload.phoneNumber);
-    } else {
-      errorToast(response?.data?.message || "Signup failed");
-    }
-  } catch (err: any) {
-    errorToast(err.response?.data?.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -318,7 +319,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                               }))
                             }
                             className="w-1/2 h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-                            
                           />
                         </div>
 
@@ -328,7 +328,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                             placeholder="Country Code"
                             value={name.countryCode || ""}
                             className="w-1/3 h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-                            
                           />
                           <input
                             type="tel"
@@ -341,7 +340,6 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                               }))
                             }
                             className="w-2/3 h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-                            
                           />
                         </div>
 
@@ -356,45 +354,67 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                             }))
                           }
                           className="w-full h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-                          
                         />
 
-                       <div className="relative">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={name.password || ""}
-          onChange={(e) =>
-            setName((prev) => ({
-              ...prev,
-              password: e.target.value,
-            }))
-          }
-          className="w-full h-12 px-4 py-3 pr-12 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-          
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-      </div>
+                        <div className="relative">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            value={name.password || ""}
+                            onChange={(e) =>
+                              setName((prev) => ({
+                                ...prev,
+                                password: e.target.value,
+                              }))
+                            }
+                            className="w-full h-12 px-4 py-3 pr-12 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                          >
+                            {showPassword ? (
+                              <EyeOff size={20} />
+                            ) : (
+                              <Eye size={20} />
+                            )}
+                          </button>
+                        </div>
 
-                        <input
-                          type="date"
-                          placeholder="Date of Birth"
-                          value={name.dob || ""}
-                          onChange={(e) =>
-                            setName((prev) => ({
-                              ...prev,
-                              dob: e.target.value,
-                            }))
-                          }
-                          className="w-full h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-                          
-                        />
+                   <div className="relative mt-4">
+  <label
+    className={`
+      absolute left-4 -top-3 z-10
+      bg-white px-1 font-['Raleway'] text-sm leading-none
+      pointer-events-none transition-colors duration-200
+      ${name.dob ? "text-black" : "text-black/40"}
+      peer-focus:text-blue-600
+    `}
+  >
+    Date of Birth
+  </label>
+
+  <input
+    type="date"
+    value={name.dob || ""}
+    onChange={(e) => setName((p) => ({ ...p, dob: e.target.value }))}
+    className={`
+      w-full h-12 px-4 pt-5 pb-3 rounded-[66px]
+      shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)]
+      outline outline-1 outline-offset-[-1px] outline-gray-200
+      font-['Raleway'] text-black/80 text-base
+      focus:outline-2 focus:outline-blue-500
+      transition-all duration-200 peer
+      appearance-none
+      [&::-webkit-calendar-picker-indicator]:opacity-0
+      [&::-webkit-datetime-edit-fields-wrapper]:pt-1
+    `}
+    required
+  />
+
+
+</div>
                       </>
                     )}
 
@@ -407,26 +427,28 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           className="w-full h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-                          
                         />
 
-                      <div className="relative">
-        <input
-          type={showPassword ? "text" : "password"}
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full h-12 px-4 py-3 pr-12 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
-          
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </button>
-      </div>
+                        <div className="relative">
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full h-12 px-4 py-3 pr-12 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                          >
+                            {showPassword ? (
+                              <EyeOff size={20} />
+                            ) : (
+                              <Eye size={20} />
+                            )}
+                          </button>
+                        </div>
                       </>
                     )}
 
