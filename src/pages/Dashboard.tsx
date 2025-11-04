@@ -12,7 +12,7 @@ import { useAuth } from "../utils/AuthContext";
 import { useToast } from "../utils/ToastContext";
 import Loader from "../components/common/Loader";
 import VerifyAccountScreen from "../components/common/VerifyAccountScreen";
-import { Eye, EyeOff } from "lucide-react";
+import { Calendar, Eye, EyeOff } from "lucide-react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -411,7 +411,7 @@ const Dashboard = () => {
     value={name.dob || ""}
     onChange={(e) => setName((p) => ({ ...p, dob: e.target.value }))}
     className={`
-      w-full h-12 px-4 pt-5 pb-3 rounded-[66px]
+      w-full h-12 px-4 pr-10 pt-5 pb-3 rounded-[66px]
       shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)]
       outline outline-1 outline-offset-[-1px] outline-gray-200
       font-['Raleway'] text-black/80 text-base
@@ -421,11 +421,18 @@ const Dashboard = () => {
       appearance-none
       bg-white
       [color-scheme:light]
-      [&::-webkit-calendar-picker-indicator]:opacity-100 
-      [&::-webkit-calendar-picker-indicator]:cursor-pointer
-      [&::-webkit-calendar-picker-indicator]:mr-2
-      [&::-webkit-calendar-picker-indicator]:invert-0
+
+      /* Remove native calendar icon */
+      [&::-webkit-calendar-picker-indicator]:opacity-0
+      [&::-webkit-calendar-picker-indicator]:appearance-none
+      [&::-webkit-inner-spin-button]:appearance-none
+      [&::-webkit-clear-button]:appearance-none
     `}
+  />
+
+  {/* Lucide React Calendar Icon */}
+  <Calendar
+    className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none"
   />
 </div>
 
