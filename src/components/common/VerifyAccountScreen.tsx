@@ -47,12 +47,7 @@ const handleNext = () => {
               d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <p className="text-2xl font-semibold text-green-600 font-['Raleway']">
-            Verification Complete!
-          </p>
-          <p className="text-gray-600 font-['Raleway']">
-            You can now explore the app.
-          </p>
+    
         </div>
       )}
     </div>
