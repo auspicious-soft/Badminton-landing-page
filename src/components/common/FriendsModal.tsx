@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { X, ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import userImg from "../../assets/user1book.png";
+import userImg from "../../assets/dashboarduser.png";
 import userImg2 from "../../assets/dashboarduser.png";
 
 import { postApi, getApi } from "../../utils/api";

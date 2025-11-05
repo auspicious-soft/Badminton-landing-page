@@ -7,7 +7,7 @@ import { getApi } from "../../utils/api";
 import { baseImgUrl, URLS } from "../../utils/urls";
 import NotificationModal from "./NotificationModal";
 import { useAuth } from "../../utils/AuthContext";
-import dummyImg from "../../assets/user1book.png";
+import dummyImg from "../../assets/dashboarduser.png";
 import { useToast } from "../../utils/ToastContext";
 import { useNotification } from "../../utils/NotificationContext";
 
