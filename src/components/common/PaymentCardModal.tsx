@@ -304,7 +304,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
             key: RAZORPAY_KEY_ID,
             amount: payableAmount * 100, // Razorpay expects amount in paise
             currency,
-            name: "Paddle Play",
+            name: "Project Play",
             description: "Court Booking Payment",
             order_id: razorpayOrderId,
             handler: async function () {
