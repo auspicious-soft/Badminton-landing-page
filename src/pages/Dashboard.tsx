@@ -321,7 +321,6 @@ const Dashboard = () => {
                             className="w-1/2 h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
                           />
                         </div>
-
                         <div className="flex gap-2">
                           <input
                             type="text"
@@ -342,7 +341,6 @@ const Dashboard = () => {
                             className="w-2/3 h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
                           />
                         </div>
-
                         <input
                           type="email"
                           placeholder="Email"
@@ -355,7 +353,6 @@ const Dashboard = () => {
                           }
                           className="w-full h-12 px-4 py-3 rounded-[66px] shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)] outline outline-1 outline-offset-[-1px] outline-gray-200 font-['Raleway'] text-black/80 placeholder:text-black/40 focus:outline-2 focus:outline-blue-500 transition-all duration-200"
                         />
-
                         <div className="relative">
                           <input
                             type={showPassword ? "text" : "password"}
@@ -381,36 +378,44 @@ const Dashboard = () => {
                             )}
                           </button>
                         </div>
-
-<div
-  className="relative mt-4 cursor-pointer"
-  onClick={() => {
-    const input = document.getElementById("dobInput") as HTMLInputElement | null;
-    if (input && typeof input.showPicker === "function") {
-      input.showPicker();
-    } else {
-      input?.focus();
-    }
-  }}
->
-  <label
-    className={`
+                        
+                        <div
+                          className="relative mt-4 cursor-pointer"
+                          onClick={() => {
+                            const input = document.getElementById(
+                              "dobInput"
+                            ) as HTMLInputElement | null;
+                            if (
+                              input &&
+                              typeof input.showPicker === "function"
+                            ) {
+                              input.showPicker();
+                            } else {
+                              input?.focus();
+                            }
+                          }}
+                        >
+                          <label
+                            className={`
       absolute left-4 -top-3 z-10
       bg-white px-1 font-['Raleway'] text-sm leading-none
       pointer-events-none transition-colors duration-200
       ${name.dob ? "text-black" : "text-black/40"}
       peer-focus:text-blue-600
     `}
-  >
-    Date of Birth
-  </label>
+                          >
+                            Date of Birth
+                          </label>
 
-  <input
-    id="dobInput"
-    type="date"
-    value={name.dob || ""}
-    onChange={(e) => setName((p) => ({ ...p, dob: e.target.value }))}
-    className={`
+                          <input
+                            id="dobInput"
+                            type="date"
+                            value={name.dob || ""}
+                            max={new Date().toISOString().split("T")[0]} // ✅ Disable future dates
+                            onChange={(e) =>
+                              setName((p) => ({ ...p, dob: e.target.value }))
+                            }
+                            className={`
       w-full h-12 px-4 pr-10 pt-5 pb-3 rounded-[66px]
       shadow-[0px_1px_2px_0px_rgba(228,229,231,0.24)]
       outline outline-1 outline-offset-[-1px] outline-gray-200
@@ -428,16 +433,11 @@ const Dashboard = () => {
       [&::-webkit-inner-spin-button]:appearance-none
       [&::-webkit-clear-button]:appearance-none
     `}
-  />
+                          />
 
-  {/* Lucide React Calendar Icon */}
-  <Calendar
-    className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none"
-  />
-</div>
-
-
-
+                          {/* Lucide React Calendar Icon */}
+                          <Calendar className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 pointer-events-none" />
+                        </div>
                       </>
                     )}
 

@@ -21,7 +21,7 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [countdown, setCountdown] = useState(60); // 60 seconds
-  const [resendCooldown, setResendCooldown] = useState(60);  
+  const [resendCooldown, setResendCooldown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const { login } = useAuth();
 
@@ -48,12 +48,12 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
   };
 
   const handleVerify = async () => {
-   if (!otp.trim()) {
-    return errorToast("Please enter the OTP");
-  }
-  if (otp.length !== 6) {
-    return errorToast("OTP must be exactly 6 digits");
-  }
+    if (!otp.trim()) {
+      return errorToast("Please enter the OTP");
+    }
+    if (otp.length !== 6) {
+      return errorToast("OTP must be exactly 6 digits");
+    }
     setLoading(true);
     try {
       const payload = {
@@ -70,18 +70,19 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
           localStorage.removeItem("signupEmail");
           localStorage.removeItem("signupPhone");
 
-      
           const userData = data?.data;
           if (userData) {
-           login(userData);
+            login(userData);
           }
           onBothVerified();
         }
       } else {
         errorToast(data?.message ?? "Invalid OTP");
+        setOtp("");
       }
     } catch (err: any) {
       errorToast(err.response?.data?.message ?? "Verification failed");
+      setOtp("");
     } finally {
       setLoading(false);
     }
@@ -106,9 +107,9 @@ const OtpVerification: React.FC<OtpVerificationProps> = ({
 
       if (status === 200) {
         successToast(`OTP resent to your ${type}`);
-       const nextCooldown = resendCooldown === 60 ? 120 : resendCooldown; // 2 min
-      setResendCooldown(nextCooldown);
-      setCountdown(nextCooldown);
+        const nextCooldown = resendCooldown === 60 ? 120 : resendCooldown; // 2 min
+        setResendCooldown(nextCooldown);
+        setCountdown(nextCooldown);
       } else {
         errorToast("Failed to resend OTP");
       }
