@@ -189,8 +189,8 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
   // });
 
   const equipmentItems: EquipmentItem[] = [
-    { id: "racket1", name: "Racket", description: "Professional padel racket" },
-    { id: "ball", name: "Ball", description: "Padel ball set" },
+    { id: "racket1", name: "Racket", description: "" },
+    { id: "ball", name: "Ball", description: "" },
   ];
 
   const paymentOptions: PaymentOption[] = [
@@ -523,7 +523,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
                         return (
                           <div
                             key={item.id}
-                            className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+                            className="w-full flex flex sm:flex-row justify-between items-start sm:items-center gap-4"
                           >
                             <div className="flex justify-start items-start gap-3">
                               <div
