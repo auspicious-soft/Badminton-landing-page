@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Tooltip, { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
+
 import coinImg from "../../assets/price.png";
 import atm from "../../assets/atm-card.png";
 import paddleImg from "../../assets/paddelimage.png";
 import clock from "../../assets/watch.jpg";
-import { ChevronDown, Plus, X } from "lucide-react";
+import { ChevronDown, InfoIcon, Plus, X } from "lucide-react";
 import { getApi, postApi } from "../../utils/api";
 import { loadRazorpayScript, URLS } from "../../utils/urls";
 import { Player } from "../../utils/types";
@@ -13,6 +16,7 @@ import Loader from "./Loader";
 import { useToast } from "../../utils/ToastContext";
 import coins from "../../assets/price.png";
 import { useNotification } from "../../utils/NotificationContext";
+import { Button, ClickAwayListener } from "@mui/material";
 const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY;
 
 declare global {
@@ -129,6 +133,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
     [key: string]: boolean;
   }>({});
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const [finalAmount, setFinalAmount] = useState(bookingAmount);
   const [showDelayedLoader, setShowDelayedLoader] = useState(false);
   const { successToast, errorToast } = useToast();
@@ -138,6 +143,9 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
   const handleToggleEquipment = () => setIsEquipmentOpen(!isEquipmentOpen);
   const handleToggleCancellation = () =>
     setIsCancellationOpen(!isCancellationOpen);
+
+  const handleTooltipOpen = () => setOpen(true);
+  const handleTooltipClose = () => setOpen(false);
 
   useEffect(() => {
     fetchUserProfileData();
@@ -152,6 +160,33 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
       };
     });
   };
+
+  const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 280,
+      fontSize: "13px",
+      "@media (max-width: 600px)": {
+        maxWidth: 200,
+        fontSize: "11px",
+      },
+    },
+  });
+
+  //   const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+  //   <Tooltip {...props} classes={{ popper: className }} />
+  // ))({
+  //   [`& .${tooltipClasses.tooltip}`]: {
+  //     maxWidth: 280,
+  //     '@media (max-width: 600px)': {
+  //       maxWidth: 200, // adjust width for smaller screens
+  //     },
+  //     '@media (min-width: 1200px)': {
+  //       maxWidth: 300, // adjust for large screens if needed
+  //     },
+  //   },
+  // });
 
   const equipmentItems: EquipmentItem[] = [
     { id: "racket1", name: "Racket", description: "Professional padel racket" },
@@ -245,7 +280,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
       return null; // ✅ Return null so you can handle failure gracefully
     }
   };
-
+  const handleTooltipToggle = () => setOpen((prev) => !prev);
   const handlePayNow = async () => {
     if (!selectedPayment) {
       errorToast("Please Select Payment Method");
@@ -422,8 +457,30 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
                     <div className="text-gray-900 text-sm sm:text-base font-semibold font-['Raleway'] leading-none">
                       Add Equipment
                     </div>
-                    <div className="text-neutral-800 text-sm sm:text-base font-semibold font-['Raleway'] leading-none">
-                      ⓘ
+
+                    <div className="relative flex items-center">
+                      <ClickAwayListener onClickAway={handleTooltipClose}>
+                        <div>
+                          <CustomWidthTooltip
+                            title="Rental equipment charges will be settled at the venue. The booking amount below excludes these charges."
+                            placement="bottom"
+                            arrow
+                            open={open}
+                            onClose={handleTooltipClose}
+                            disableFocusListener
+                            disableTouchListener
+                          >
+                            <button
+                              className="flex items-center"
+                              onClick={handleTooltipToggle}
+                              onMouseEnter={() => setOpen(true)}
+                              onMouseLeave={() => setOpen(false)}
+                            >
+                              <InfoIcon size={20} />
+                            </button>
+                          </CustomWidthTooltip>
+                        </div>
+                      </ClickAwayListener>
                     </div>
                   </div>
                   <motion.div
