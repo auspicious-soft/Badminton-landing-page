@@ -286,6 +286,15 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
       return;
     }
 
+     if (isEquipmentOpen) {
+    const totalEquipmentCount =
+      (equipmentCounts.racket1 || 0) + (equipmentCounts.ball || 0);
+    if (totalEquipmentCount === 0) {
+      errorToast("Please add at least one equipment item! or turn it off");
+      return;
+    }
+  }
+
     setLoading(true);
 
     try {
