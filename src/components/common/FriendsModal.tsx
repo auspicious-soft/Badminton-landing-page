@@ -43,6 +43,8 @@ const AddGuestModal: React.FC<AddGuestModalProps> = ({
   const [lastName, setLastName] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+
   const handleSubmit = async () => {
     if (firstName.trim()) {
       const fullName = lastName.trim() ? `${firstName} ${lastName}` : firstName;
@@ -50,14 +52,15 @@ const AddGuestModal: React.FC<AddGuestModalProps> = ({
       try {
         const response = await postApi(URLS.createGuestFriend, { fullName });
         const profilePic =
-  response.data.data?.profilePic && response.data.data.profilePic.trim() !== ""
-    ? response.data.data.profilePic
-    : null;
+          response.data.data?.profilePic &&
+          response.data.data.profilePic.trim() !== ""
+            ? response.data.data.profilePic
+            : userImg2;
         if (response.status === 200) {
           const newGuest: Friend = {
             id: response.data.data._id || String(Date.now()), // Ensure string ID
             name: fullName,
-           image:profilePic ,
+            image: profilePic,
             type: "guest",
           };
           onAddGuest(newGuest);
@@ -69,13 +72,12 @@ const AddGuestModal: React.FC<AddGuestModalProps> = ({
             friendsResponse?.status === 200 &&
             friendsResponse?.data?.success
           ) {
+            console.log(friendsResponse.data.data.friends,"asdsdadasdasdasdada")
             const fetchedFriends = friendsResponse.data.data.friends.map(
               (friend: any) => ({
                 id: friend._id,
                 name: friend.fullName,
-                image: friend.profilePic && friend.profilePic.trim() !== "" 
-    ? friend.profilePic 
-    : userImg,
+                image:friend.profilePic,
                 type: friend.email ? "user" : "guest",
               })
             );
@@ -95,64 +97,64 @@ const AddGuestModal: React.FC<AddGuestModalProps> = ({
   };
 
   return (
-   <>
+    <>
       {loading && <Loader fullScreen />}
 
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            className="w-[400px] bg-white rounded-[20px] p-6 shadow-[0px_4px_20px_0px_rgba(92,138,255,0.10)] flex flex-col gap-4 "
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.95, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 24 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <div className="flex justify-between items-center">
-              <button
-                className="text-neutral-800 font-medium font-['Raleway']"
-                onClick={onBack}
-              >
-                <ArrowLeft />
-              </button>
-              <X className="cursor-pointer text-gray-500" onClick={onClose} />
-            </div>
-            <div className="flex flex-col gap-4">
-              <h2 className="text-neutral-800 text-lg font-semibold font-['Raleway']">
-                Add Guest
-              </h2>
-              <input
-                type="text"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                onClick={handleSubmit}
-                disabled={!firstName.trim()}
-                className="w-full bg-blue-500 text-white py-2 rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Add
-              </button>
-            </div>
+            <motion.div
+              className="w-[400px] bg-white rounded-[20px] p-6 shadow-[0px_4px_20px_0px_rgba(92,138,255,0.10)] flex flex-col gap-4 "
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 24 }}
+            >
+              <div className="flex justify-between items-center">
+                <button
+                  className="text-neutral-800 font-medium font-['Raleway']"
+                  onClick={onBack}
+                >
+                  <ArrowLeft />
+                </button>
+                <X className="cursor-pointer text-gray-500" onClick={onClose} />
+              </div>
+              <div className="flex flex-col gap-4">
+                <h2 className="text-neutral-800 text-lg font-semibold font-['Raleway']">
+                  Add Guest
+                </h2>
+                <input
+                  type="text"
+                  placeholder="First Name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <input
+                  type="text"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <button
+                  onClick={handleSubmit}
+                  disabled={!firstName.trim()}
+                  className="w-full bg-blue-500 text-white py-2 rounded-lg disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                  Add
+                </button>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-   </>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
@@ -165,10 +167,24 @@ const SelectFriendModal: React.FC<SelectFriendModalProps> = ({
   onFriendsUpdate,
 }) => {
   const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+    const getSafeImageUrl = (image: string | null | undefined): string => {
+  // Handle null, undefined, "", "null"
+  if (!image || image === "null" || image.trim() === "") {
+    return userImg2;
+  }
+
+  // Google OAuth image
+  if (image.startsWith("https://lh3.googleusercontent.com")) {
+    return image;
+  }
+
+  // Assume server path
+  return `${baseImgUrl}/${image}`;
+};
   return (
     <>
-     {loading && <Loader fullScreen />}
+      {loading && <Loader fullScreen />}
 
       <AnimatePresence>
         {isOpen && !isGuestModalOpen && (
@@ -193,7 +209,9 @@ const [loading, setLoading] = useState(false);
               </div>
               <div className="flex flex-col gap-4 max-h-[300px] overflow-y-auto hide-scrollbar">
                 {friends.map((friend) => {
-  const isDisabled = selectedFriendIds.map(String).includes(String(friend.id));
+                  const isDisabled = selectedFriendIds
+                    .map(String)
+                    .includes(String(friend.id));
                   return (
                     <div
                       key={friend.id}
@@ -210,16 +228,16 @@ const [loading, setLoading] = useState(false);
                       }}
                     >
                       <img
-                        src={
-                          friend.image
-                            ? friend.image.startsWith("https://lh3")
-                              ? friend.image
-                              : `${baseImgUrl}/${friend.image}`
-                            : userImg2
-                        }
-                        alt={friend.name}
-                        className="w-10 h-10 rounded-full"
-                      />
+  src={getSafeImageUrl(friend.image)}
+  alt={friend.name}
+  className="w-10 h-10 rounded-full object-cover"
+  onError={(e) => {
+    const target = e.currentTarget;
+    if (target.src !== userImg2) {
+      target.src = userImg2;
+    }
+  }}
+/>
                       <div className="text-neutral-800 font-medium font-['Raleway']">
                         {friend.name}
                       </div>
