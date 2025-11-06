@@ -144,8 +144,8 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
   const handleToggleCancellation = () =>
     setIsCancellationOpen(!isCancellationOpen);
 
-  const handleTooltipOpen = () => setOpen(true);
   const handleTooltipClose = () => setOpen(false);
+  const handleTooltipToggle = () => setOpen((prev) => !prev);
 
   useEffect(() => {
     fetchUserProfileData();
@@ -280,7 +280,6 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
       return null; // ✅ Return null so you can handle failure gracefully
     }
   };
-  const handleTooltipToggle = () => setOpen((prev) => !prev);
   const handlePayNow = async () => {
     if (!selectedPayment) {
       errorToast("Please Select Payment Method");
@@ -459,28 +458,31 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
                     </div>
 
                     <div className="relative flex items-center">
-                      <ClickAwayListener onClickAway={handleTooltipClose}>
-                        <div>
-                          <CustomWidthTooltip
-                            title="Rental equipment charges will be settled at the venue. The booking amount below excludes these charges."
-                            placement="bottom"
-                            arrow
-                            open={open}
-                            onClose={handleTooltipClose}
-                            disableFocusListener
-                            disableTouchListener
-                          >
-                            <button
-                              className="flex items-center"
-                              onClick={handleTooltipToggle}
-                              onMouseEnter={() => setOpen(true)}
-                              onMouseLeave={() => setOpen(false)}
-                            >
-                              <InfoIcon size={20} />
-                            </button>
-                          </CustomWidthTooltip>
-                        </div>
-                      </ClickAwayListener>
+                     <ClickAwayListener onClickAway={handleTooltipClose}>
+  <div>
+    <CustomWidthTooltip
+      title="Rental equipment charges will be settled at the venue. The booking amount below excludes these charges."
+      placement="bottom"
+      arrow
+      open={open}
+      onClose={handleTooltipClose}
+      // Keep interactive=false unless you want click-inside
+    >
+      <button
+        className="flex items-center touch-none" // Prevents iOS double-tap zoom
+        onClick={handleTooltipToggle}
+        onTouchEnd={(e) => {
+          e.preventDefault();
+          if (!open) handleTooltipToggle();
+        }}
+        // Prevent context menu on long press
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        <InfoIcon size={20} />
+      </button>
+    </CustomWidthTooltip>
+  </div>
+</ClickAwayListener>
                     </div>
                   </div>
                   <motion.div
