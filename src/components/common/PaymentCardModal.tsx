@@ -523,7 +523,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
                         return (
                           <div
                             key={item.id}
-                            className="w-full flex flex sm:flex-row justify-between items-start sm:items-center gap-4"
+                            className="w-full flex sm:flex-row justify-between items-start sm:items-center gap-4"
                           >
                             <div className="flex justify-start items-start gap-3">
                               <div

@@ -8,6 +8,13 @@
     },
   });
 
+  const publicApi = axios.create({
+  baseURL: "https://api.projectplayapp.com/",
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
   api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
 
@@ -43,6 +50,14 @@ export const postOtpApi = async (
   };
 
   return await otpApi.post(url, data, authConfig);
+};
+
+
+export const getApiNoAuth = async (
+  url: string,
+  config: AxiosRequestConfig = {}
+): Promise<AxiosResponse> => {
+  return await publicApi.get(url, config);
 };
 
 

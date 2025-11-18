@@ -45,4 +45,5 @@ export const URLS = {
 
   submitPhoneNumber: `${userbaseUrl}/submit-phone`,
   verifyPhoneNumber: `${userbaseUrl}/verify-phone`,
+  getInfoData:`${baseUrl}/get-applicaiton-info`
 };
