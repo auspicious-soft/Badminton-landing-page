@@ -148,7 +148,7 @@ const PrivacyPolicy = () => {
                   tuckboxventures@gmail.com
                 </a>
                 <br />
-                Address: 123 Sports Ave, San Francisco, CA 94102
+                Address: House No. 447 sector-35A, Chandigarh, 160022. 
               </p>
             </div>
           </section>
