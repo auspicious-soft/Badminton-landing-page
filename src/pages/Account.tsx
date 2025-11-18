@@ -88,7 +88,7 @@ function Account() {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
   const limit = 12;
-  const {successToast, errorToast} = useToast();
+  const { successToast, errorToast } = useToast();
   const { updateUserData } = useAuth(); // 👈 import from your Auth context
 
   const handleRowClick = (id: string | number) => {
@@ -110,7 +110,7 @@ function Account() {
     imageUrl?: string;
   }) => {
     if (Object.keys(data).length === 0) {
-     errorToast("Nothing changed, nothing to update");
+      errorToast("Nothing changed, nothing to update");
       return;
     }
 
@@ -129,7 +129,7 @@ function Account() {
       const response = await putApi(`${URLS.updateUserProfile}`, updateData);
 
       if (response.status === 200) {
-      successToast( response.data.message);
+        successToast(response.data.message);
         // Update local userData with the new values
         // setUserdata((prev) => ({
         //   ...prev!,
@@ -139,17 +139,17 @@ function Account() {
         //   ...(data.email && { email: data.email }),
         //   ...(data.imageUrl && { profilePic: data.imageUrl }),
         // }));
-          updateUserData({
-        ...(data.firstName && { firstName: data.firstName }), // or use firstName+lastName merged
-        ...(data.lastName && { lastName: data.lastName }), // keep if needed
-        ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
-        ...(data.email && { email: data.email }),
-        ...(data.imageUrl && { profilePic: data.imageUrl }),
-      });
+        updateUserData({
+          ...(data.firstName && { firstName: data.firstName }), // or use firstName+lastName merged
+          ...(data.lastName && { lastName: data.lastName }), // keep if needed
+          ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
+          ...(data.email && { email: data.email }),
+          ...(data.imageUrl && { profilePic: data.imageUrl }),
+        });
       } else {
         errorToast("Failed to update profile");
       }
-    } catch (error:any) {
+    } catch (error: any) {
       errorToast(error?.response.data.message);
     } finally {
       setLoading(false);
@@ -190,11 +190,11 @@ function Account() {
         );
         if (response.status === 200) {
           const transactionData = response.data.data.transactionHistory;
-             const total = response.data.meta.total
-             const tpages = response.data.totalPages
-              setTotalItems(total);
+          const total = response.data.meta.total
+          const tpages = response.data.totalPages
+          setTotalItems(total);
           setTransactions(transactionData);
-           setTotalPages(Math.ceil(total / limit));
+          setTotalPages(Math.ceil(total / limit));
         } else {
           console.error("API call failed with status:", response.status);
         }
@@ -243,9 +243,8 @@ function Account() {
             Profile
           </h2>
           <ProfileCard
-            name={`${userData?.firstName || "Enter"} ${
-              userData?.lastName || "name"
-            }`.trim()}
+            name={`${userData?.firstName || "Enter"} ${userData?.lastName || "name"
+              }`.trim()}
             phoneNumber={phoneNumber}
             email={userData?.email ?? "john.doe@example.com"}
             imageSrc={imageSrc}
@@ -269,15 +268,15 @@ function Account() {
             />
           </div>
           <div className="mt-6 sm:mt-8">
-           {totalItems > 0 && (
-  <Pagination
-    currentPage={currentPage}
-    totalPages={totalPages}
-    totalItems={totalItems}
-    itemsPerPage={limit}
-    onPageChange={handlePageChange}
-  />
-)}
+            {totalItems > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={limit}
+                onPageChange={handlePageChange}
+              />
+            )}
           </div>
           {selectedTransaction && (
             <TransactionModal
