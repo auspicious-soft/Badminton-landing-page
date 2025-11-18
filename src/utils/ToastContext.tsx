@@ -379,7 +379,7 @@ const SuccessToast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => 
 const ErrorToast: React.FC<ToastProps> = ({ message, isVisible, onClose }) => {
   useEffect(() => {
     if (isVisible) {
-      const timer = setTimeout(onClose, 3000);
+      const timer = setTimeout(onClose, 4000);
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);

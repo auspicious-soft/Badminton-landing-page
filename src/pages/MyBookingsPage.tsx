@@ -218,7 +218,7 @@ const MyBookingsPage: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching bookings:", error);
-      setError("Failed to fetch bookings. Please try again.");
+      // setError("Failed to fetch bookings. Please try again.");
     } finally {
       setLoading(false);
     }

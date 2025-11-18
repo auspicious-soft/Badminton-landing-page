@@ -19,6 +19,33 @@
   });
 
 
+  const otpApi = axios.create({
+  baseURL: "https://api.projectplayapp.com/",
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+
+export const postOtpApi = async (
+  url: string,
+  data: any,
+  config: AxiosRequestConfig = {}
+): Promise<AxiosResponse> => {
+  const verificationToken = localStorage.getItem('verificationToken');
+
+  const authConfig: AxiosRequestConfig = {
+    ...config,
+    headers: {
+      ...config.headers,
+      Authorization: verificationToken ? `Bearer ${verificationToken}` : undefined,
+    },
+  };
+
+  return await otpApi.post(url, data, authConfig);
+};
+
+
   // ✅ GET request
   export const getApi = async (
     url: string,

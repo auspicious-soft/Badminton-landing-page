@@ -1104,23 +1104,29 @@ useEffect(() => {
   </span>
 </button>
 
+       
+            <button
+  onClick={() => {
+    if (venueData?.contactInfo) {
+      const phoneNumber = venueData.contactInfo.trim();
 
-              <button
-                onClick={() => {
-                  if (venueData?.contactInfo) {
-                    navigator.clipboard.writeText(venueData.contactInfo);
-                    successToast("Number copied to clipboard!");
-                  }
-                }}
-                className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3"
-              >
-                <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
-                  <Phone className="w-4 h-4 text-white" />
-                </div>
-                <div className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway']">
-                  Call Now
-                </div>
-              </button>
+      if (/Mobi|Android/i.test(navigator.userAgent)) {
+        window.location.href = `tel:${phoneNumber}`;
+      } else {
+        navigator.clipboard.writeText(phoneNumber);
+        successToast("Number copied to clipboard!");
+      }
+    }
+  }}
+  className="w-full sm:w-40 h-12 p-1.5 bg-Primary-Grey rounded-[10px] flex items-center gap-3"
+>
+  <div className="w-9 h-9 p-2.5 bg-blue-950 rounded-[5px] flex items-center justify-center">
+    <Phone className="w-4 h-4 text-white" />
+  </div>
+  <div className="text-Secondary-Font text-xs sm:text-sm font-medium font-['Raleway']">
+    Call Now
+  </div>
+</button>
             </div>
           </motion.div>
         )}

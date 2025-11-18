@@ -87,3 +87,7 @@
 .body-no-scroll {
   overflow: hidden;
 }
+
+.touch-none {
+  touch-action: none;
+}
