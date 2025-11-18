@@ -91,3 +91,10 @@
 .touch-none {
   touch-action: none;
 }
+
+.terms-content ul li::marker,
+.terms-content ol li::marker {
+  color: #000 !important;    /* force black */
+  font-size: inherit;
+  opacity: 1;
+}

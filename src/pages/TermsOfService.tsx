@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getApiNoAuth } from "../utils/api";
 import { URLS } from "../utils/urls";
 import { useToast } from "../utils/ToastContext";
+import parse from "html-react-parser";
 
 
 interface InfoDataType {
@@ -24,12 +25,14 @@ interface InfoDataType {
 const TermsOfService = () => {
 const [infoData, setInfoData] = useState<InfoDataType | null>(null);
     const { successToast, errorToast } = useToast();
-  
+    const [loading, setLoading] = useState(true);
+
    useEffect(()=>{
       window.scrollTo(0, 0);
     },[]);
 
    const fetchData = async () =>{
+    setLoading(true)
     try {
       const response = await getApiNoAuth(`${URLS.getInfoData}`);
 
@@ -43,10 +46,39 @@ const [infoData, setInfoData] = useState<InfoDataType | null>(null);
     } catch (error) {
       console.log(error)
     }
+    finally{
+      setLoading(false)
+    }
    }
    useEffect(()=>{
     fetchData();
    },[])
+
+   const options = {
+  replace: (domNode:any) => {
+ if (domNode.type === "tag") {
+      const attrs = domNode.attribs || {};
+
+      const hasInlineColor =
+        attrs.style && attrs.style.toLowerCase().includes("color");
+
+      if (!hasInlineColor) {
+        attrs.style = `${attrs.style || ""}; color: black;`;
+      }
+
+      if (domNode.name === "strong") {
+        attrs.style = `${attrs.style || ""}; font-weight: 700;`;
+      }
+
+      if (domNode.name === "li") {
+        attrs.style = `${attrs.style || ""}; color: black;`;
+      }
+
+      domNode.attribs = attrs;
+    }
+  }
+};
+
   return (
     <div className="min-h-screen bg-white pt-20">
       <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -62,9 +94,10 @@ const [infoData, setInfoData] = useState<InfoDataType | null>(null);
         
         </div>
 
- <div className="prose prose-lg max-w-none">
+   <div className="prose prose-lg max-w-none">
           {infoData ? (
             <div
+            className="terms-content"
               dangerouslySetInnerHTML={{
                 __html: infoData.termsAndConditions ?? "",
               }}

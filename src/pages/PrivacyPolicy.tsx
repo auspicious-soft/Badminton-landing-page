@@ -65,6 +65,7 @@ const [infoData, setInfoData] = useState<InfoDataType | null>(null);
        <div className="prose prose-lg max-w-none">
           {infoData ? (
             <div
+            className="terms-content"
               dangerouslySetInnerHTML={{
                 __html: infoData.privacyPolicy,
               }}
