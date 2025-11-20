@@ -492,8 +492,9 @@ const team2Slots = slots.slice(2, 4);
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                You may cancel your participation up to 24 hours before the
-                scheduled time for a full refund, if applicable.
+                You may cancel your booking up to 24 hours before the scheduled time for a full refund in the form of Play Coins in your Project Play Account.
+    <p className="mt-2">For the detailed cancellation policy, please refer to our Terms & Conditions</p>
+
               </motion.div>
             )}
           </AnimatePresence>
