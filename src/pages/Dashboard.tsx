@@ -39,46 +39,36 @@ const Dashboard = () => {
     if (token) navigate("/venues");
   }, [navigate]);
 
-  const loginWithGoogle = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      setLoading(true);
-      try {
-        await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {
-          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
-        });
+ const loginWithGoogle = useGoogleLogin({
+  onSuccess: async (tokenResponse) => {
+    setLoading(true);
 
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const payload = {
-              authType: "Google",
-              accessToken: tokenResponse.access_token,
-              fcmToken: "your_firebase_cloud_messaging_token",
-            };
+    try {
+      const payload = {
+        authType: "Google",
+        accessToken: tokenResponse.access_token,
+        fcmToken: "your_firebase_cloud_messaging_token",
+      };
 
-            const response = await postApi(`${URLS.socialLogin}`, payload);
+      const response = await postApi(`${URLS.socialLogin}`, payload);
 
-            if (response?.status === 200) {
-              const responseData = response.data.data;
-              login(responseData);
-              successToast("Login Successfully.");
-              navigate("/venues");
-            } else {
-              errorToast("Error While Login, Please try Again");
-            }
-          },
-          (err) => {
-            errorToast("Please allow location access to continue.");
-            setLoading(false);
-          }
-        );
-      } catch (err) {
-        errorToast("Google login error");
-      } finally {
-        setLoading(false);
+      if (response?.status === 200) {
+        const responseData = response.data.data;
+        login(responseData);
+        successToast("Login Successfully.");
+        navigate("/venues");
+      } else {
+        errorToast("Error While Login, Please try Again");
       }
-    },
-    onError: () => errorToast("Login Failed"),
-  });
+    } catch (err) {
+      errorToast("Google login error");
+    } finally {
+      setLoading(false);
+    }
+  },
+
+  onError: () => errorToast("Login Failed"),
+});
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
