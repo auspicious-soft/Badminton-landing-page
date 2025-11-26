@@ -14,7 +14,7 @@ const FAQ = () => {
     {
       question: "Can I cancel or reschedule my booking?",
       answer:
-        "Yes, you can cancel or reschedule your bookings up to 2 hours before the match time. Cancellations made within 2 hours may be subject to a cancellation fee depending on the court's policy.",
+        "Yes, you can cancel or reschedule your bookings up to 24 hours before the match time. Cancellations made within 24 hours may be subject to a cancellation fee depending on the court's policy.",
     },
     {
       question: "How does payment work?",
