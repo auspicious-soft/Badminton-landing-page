@@ -1,17 +1,38 @@
-import { Download, Calendar, ChevronRight } from "lucide-react";
+import { Download, Calendar, ChevronRight, Play, Apple } from "lucide-react";
 import mainImage from "../../assets/pexels-atousa7495-32234837.jpg";
+import gplay from "../../assets/Store download button1.png";
+import apple from "../../assets/Store download button2.png";
+const APPLE_LINK = import.meta.env.VITE_APPLE_LINK;
+const GOOGLE_LINK = import.meta.env.VITE_GOOGLE_LINK;
+
 import { useNavigate } from "react-router-dom";
+import { useToast } from "../../utils/ToastContext";
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { successToast, errorToast } = useToast();
+  // const appleLink = APPLEL_LINK
+  // const googleLink = GOOGLE_LINK
 
- const token = localStorage.getItem("token")
+  const token = localStorage.getItem("token");
   const handleNavigation = () => {
-    if(token){
+    if (token) {
       navigate("/venues");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleAppleDownload = () => {
+    window.open(`${APPLE_LINK}`, "_blank");
+  };
+
+  const handleGoogleDownload = () => {
+    if (!GOOGLE_LINK) {
+      errorToast("Google Link Unavailable");
     }
     else{
-    navigate("/dashboard");
+    window.open(`${GOOGLE_LINK}`, "_blank");
     }
   };
 
@@ -34,14 +55,37 @@ const Hero = () => {
               all in one app. Connect with players and never miss a match again.
             </p>
 
-            <div className=" z-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-              <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                <Download className="w-5 h-5" />
-              Coming Soon 
+            <div className="z-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+              <button
+                className="  text-white font-semibold px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                type="button"
+                onClick={handleGoogleDownload}
+              >
+                <img
+                  src={gplay}
+                  width="10px"
+                  height="6px"
+                  alt="google"
+                  className="w-28 h-10 rounded-md"
+                />
               </button>
 
               <button
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className=" text-white font-semibold px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                type="button"
+                onClick={handleAppleDownload}
+              >
+                <img
+                  src={apple}
+                  width="10px"
+                  height="6px"
+                  alt="google"
+                  className="w-28 h-10 rounded-md"
+                />
+              </button>
+
+              <button
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 type="button"
                 onClick={handleNavigation}
               >
