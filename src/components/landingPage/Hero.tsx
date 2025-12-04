@@ -1,7 +1,7 @@
 import { Download, Calendar, ChevronRight, Play, Apple } from "lucide-react";
 import mainImage from "../../assets/pexels-atousa7495-32234837.jpg";
-import gplay from "../../assets/Store download button1.png";
-import apple from "../../assets/Store download button2.png";
+import gplay from "../../assets/google.svg";
+import apple from "../../assets/Vector.svg";
 const APPLE_LINK = import.meta.env.VITE_APPLE_LINK;
 const GOOGLE_LINK = import.meta.env.VITE_GOOGLE_LINK;
 
@@ -56,7 +56,7 @@ const Hero = () => {
             </p>
 
             <div className="z-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
-              <button
+             {GOOGLE_LINK && <button
                 className="  text-white font-semibold px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
                 type="button"
                 onClick={handleGoogleDownload}
@@ -68,7 +68,7 @@ const Hero = () => {
                   alt="google"
                   className="w-28 h-10 rounded-md"
                 />
-              </button>
+              </button>}
 
               <button
                 className=" text-white font-semibold px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -77,8 +77,8 @@ const Hero = () => {
               >
                 <img
                   src={apple}
-                  width="10px"
-                  height="6px"
+                  width="8px"
+                  height="4px"
                   alt="google"
                   className="w-28 h-10 rounded-md"
                 />

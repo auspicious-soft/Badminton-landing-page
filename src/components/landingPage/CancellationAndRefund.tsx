@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const CancellationAndRefund = () => {
+   useEffect(()=>{
+      window.scroll(0,0)
+    },[])
   return (
     <div className="max-w-5xl mx-auto px-6 sm:px-8 lg:px-12 py-16 mt-4">
       {/* Header */}
