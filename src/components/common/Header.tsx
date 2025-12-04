@@ -133,13 +133,13 @@ const Header = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
-                <button className="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200 text-left">
+                {/* <button className="text-gray-600 hover:text-blue-600 font-medium transition-colors duration-200 text-left">
                   Sign In
                 </button>
                 <button className="bg-green-500 hover:bg-green-600 text-white font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition-colors duration-200 w-fit">
                   <Download className="w-4 h-4" />
                   Download
-                </button>
+                </button> */}
               </div>
             </nav>
           </div>
