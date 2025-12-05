@@ -38,23 +38,15 @@ import { initializeApp } from "firebase/app";
 import { getMessaging, getToken } from "firebase/messaging";
 
 export const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyDY1COVts8jbneqWcMM9oJznyF7RO2WogA",
+  authDomain: "play-app-9c4df.firebaseapp.com",
+  projectId: "play-app-9c4df",
+  storageBucket: "play-app-9c4df.firebasestorage.app",
+  messagingSenderId: "48002840638",
+  appId: "1:48002840638:web:7562b4453d2f294fccb96f",
+  measurementId: "G-7TK9NBWPDJ",
 };
-// {
-//   apiKey: "AIzaSyDY1COVts8jbneqWcMM9oJznyF7RO2WogA",
-//   authDomain: "play-app-9c4df.firebaseapp.com",
-//   projectId: "play-app-9c4df",
-//   storageBucket: "play-app-9c4df.firebasestorage.app",
-//   messagingSenderId: "48002840638",
-//   appId: "1:48002840638:web:7562b4453d2f294fccb96f",
-//   measurementId: "G-7TK9NBWPDJ",
-// };
+
 
 const app = initializeApp(firebaseConfig);
 
