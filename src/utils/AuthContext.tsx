@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { postApi } from './api';
+import { URLS } from './urls';
 
 // Define the shape of user data
 interface UserData {
@@ -55,12 +57,16 @@ const updateUserData = (updates: Partial<UserData>) => {
   });
 };
 
-
+ const fcmToken = localStorage.getItem("fcmToken");
   // Function to handle logout
-  const logout = () => {
+  const logout = async() => {
+    await postApi(URLS.userLogout, {
+             fcmToken:fcmToken || "abcd"
+            });
     setUserData(null);
     setIsAuthenticated(false);
     localStorage.removeItem('userData');
+    localStorage.removeItem('fcmToken');
     localStorage.removeItem('token');
   };
 

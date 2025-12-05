@@ -13,6 +13,7 @@ import { useToast } from "../utils/ToastContext";
 import Loader from "../components/common/Loader";
 import VerifyAccountScreen from "../components/common/VerifyAccountScreen";
 import { Calendar, Eye, EyeOff } from "lucide-react";
+import { getBrowserToken, requestNotificationPermission } from "../utils/firebase";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -39,15 +40,17 @@ const Dashboard = () => {
     if (token) navigate("/venues");
   }, [navigate]);
 
+ 
  const loginWithGoogle = useGoogleLogin({
   onSuccess: async (tokenResponse) => {
     setLoading(true);
-
     try {
+      const fcmToken = await getBrowserToken();
+      console.log('fcmToken: ', fcmToken);
       const payload = {
         authType: "Google",
         accessToken: tokenResponse.access_token,
-        fcmToken: "your_firebase_cloud_messaging_token",
+        fcmToken: fcmToken || "abcd",
       };
 
       const response = await postApi(`${URLS.socialLogin}`, payload);
@@ -69,10 +72,12 @@ const Dashboard = () => {
 
   onError: () => errorToast("Login Failed"),
 });
-
+useEffect(()=>{
+  requestNotificationPermission()
+},[])
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+   const fcmToken = await getBrowserToken();
     if (isLogin) {
       if (!email.trim()) {
         errorToast("Please enter your email");
@@ -85,7 +90,8 @@ const Dashboard = () => {
 
       setLoading(true);
       try {
-        const payload = { email, password, authType: "Email-Phone" };
+        const payload = { email, password, authType: "Email-Phone",fcmToken: fcmToken || "abcd" };
+        console.log('payload: ', payload);
         const response = await postApi(URLS.normalLogin, payload);
 
         if (response?.status === 200) {
@@ -190,7 +196,6 @@ const Dashboard = () => {
   return (
     <>
       {loading && <Loader fullScreen />}
-
       <div
         className={`w-screen h-[100dvh] relative bg-[#e9f5ff] bg-cover bg-no-repeat bg-center no-scroll-root `}
         style={{ backgroundImage: `url(${backgroundImage})` }}

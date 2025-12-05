@@ -1,6 +1,7 @@
-const baseUrl = "https://api.projectplayapp.com/api";
-const userbaseUrl = "https://api.projectplayapp.com/api/user";
-// const userbaseUrl = "https://3a42698d69ce.ngrok-free.app/api/user";
+// const baseUrl = "https://api.projectplayapp.com/api";
+const baseUrl = "http://localhost:8001/api";
+// const userbaseUrl = "https://api.projectplayapp.com/api/user";
+const userbaseUrl = "http://localhost:8001/api/user";
 
 export const baseImgUrl = "https://playpadelpickel.s3.eu-north-1.amazonaws.com";
 
@@ -30,7 +31,7 @@ export const URLS = {
   getBookings: `${userbaseUrl}/my-matches`,
   getCourts: `${userbaseUrl}/get-courts`,
   createBooking: `${userbaseUrl}/book-court`,
-  getDynamicPricing: `${userbaseUrl}/get-dynamic-price`,
+  // getDynamicPricing: `${userbaseUrl}/get-dynamic-price`,
   bookingPayment: `${userbaseUrl}/booking-payment`,
   getUserProfile: `${userbaseUrl}/get-user`,
   getUserTransactions: `${userbaseUrl}/user-transactions`,
@@ -45,5 +46,6 @@ export const URLS = {
 
   submitPhoneNumber: `${userbaseUrl}/submit-phone`,
   verifyPhoneNumber: `${userbaseUrl}/verify-phone`,
-  getInfoData:`${baseUrl}/get-applicaiton-info`
+  getInfoData:`${baseUrl}/get-applicaiton-info`,
+  userLogout:`${userbaseUrl}/logout`
 };

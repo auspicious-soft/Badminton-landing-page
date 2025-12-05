@@ -544,34 +544,34 @@ useEffect(() => {
     fetchFriends();
   }, [userData]);
 
-  useEffect(() => {
-    const getDynamicPricing = async () => {
-      if (!selectedDateForBooking) return;
+  // useEffect(() => {
+  //   const getDynamicPricing = async () => {
+  //     if (!selectedDateForBooking) return;
 
-      const year = selectedDateForBooking.getFullYear();
-      const month = String(selectedDateForBooking.getMonth() + 1).padStart(
-        2,
-        "0"
-      );
-      const day = String(selectedDateForBooking.getDate()).padStart(2, "0");
-      const localDate = `${year}-${month}-${day}`;
-      setLoading(true);
-      try {
-        const response = await getApi(
-          `${URLS.getDynamicPricing}?Date=${localDate}`
-        );
-        if (response.status === 200 && response.data.success) {
-          const pricingData = response.data.data.slotPricing;
-          setDynamicPricing(pricingData);
-        }
-      } catch (error) {
-        setLoading(false);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getDynamicPricing();
-  }, [selectedDateForBooking]);
+  //     const year = selectedDateForBooking.getFullYear();
+  //     const month = String(selectedDateForBooking.getMonth() + 1).padStart(
+  //       2,
+  //       "0"
+  //     );
+  //     const day = String(selectedDateForBooking.getDate()).padStart(2, "0");
+  //     const localDate = `${year}-${month}-${day}`;
+  //     setLoading(true);
+  //     try {
+  //       const response = await getApi(
+  //         `${URLS.getDynamicPricing}?Date=${localDate}`
+  //       );
+  //       if (response.status === 200 && response.data.success) {
+  //         const pricingData = response.data.data.slotPricing;
+  //         setDynamicPricing(pricingData);
+  //       }
+  //     } catch (error) {
+  //       setLoading(false);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   getDynamicPricing();
+  // }, [selectedDateForBooking]);
 
   const handleBookAndPay = async () => {
 
