@@ -1,7 +1,7 @@
-// const baseUrl = "https://api.projectplayapp.com/api";
-const baseUrl = "http://localhost:8001/api";
-// const userbaseUrl = "https://api.projectplayapp.com/api/user";
-const userbaseUrl = "http://localhost:8001/api/user";
+const baseUrl = "https://api.projectplayapp.com/api";
+// const baseUrl = "http://localhost:8001/api";
+const userbaseUrl = "https://api.projectplayapp.com/api/user";
+// const userbaseUrl = "http://localhost:8001/api/user";
 
 export const baseImgUrl = "https://playpadelpickel.s3.eu-north-1.amazonaws.com";
 
